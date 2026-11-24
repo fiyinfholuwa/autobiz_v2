@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Flight Booking · AutoBiz</title>
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/app.css" rel="stylesheet">
+  <script src="../assets/js/brand.js"></script>
+  <style>
+    /* ---------- Hero + search ---------- */
+    .fl-hero { border-radius: var(--ab-radius-lg); padding: 1.6rem 1.6rem 1.4rem; color: #fff; position: relative; overflow: hidden;
+      background: radial-gradient(120% 140% at 100% 0%, #3cc4d8 0%, #1098ad 38%, #0b4f6c 100%); box-shadow: 0 24px 48px -22px rgba(16, 152, 173, .6); }
+    .fl-hero .bg-plane { position: absolute; right: -10px; top: -28px; font-size: 11rem; opacity: .1; transform: rotate(-18deg); pointer-events: none; }
+    .fl-hero h2 { color: #fff; font-size: clamp(1.3rem, 3vw, 1.8rem); font-weight: 800; }
+    .fl-hero > * { position: relative; z-index: 1; }
+    .fl-search { background: var(--ab-surface); color: var(--ab-text); border-radius: 18px; padding: 1rem; box-shadow: var(--ab-shadow-lg); }
+    .fl-row { display: grid; grid-template-columns: minmax(0, 2.3fr) minmax(0, 1fr) minmax(0, 1fr); gap: .6rem; }
+    .fl-row + .fl-row { margin-top: .6rem; }
+    .fl-row.leg2 .fl-col-date { grid-column: span 2; }
+    .fl-ft { display: flex; align-items: stretch; gap: .35rem; position: relative; }
+    .fl-ft > .fl-col { flex: 1; min-width: 0; }
+    .fl-col { position: relative; min-width: 0; }
+    .fl-field { border: 1.5px solid var(--ab-border); border-radius: 14px; padding: .55rem .85rem; background: var(--ab-surface); cursor: text; transition: border-color .15s, box-shadow .15s; height: 100%; min-height: 66px; display: block; }
+    .fl-field:focus-within { border-color: var(--ab-primary); box-shadow: 0 0 0 4px rgba(var(--ab-primary-rgb), .12); }
+    .fl-field.is-invalid { border-color: var(--ab-danger); }
+    .fl-lbl { font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; color: var(--ab-muted); display: flex; align-items: center; gap: .35rem; margin: 0; }
+    .fl-input { border: 0; outline: 0; background: transparent; color: var(--ab-text); font-weight: 700; font-size: 1rem; width: 100%; padding: 0; }
+    .fl-input::placeholder { color: var(--ab-muted); font-weight: 500; opacity: .8; }
+    .fl-input[type=date] { min-height: 24px; }
+    [data-bs-theme=dark] .fl-input[type=date]::-webkit-calendar-picker-indicator { filter: invert(1); }
+    .fl-sub { font-size: .72rem; color: var(--ab-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .fl-err { color: var(--ab-danger); font-size: .74rem; font-weight: 600; margin-top: .25rem; display: none; }
+    .fl-err.show { display: block; }
+    .fl-swap { align-self: center; width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--ab-border); background: var(--ab-surface); color: var(--ab-primary); display: grid; place-items: center; flex-shrink: 0; transition: transform .3s; z-index: 2; }
+    .fl-swap:hover { border-color: var(--ab-primary); }
+    .fl-swap.spin { transform: rotate(180deg); }
+    .fl-addret { border: 1.5px dashed var(--ab-border); background: transparent; color: var(--ab-muted); border-radius: 14px; width: 100%; height: 100%; min-height: 66px; font-weight: 600; font-size: .85rem; }
+    .fl-addret:hover { color: var(--ab-primary); border-color: var(--ab-primary); }
+    .fl-ac { position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 1060; background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 14px; box-shadow: var(--ab-shadow-lg); padding: .35rem; max-height: 300px; overflow-y: auto; list-style: none; margin: 0; min-width: 260px; }
+    .fl-ac li { display: flex; align-items: center; gap: .65rem; padding: .5rem .6rem; border-radius: 10px; cursor: pointer; }
+    .fl-ac li.active, .fl-ac li:hover { background: var(--ab-surface-2); }
+    .fl-ac .code { font-weight: 800; font-size: .78rem; background: var(--ab-primary-soft); color: var(--ab-primary); border-radius: 8px; padding: .25rem .4rem; min-width: 44px; text-align: center; }
+    .fl-ac .empty { padding: .75rem; color: var(--ab-muted); font-size: .85rem; cursor: default; }
+    .pax-menu { width: 330px; max-width: calc(100vw - 2rem); padding: 1rem; }
+    .stepper { display: inline-flex; align-items: center; gap: .6rem; }
+    .stepper button { width: 32px; height: 32px; border-radius: 10px; border: 1.5px solid var(--ab-border); background: var(--ab-surface); color: var(--ab-text); display: grid; place-items: center; padding: 0; }
+    .stepper button:not(:disabled):hover { border-color: var(--ab-primary); color: var(--ab-primary); }
+    .stepper button:disabled { opacity: .4; }
+    .stepper output { min-width: 18px; text-align: center; font-weight: 800; }
+    .btn-search { min-height: 52px; }
+
+    @media (max-width: 767.98px) {
+      .fl-row { grid-template-columns: 1fr 1fr; }
+      .fl-row > .fl-ft { grid-column: span 2; flex-direction: column; gap: .5rem; }
+      .fl-row.leg2 .fl-col-date { grid-column: span 2; }
+      .fl-swap { position: absolute; right: 18px; top: 50%; transform: translateY(-50%) rotate(90deg); }
+      .fl-swap.spin { transform: translateY(-50%) rotate(270deg); }
+      .fl-hero { padding: 1.1rem .85rem 1rem; }
+      .fl-search { padding: .85rem; }
+    }
+
+    /* ---------- Discover ---------- */
+    .dest-card { border-radius: 18px; overflow: hidden; position: relative; padding: 1rem; color: #fff; min-height: 150px; display: flex; flex-direction: column; justify-content: space-between; text-align: left; border: 0; width: 100%; }
+    .dest-card .bg-ic { position: absolute; right: -14px; bottom: -26px; font-size: 6rem; opacity: .16; }
+    .dest-card img { width: 30px; height: 20px; border-radius: 4px; object-fit: cover; box-shadow: 0 0 0 2px rgba(255, 255, 255, .35); }
+    .dest-card > * { position: relative; }
+
+    /* ---------- Results ---------- */
+    .date-strip { display: grid; grid-template-columns: repeat(7, minmax(92px, 1fr)); gap: .5rem; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+    .date-strip::-webkit-scrollbar { display: none; }
+    .date-strip button { border: 1.5px solid var(--ab-border); background: var(--ab-surface); color: var(--ab-text); border-radius: 14px; padding: .55rem .4rem; text-align: center; line-height: 1.25; transition: all .15s; }
+    .date-strip button:not(:disabled):hover { border-color: var(--ab-primary); }
+    .date-strip button.active { border-color: var(--ab-primary); background: var(--ab-primary-soft); box-shadow: 0 0 0 3px rgba(var(--ab-primary-rgb), .12); }
+    .date-strip button:disabled { opacity: .45; cursor: not-allowed; }
+    .date-strip .d { font-size: .72rem; color: var(--ab-muted); font-weight: 600; }
+    .date-strip .p { font-size: .82rem; font-weight: 800; }
+    .date-strip .low .p { color: var(--ab-accent); }
+    .sort-seg { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .sort-seg button { text-align: left; padding: .55rem .8rem !important; }
+    .sort-seg button small { display: block; font-weight: 700; color: var(--ab-text); font-size: .8rem; }
+    .fl-card { overflow: hidden; }
+    .fl-card .card-body { padding: 1rem 1.15rem; }
+    .fl-grid { display: grid; grid-template-columns: 170px minmax(0, 1fr) 170px; gap: 1rem; align-items: center; }
+    .al-logo { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: .78rem; flex-shrink: 0; letter-spacing: .02em; box-shadow: inset 0 -10px 18px rgba(0, 0, 0, .15); }
+    .al-logo.sm { width: 30px; height: 30px; border-radius: 9px; font-size: .65rem; }
+    .fl-times { display: grid; grid-template-columns: auto minmax(60px, 1fr) auto; align-items: center; gap: .9rem; }
+    .fl-times .t { font-size: 1.3rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
+    .fl-times .t sup { font-size: .65rem; color: var(--ab-danger); font-weight: 700; margin-left: 2px; }
+    .fl-times .c { font-size: .78rem; color: var(--ab-muted); font-weight: 600; }
+    .fl-line { text-align: center; font-size: .72rem; color: var(--ab-muted); font-weight: 600; }
+    .fl-line .bar { position: relative; height: 2px; background: var(--ab-border); margin: .35rem 0; display: flex; justify-content: space-evenly; align-items: center; }
+    .fl-line .bar::after { content: "\F7CC"; font-family: "bootstrap-icons"; position: absolute; right: -4px; top: 50%; transform: translateY(-50%) rotate(90deg); font-size: .8rem; color: var(--ab-muted); }
+    .fl-line .bar .stop { width: 9px; height: 9px; border-radius: 50%; background: var(--ab-surface); border: 2px solid var(--ab-warning); }
+    .fl-line .direct { color: var(--ab-accent); }
+    .fl-line .stops { color: #d48806; }
+    .fl-price { text-align: right; }
+    .fl-price .amt { font-size: 1.3rem; font-weight: 800; letter-spacing: -.02em; }
+    .fl-meta { display: flex; flex-wrap: wrap; gap: .4rem .9rem; align-items: center; margin-top: .85rem; padding-top: .75rem; border-top: 1px dashed var(--ab-border); font-size: .76rem; color: var(--ab-muted); font-weight: 600; }
+    .fl-meta i { margin-right: .2rem; }
+    .fl-tag { position: absolute; top: 0; left: 1.15rem; font-size: .66rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; padding: .18rem .55rem; border-radius: 0 0 8px 8px; }
+    .fl-card.tagged .card-body { padding-top: 1.5rem; }
+    .seg-tl { position: relative; padding-left: 1.4rem; margin-top: .9rem; }
+    .seg-tl::before { content: ""; position: absolute; left: .4rem; top: .4rem; bottom: .4rem; border-left: 2px dotted var(--ab-border); }
+    .seg-tl .pt { position: relative; }
+    .seg-tl .pt::before { content: ""; position: absolute; left: -1.25rem; top: .3rem; width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--ab-primary); background: var(--ab-surface); }
+    .layover { background: var(--ab-warning-soft); color: #b77400; border-radius: 10px; padding: .4rem .7rem; font-size: .76rem; font-weight: 600; margin: .6rem 0; }
+    [data-bs-theme=dark] .layover { color: #ffc14d; }
+    .picked-leg { border: 1.5px solid var(--ab-accent); background: var(--ab-accent-soft); border-radius: 14px; padding: .7rem .9rem; }
+    .flt-group + .flt-group { border-top: 1px solid var(--ab-border); margin-top: 1rem; padding-top: 1rem; }
+    .flt-group h6 { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--ab-muted); margin-bottom: .6rem; }
+    .flt-check { display: flex; align-items: center; gap: .6rem; padding: .3rem 0; font-size: .875rem; cursor: pointer; }
+    .flt-check .form-check-input { margin: 0; flex-shrink: 0; }
+    .flt-check .pr { margin-left: auto; font-size: .78rem; color: var(--ab-muted); font-weight: 600; }
+    .time-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .45rem; }
+    .time-grid .ab-option { padding: .5rem .6rem; text-align: center; font-size: .78rem; font-weight: 600; }
+    .time-grid .ab-option i { display: block; font-size: 1.05rem; margin-bottom: 2px; }
+    .time-grid .ab-option.active::after { display: none; }
+    .form-range::-webkit-slider-thumb { background: var(--ab-primary); }
+    .form-range::-webkit-slider-runnable-track { background: var(--ab-surface-2); }
+    @media (min-width: 992px) { #filterPanel { position: sticky; top: calc(var(--ab-topbar-h) + 1rem); } #filterPanel .offcanvas-body { padding: 0; } }
+    @media (max-width: 991.98px) { #filterPanel { width: min(360px, 92vw); } }
+
+    @media (max-width: 767.98px) {
+      .fl-grid { grid-template-columns: minmax(0, 1fr) auto; gap: .8rem; }
+      .fl-grid .fl-times { grid-column: 1 / -1; order: 3; }
+      .fl-price .amt { font-size: 1.15rem; }
+      .fl-times .t { font-size: 1.15rem; }
+      .sort-seg button { padding: .45rem .55rem !important; font-size: .74rem; }
+    }
+
+    /* ---------- Booking ---------- */
+    .bk-steps { display: flex; gap: .25rem; counter-reset: s; }
+    .bk-steps li { flex: 1; list-style: none; display: flex; align-items: center; gap: .5rem; font-size: .8rem; font-weight: 600; color: var(--ab-muted); position: relative; min-width: 0; }
+    .bk-steps li:not(:last-child)::after { content: ""; flex: 1; height: 2px; background: var(--ab-border); border-radius: 2px; min-width: 10px; }
+    .bk-steps li.done:not(:last-child)::after { background: var(--ab-accent); }
+    .bk-steps .n { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; border: 2px solid var(--ab-border); background: var(--ab-surface); font-weight: 800; flex-shrink: 0; font-size: .8rem; }
+    .bk-steps button { all: unset; display: flex; align-items: center; gap: .5rem; cursor: default; white-space: nowrap; }
+    .bk-steps li.done button { cursor: pointer; }
+    .bk-steps li.done button:focus-visible { outline: 2px solid var(--ab-primary); border-radius: 8px; }
+    .bk-steps li.done .n { background: var(--ab-accent); border-color: var(--ab-accent); color: #fff; }
+    .bk-steps li.active { color: var(--ab-text); }
+    .bk-steps li.active .n { border-color: var(--ab-primary); background: var(--ab-primary); color: #fff; box-shadow: 0 0 0 4px rgba(var(--ab-primary-rgb), .15); }
+    @media (max-width: 767.98px) { .bk-steps li:not(.active) .lbl { display: none; } }
+    .leg-card { border: 1px solid var(--ab-border); border-radius: 16px; padding: 1rem; background: var(--ab-surface-2); }
+    .rule { display: flex; gap: .7rem; padding: .55rem 0; font-size: .85rem; border-bottom: 1px dashed var(--ab-border); }
+    .rule:last-child { border-bottom: 0; }
+    .rule i { font-size: 1.05rem; }
+    .pax-card .card-header { display: flex; align-items: center; gap: .7rem; }
+
+    /* Seat map */
+    .seat-wrap { overflow-x: auto; }
+    .plane { margin: 0 auto; width: max-content; background: var(--ab-surface-2); border: 1px solid var(--ab-border); border-radius: 90px 90px 24px 24px; padding: 3.2rem 1rem 1.2rem; position: relative; }
+    .plane::before { content: "\F7CC"; font-family: "bootstrap-icons"; position: absolute; top: .8rem; left: 50%; transform: translateX(-50%); color: var(--ab-muted); font-size: 1.3rem; }
+    .seat-row { display: flex; align-items: center; gap: 5px; margin-bottom: 5px; }
+    .seat-row .rn { width: 26px; text-align: center; font-size: .7rem; color: var(--ab-muted); font-weight: 700; }
+    .seat-row .exit { font-size: .6rem; color: var(--ab-danger); font-weight: 800; width: 26px; text-align: center; }
+    .seat-head { display: flex; gap: 5px; margin-bottom: 6px; font-size: .7rem; color: var(--ab-muted); font-weight: 700; }
+    .seat-head span { width: 34px; text-align: center; }
+    .seat { width: 34px; height: 36px; border-radius: 9px 9px 6px 6px; border: 1.5px solid var(--ab-border); background: var(--ab-surface); color: var(--ab-text); font-size: .66rem; font-weight: 800; padding: 0; display: grid; place-items: center; transition: transform .12s, background .12s; }
+    .seat:not(:disabled):hover { transform: translateY(-2px); border-color: var(--ab-primary); }
+    .seat.xl { border-color: var(--ab-warning); background: var(--ab-warning-soft); }
+    .seat.taken { background: var(--ab-border); border-color: transparent; color: transparent; cursor: not-allowed; }
+    .seat.taken::before { content: "\F659"; font-family: "bootstrap-icons"; color: var(--ab-muted); font-size: .7rem; }
+    .seat.mine { background: var(--ab-primary); border-color: var(--ab-primary); color: #fff; }
+    .seat.other { background: var(--ab-violet); border-color: var(--ab-violet); color: #fff; }
+    .seat.wide { width: 44px; height: 44px; }
+    .aisle { width: 22px; }
+    .legend { display: flex; flex-wrap: wrap; gap: .5rem 1rem; font-size: .76rem; color: var(--ab-muted); font-weight: 600; }
+    .legend .seat { width: 18px; height: 18px; border-radius: 5px; display: inline-grid; vertical-align: middle; margin-right: .3rem; font-size: 0; pointer-events: none; }
+    .legend .seat.taken::before { font-size: .5rem; }
+    @media (max-width: 575.98px) { .plane { padding: 3rem .5rem 1rem; border-radius: 70px 70px 20px 20px; } .seat, .seat-head span { width: 30px; } .seat { height: 32px; } .seat.wide { width: 40px; height: 40px; } .seat-row, .seat-head { gap: 4px; } .aisle { width: 14px; } .seat-row .rn, .seat-row .exit { width: 22px; } }
+    .pax-pick { display: flex; gap: .5rem; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+    .pax-pick .ab-option { width: auto; min-width: 150px; padding: .55rem .75rem; flex-shrink: 0; }
+    .addon .ab-option { display: flex; gap: .85rem; align-items: center; }
+
+    /* ---------- Boarding pass ---------- */
+    .bp { display: flex; border-radius: 18px; overflow: hidden; background: var(--ab-surface-2); border: 1px solid var(--ab-border); margin-bottom: 1rem; color: var(--ab-text); }
+    .bp-main { flex: 1; min-width: 0; }
+    .bp-top { display: flex; align-items: center; gap: .6rem; padding: .75rem 1rem; color: #fff; background: linear-gradient(120deg, var(--al, #1098ad), #0b4f6c); font-weight: 700; font-size: .85rem; }
+    .bp-top .al-logo { width: 32px; height: 32px; font-size: .66rem; background: rgba(255, 255, 255, .2) !important; box-shadow: none; }
+    .bp-route { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.1rem .5rem; gap: .5rem; }
+    .bp-route .code { font-size: 2rem; font-weight: 800; letter-spacing: -.03em; line-height: 1; }
+    .bp-route .city { font-size: .76rem; color: var(--ab-muted); font-weight: 600; }
+    .bp-route .mid { flex: 1; text-align: center; color: var(--ab-muted); font-size: .72rem; font-weight: 600; }
+    .bp-route .mid i { display: block; font-size: 1.3rem; color: var(--ab-primary); transform: rotate(90deg); }
+    .bp-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem 1rem; padding: .5rem 1.1rem 1.1rem; }
+    .bp-grid .k { font-size: .64rem; text-transform: uppercase; letter-spacing: .07em; color: var(--ab-muted); font-weight: 700; }
+    .bp-grid .v { font-weight: 800; font-size: .9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bp-perf { position: relative; border-left: 2px dashed var(--ab-border); width: 0; }
+    .bp-perf::before, .bp-perf::after { content: ""; position: absolute; width: 24px; height: 24px; border-radius: 50%; background: var(--ab-surface); left: -13px; border: 1px solid var(--ab-border); }
+    .bp-perf::before { top: -13px; } .bp-perf::after { bottom: -13px; }
+    .bp-stub { width: 210px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between; gap: .6rem; text-align: center; }
+    .bp-stub .pnr { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.35rem; font-weight: 800; letter-spacing: .18em; }
+    .bp-stub svg { width: 100%; height: 56px; color: var(--ab-text); }
+    @media (max-width: 575.98px) {
+      .bp { flex-direction: column; }
+      .bp-perf { border-left: 0; border-top: 2px dashed var(--ab-border); width: auto; height: 0; }
+      .bp-perf::before { top: -13px; left: -13px; } .bp-perf::after { top: -13px; bottom: auto; left: auto; right: -13px; }
+      .bp-stub { width: auto; }
+      .bp-route .code { font-size: 1.7rem; }
+    }
+
+    /* ---------- Trips ---------- */
+    .trip-card .route { font-size: 1.05rem; font-weight: 800; }
+    .trip-card.cancelled { opacity: .8; }
+
+    /* ---------- Print ---------- */
+    #printRoot { display: none; }
+    @media print {
+      :root, [data-bs-theme=dark] { --ab-surface: #fff; --ab-surface-2: #fff; --ab-border: #cfd5e4; --ab-text: #0f1730; --ab-muted: #5b6380; }
+      html, body { background: #fff !important; }
+      body.printing > *:not(#printRoot) { display: none !important; }
+      body.printing #printRoot { display: block; padding: 0; }
+      #printRoot .bp { break-inside: avoid; flex-direction: row !important; }
+      #printRoot .bp-stub { width: 210px !important; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body data-page="flights" data-title="Flight Booking" data-public="true">
+<main class="ab-content">
+
+  <div class="ab-page-head">
+    <div>
+      <h1>Flight Booking</h1>
+      <p>Search local &amp; international flights and pay straight from your wallet.</p>
+    </div>
+    <div class="ab-segment" role="tablist" aria-label="Flights sections" id="viewSeg">
+      <button class="active" role="tab" aria-selected="true" data-view="search"><i class="bi bi-search me-1"></i>Search flights</button>
+      <button role="tab" aria-selected="false" data-view="trips"><i class="bi bi-suitcase2 me-1"></i>My trips <span class="badge bg-primary ms-1" id="tripCount" hidden></span></button>
+    </div>
+  </div>
+
+  <!-- ================= SEARCH VIEW ================= -->
+  <section id="searchView">
+    <div class="fl-hero mb-4">
+      <i class="bi bi-airplane-engines bg-plane" aria-hidden="true"></i>
+      <h2 class="mb-1">Where are you flying next?</h2>
+      <p class="mb-3 opacity-75 fs-7">Compare 12 airlines · Instant e-ticket · Pay in Naira</p>
+
+      <form class="fl-search" id="searchForm" novalidate autocomplete="off">
+        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+          <div class="ab-segment" id="tripSeg" role="radiogroup" aria-label="Trip type">
+            <button type="button" role="radio" data-trip="oneway" class="active" aria-checked="true">One-way</button>
+            <button type="button" role="radio" data-trip="round" aria-checked="false">Round trip</button>
+            <button type="button" role="radio" data-trip="multi" aria-checked="false">Multi-city</button>
+          </div>
+          <div class="dropdown">
+            <button type="button" class="btn btn-light-subtle btn-sm py-2" id="paxBtn" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" aria-label="Passengers and cabin class">
+              <i class="bi bi-people me-1"></i><span id="paxLabel">1 Adult · Economy</span><i class="bi bi-chevron-down ms-1 fs-8"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end pax-menu" id="paxMenu">
+              <div class="small-label mb-2">Travellers</div>
+              <div id="paxSteppers"></div>
+              <div class="fs-8 text-muted mt-1 mb-3" id="paxNote">Max 9 travellers. Infants travel on an adult's lap.</div>
+              <div class="small-label mb-2">Cabin class</div>
+              <div class="row g-2 mb-3" id="cabinOpts"></div>
+              <button type="button" class="btn btn-primary w-100" id="paxDone">Done</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="legRows"></div>
+
+        <div class="d-flex flex-column flex-md-row gap-2 align-items-md-center justify-content-between mt-3">
+          <div class="d-flex align-items-center gap-2 min-w-0 flex-grow-1 order-2 order-md-1">
+            <span class="fs-8 fw-semibold text-muted text-nowrap">Popular:</span>
+            <div class="ab-chips flex-grow-1 min-w-0" id="popularRoutes"></div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg btn-search px-4 order-1 order-md-2 flex-shrink-0" id="searchBtn"><i class="bi bi-search me-2"></i>Search flights</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Discover (pre-search) -->
+    <div id="discover">
+      <div class="d-flex justify-content-between align-items-end mb-3">
+        <div><h5 class="mb-0">Trending destinations</h5><div class="fs-7 text-muted">Lowest fares for next week · one-way, economy</div></div>
+      </div>
+      <div class="row g-3 mb-4" id="destGrid"></div>
+      <div class="row g-3">
+        <div class="col-md-4"><div class="card h-100"><div class="card-body d-flex gap-3"><span class="ab-icon tone-success"><i class="bi bi-shield-check"></i></span><div><div class="fw-bold">Best price guarantee</div><div class="fs-7 text-muted">Live fares across local & global carriers.</div></div></div></div></div>
+        <div class="col-md-4"><div class="card h-100"><div class="card-body d-flex gap-3"><span class="ab-icon tone-cyan"><i class="bi bi-ticket-perforated"></i></span><div><div class="fw-bold">Instant e-ticket</div><div class="fs-7 text-muted">Get your PNR and boarding pass in seconds.</div></div></div></div></div>
+        <div class="col-md-4"><div class="card h-100"><div class="card-body d-flex gap-3"><span class="ab-icon tone-violet"><i class="bi bi-arrow-counterclockwise"></i></span><div><div class="fw-bold">Easy refunds</div><div class="fs-7 text-muted">Cancel in-app — refunds go straight to your wallet.</div></div></div></div></div>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div id="results" hidden>
+      <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+        <div class="min-w-0">
+          <div class="small-label" id="legStepLabel">Select flight</div>
+          <h5 class="mb-0 text-truncate" id="resTitle"></h5>
+          <div class="fs-7 text-muted" id="resSub"></div>
+        </div>
+        <button type="button" class="btn btn-light-subtle btn-sm" id="modifyBtn"><i class="bi bi-pencil me-1"></i>Modify search</button>
+      </div>
+      <div id="pickedLegs"></div>
+      <div class="date-strip mb-3" id="dateStrip" aria-label="Choose a nearby date"></div>
+
+      <div class="row g-3 g-lg-4">
+        <div class="col-lg-3">
+          <div class="offcanvas-lg offcanvas-end" tabindex="-1" id="filterPanel" aria-labelledby="filterTitle">
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="filterTitle">Filters</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#filterPanel" aria-label="Close filters"></button>
+            </div>
+            <div class="offcanvas-body d-block">
+              <div class="card w-100"><div class="card-body" id="filterBody"></div></div>
+            </div>
+            <div class="p-3 border-top d-lg-none"><button class="btn btn-primary w-100" data-bs-dismiss="offcanvas" data-bs-target="#filterPanel" id="filterApply">Show flights</button></div>
+          </div>
+        </div>
+        <div class="col-lg-9">
+          <div class="d-flex gap-2 mb-3 align-items-stretch">
+            <div class="ab-segment sort-seg flex-grow-1" id="sortSeg" role="tablist" aria-label="Sort flights">
+              <button type="button" data-sort="cheapest">Cheapest<small>—</small></button>
+              <button type="button" data-sort="fastest">Fastest<small>—</small></button>
+              <button type="button" data-sort="best" class="active">Best<small>—</small></button>
+            </div>
+            <button class="btn btn-light-subtle d-lg-none position-relative px-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterPanel" aria-controls="filterPanel" aria-label="Open filters">
+              <i class="bi bi-sliders"></i><span class="ab-dot-badge" id="filterCount" hidden></span>
+            </button>
+          </div>
+          <div class="fs-7 text-muted mb-2" id="resCount"></div>
+          <div id="flightList" class="d-grid gap-3"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BOOKING VIEW ================= -->
+  <section id="bookView" hidden>
+    <button type="button" class="btn btn-link px-0 mb-2 fw-semibold" id="backToResults"><i class="bi bi-arrow-left me-1"></i>Back to flights</button>
+    <div class="card mb-3"><div class="card-body py-3"><ol class="bk-steps m-0 p-0" id="bkSteps"></ol></div></div>
+    <div class="row g-3 g-lg-4">
+      <div class="col-lg-8" id="stepBody"></div>
+      <div class="col-lg-4"><div class="ab-sticky" id="bookSummary"></div></div>
+    </div>
+  </section>
+
+  <!-- ================= TRIPS VIEW ================= -->
+  <section id="tripsView" hidden>
+    <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+      <div class="ab-segment" id="tripTabs" role="tablist" aria-label="Trip filter">
+        <button type="button" class="active" data-tt="upcoming">Upcoming</button>
+        <button type="button" data-tt="past">Past &amp; cancelled</button>
+      </div>
+      <button type="button" class="btn btn-primary btn-sm" data-goto="search"><i class="bi bi-plus-lg me-1"></i>Book a flight</button>
+    </div>
+    <div id="tripList" class="d-grid gap-3"></div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/flights.js"></script>
+</body>
+</html>

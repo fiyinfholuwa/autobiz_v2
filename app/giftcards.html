@@ -1,0 +1,890 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Gift Card Exchange · AutoBiz</title>
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/app.css" rel="stylesheet">
+  <script src="../assets/js/brand.js"></script>
+  <style>
+    /* Hero */
+    .gc-hero { border-radius: var(--ab-radius-lg); padding: 1.5rem; color: #fff; position: relative; overflow: hidden;
+      background: radial-gradient(120% 140% at 100% 0%, #ff7eb0 0%, #e64980 42%, #8f1d4d 100%); box-shadow: 0 24px 48px -22px rgba(230, 73, 128, .6); }
+    .gc-hero::before { content: ""; position: absolute; width: 260px; height: 260px; right: -70px; top: -110px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.22), transparent 70%); }
+    .gc-hero .bg-ic { position: absolute; right: 18px; bottom: -58px; font-size: 8rem; opacity: .1; transform: rotate(-14deg); pointer-events: none; }
+    .gc-hero > * { position: relative; z-index: 1; }
+    .gc-hero h1 { color: #fff; font-size: clamp(1.35rem, 3vw, 1.75rem); margin-bottom: .35rem; }
+    .gc-hero .lead-sm { color: rgba(255,255,255,.82); font-size: .9rem; max-width: 520px; }
+    .gc-trust { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+    .gc-trust span { display: inline-flex; align-items: center; gap: .4rem; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: .35rem .8rem; font-size: .78rem; font-weight: 600; backdrop-filter: blur(6px); }
+    .gc-hero-stat { background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.2); border-radius: 16px; padding: .85rem 1rem; min-width: 150px; }
+    .gc-hero-stat .v { font-size: 1.35rem; font-weight: 800; letter-spacing: -.02em; }
+
+    /* Tabs */
+    .gc-tabs { display: flex; width: 100%; max-width: 560px; }
+    .gc-tabs button { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: .4rem; }
+    .gc-tabs .count { min-width: 20px; height: 20px; border-radius: 999px; background: var(--ab-pink); color: #fff; font-size: .68rem; display: inline-grid; place-items: center; padding: 0 6px; }
+    @media (max-width: 575.98px) { .gc-tabs button { padding: .5rem .35rem; } .gc-tabs button i { display: none; } }
+
+    /* Brand tiles */
+    .gc-tile { --c: #555; width: 44px; height: 44px; border-radius: 13px; display: inline-grid; place-items: center; color: #fff; font-size: 1.3rem; flex-shrink: 0;
+      background: linear-gradient(140deg, color-mix(in srgb, var(--c) 82%, #fff), var(--c) 55%, color-mix(in srgb, var(--c) 70%, #000)); box-shadow: inset 0 0 0 1px rgba(255,255,255,.1), 0 6px 14px -8px var(--c); }
+    .gc-tile.sm { width: 36px; height: 36px; border-radius: 11px; font-size: 1.05rem; }
+    .gc-tile.lg { width: 56px; height: 56px; border-radius: 16px; font-size: 1.6rem; }
+    .gc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .75rem; }
+    @media (max-width: 575.98px) { .gc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; } }
+    .gc-brand { display: flex; flex-direction: column; gap: .6rem; padding: 1rem .9rem; }
+    .gc-brand .name { font-weight: 700; font-size: .9rem; line-height: 1.2; }
+    .gc-brand .rate { font-size: .75rem; color: var(--ab-muted); }
+    .gc-brand .rate b { color: var(--ab-accent); }
+    .gc-hot { position: absolute; top: 10px; right: 10px; background: var(--ab-pink-soft); color: var(--ab-pink); font-size: .65rem; font-weight: 700; border-radius: 999px; padding: .15rem .5rem; display: inline-flex; gap: .2rem; align-items: center; }
+    .ab-option.active .gc-hot { display: none; }
+
+    /* Stepper */
+    .gc-steps { display: flex; align-items: center; gap: .35rem; margin-bottom: 1.25rem; }
+    .gc-steps .st { display: flex; align-items: center; gap: .5rem; flex: 1; min-width: 0; }
+    .gc-steps .dot { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: .8rem; font-weight: 700; background: var(--ab-surface-2); border: 1.5px solid var(--ab-border); color: var(--ab-muted); flex-shrink: 0; transition: all .2s; }
+    .gc-steps .lbl { font-size: .78rem; font-weight: 600; color: var(--ab-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .gc-steps .bar { flex: 1; height: 2px; background: var(--ab-border); border-radius: 2px; min-width: 8px; }
+    .gc-steps .st.done .dot { background: var(--ab-accent); border-color: var(--ab-accent); color: #fff; }
+    .gc-steps .st.done .bar { background: var(--ab-accent); }
+    .gc-steps .st.current .dot { background: var(--ab-primary); border-color: var(--ab-primary); color: #fff; box-shadow: 0 0 0 4px rgba(var(--ab-primary-rgb), .15); }
+    .gc-steps .st.current .lbl { color: var(--ab-text); }
+    .gc-steps .st:last-child { flex: 0 0 auto; }
+    .gc-steps .st.current .lbl { overflow: visible; }
+    .gc-steps .st.current button.dot-btn { flex-shrink: 0; }
+    @media (max-width: 767.98px) { .gc-steps .st:not(.current) .lbl { display: none; } }
+    .gc-steps button.dot-btn { background: none; border: 0; padding: 0; display: flex; align-items: center; gap: .5rem; min-width: 0; }
+    .gc-steps button.dot-btn:disabled { cursor: default; }
+
+    /* Selection rows */
+    .gc-opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: .6rem; }
+    @media (max-width: 575.98px) { .gc-opts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .gc-flag { width: 28px; height: 20px; border-radius: 4px; object-fit: cover; box-shadow: 0 0 0 1px var(--ab-border); flex-shrink: 0; }
+    .gc-flag.globe { display: inline-grid; place-items: center; background: var(--ab-primary-soft); color: var(--ab-primary); font-size: .8rem; }
+    .gc-type .r { font-weight: 800; font-size: 1.05rem; color: var(--ab-text); }
+
+    /* Calculator */
+    .gc-calc { border-radius: 16px; padding: 1.1rem; background: linear-gradient(135deg, var(--ab-pink-soft), var(--ab-primary-soft)); border: 1px solid var(--ab-border); }
+    .gc-calc .big { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 800; letter-spacing: -.03em; }
+    .gc-qty { display: inline-flex; align-items: center; border: 1px solid var(--ab-border); border-radius: 12px; background: var(--ab-surface); overflow: hidden; }
+    .gc-qty button { border: 0; background: transparent; width: 40px; height: 44px; color: var(--ab-text); font-size: 1.1rem; }
+    .gc-qty button:hover:not(:disabled) { color: var(--ab-primary); background: var(--ab-surface-2); }
+    .gc-qty button:disabled { opacity: .35; }
+    .gc-qty input { width: 46px; border: 0; text-align: center; font-weight: 700; background: transparent; color: var(--ab-text); }
+    .gc-qty input:focus { outline: none; }
+
+    /* Dropzone */
+    .gc-drop { border: 2px dashed var(--ab-border); border-radius: 16px; padding: 1.6rem 1rem; text-align: center; background: var(--ab-surface-2); cursor: pointer; transition: all .15s; }
+    .gc-drop:hover, .gc-drop:focus-visible { border-color: rgba(var(--ab-primary-rgb), .55); outline: none; }
+    .gc-drop.drag { border-color: var(--ab-primary); background: var(--ab-primary-soft); transform: scale(1.005); }
+    .gc-drop.is-invalid { border-color: var(--ab-danger); }
+    .gc-thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: .6rem; }
+    .gc-thumb { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: var(--ab-surface-2); border: 1px solid var(--ab-border); }
+    .gc-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .gc-thumb .rm { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; border-radius: 8px; border: 0; background: rgba(10,15,32,.72); color: #fff; display: grid; place-items: center; font-size: .85rem; }
+    .gc-thumb .rm:hover { background: var(--ab-danger); }
+    .gc-thumb .cap { position: absolute; left: 0; right: 0; bottom: 0; font-size: .65rem; color: #fff; padding: .25rem .4rem; background: linear-gradient(transparent, rgba(0,0,0,.65)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Trades */
+    .gc-trade { display: flex; align-items: center; gap: .85rem; padding: .9rem 1rem; border: 1px solid var(--ab-border); border-radius: 14px; background: var(--ab-surface); width: 100%; text-align: left; color: var(--ab-text); }
+    .gc-trade + .gc-trade { margin-top: .6rem; }
+    .gc-trade .prog { height: 4px; border-radius: 4px; background: var(--ab-surface-2); overflow: hidden; margin-top: .45rem; max-width: 220px; }
+    .gc-trade .prog i { display: block; height: 100%; background: linear-gradient(90deg, var(--ab-warning), var(--ab-primary)); border-radius: 4px; transition: width .6s; }
+    .gc-tl { list-style: none; padding: 0; margin: 0; }
+    .gc-tl li { position: relative; padding: 0 0 1.1rem 2.2rem; }
+    .gc-tl li::before { content: ""; position: absolute; left: 11px; top: 24px; bottom: 0; width: 2px; background: var(--ab-border); }
+    .gc-tl li:last-child { padding-bottom: 0; }
+    .gc-tl li:last-child::before { display: none; }
+    .gc-tl .ic { position: absolute; left: 0; top: 0; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: .75rem; background: var(--ab-surface-2); border: 1.5px solid var(--ab-border); color: var(--ab-muted); }
+    .gc-tl li.done .ic { background: var(--ab-accent); border-color: var(--ab-accent); color: #fff; }
+    .gc-tl li.done::before { background: var(--ab-accent); }
+    .gc-tl li.now .ic { background: var(--ab-primary); border-color: var(--ab-primary); color: #fff; box-shadow: 0 0 0 4px rgba(var(--ab-primary-rgb), .15); }
+    .gc-tl li.fail .ic { background: var(--ab-danger); border-color: var(--ab-danger); color: #fff; }
+    .gc-tl .t { font-weight: 600; font-size: .875rem; }
+    .gc-tl .d { font-size: .75rem; color: var(--ab-muted); }
+
+    /* Buy */
+    .gc-vcard { --c: #555; border-radius: 18px; aspect-ratio: 1.6; color: #fff; padding: 1.1rem 1.2rem; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
+      background: radial-gradient(120% 120% at 100% 0%, color-mix(in srgb, var(--c) 65%, #fff) 0%, var(--c) 45%, color-mix(in srgb, var(--c) 55%, #000) 100%); box-shadow: 0 18px 36px -18px var(--c); }
+    .gc-vcard::after { content: ""; position: absolute; width: 200px; height: 200px; right: -60px; bottom: -90px; border-radius: 50%; border: 26px solid rgba(255,255,255,.1); }
+    .gc-vcard > * { position: relative; z-index: 1; }
+    .gc-vcard .val { font-size: 2rem; font-weight: 800; letter-spacing: -.03em; }
+    .gc-code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 700; letter-spacing: .06em; background: var(--ab-surface-2); border: 1px dashed var(--ab-border); border-radius: 12px; padding: .65rem .8rem; display: flex; align-items: center; justify-content: space-between; gap: .5rem; word-break: break-all; }
+    .gc-rate-row td { vertical-align: middle; }
+    .gc-mini-tile { display: flex; align-items: center; gap: .65rem; min-width: 0; }
+    .gc-rates-wrap { position: relative; }
+    @media (max-width: 575.98px) { .gc-rates-wrap .table > :not(caption) > * > * { padding: .7rem .45rem; } .gc-rates-wrap .table > :not(caption) > * > *:first-child { padding-left: 1rem; } .gc-rates-wrap .table > :not(caption) > * > *:last-child { padding-right: 1rem; } }
+    .gc-tabpane[hidden] { display: none !important; }
+    .input-icon:has(.is-invalid) + .invalid-feedback, .input-group:has(.is-invalid) + .invalid-feedback { display: block; }
+  </style>
+</head>
+<body data-page="giftcards" data-title="Gift Card Exchange" data-public="true">
+<main class="ab-content">
+
+  <!-- Hero -->
+  <section class="gc-hero mb-4 fade-up">
+    <i class="bi bi-gift bg-ic" aria-hidden="true"></i>
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3">
+      <div>
+        <span class="badge bg-white text-dark mb-2"><i class="bi bi-fire text-danger me-1"></i>Rates updated <span id="ratesUpdated">just now</span></span>
+        <h1>Gift Card Exchange</h1>
+        <p class="lead-sm mb-0">Sell Apple, Steam, Amazon & 9 more cards for Naira — or buy digital gift cards delivered instantly to your email.</p>
+      </div>
+      <div class="d-flex gap-2">
+        <div class="gc-hero-stat"><div class="fs-8 opacity-75">Top rate today</div><div class="v tabular" id="topRate">₦0/$</div></div>
+        <div class="gc-hero-stat d-none d-sm-block"><div class="fs-8 opacity-75">You've earned</div><div class="v tabular" id="earned">₦0</div></div>
+      </div>
+    </div>
+    <div class="gc-trust" aria-label="Why trade with AutoBiz">
+      <span><i class="bi bi-lightning-charge-fill"></i>Paid in 5–15 min</span>
+      <span><i class="bi bi-graph-up-arrow"></i>Best rates</span>
+      <span><i class="bi bi-headset"></i>24/7 support</span>
+      <span class="d-none d-md-inline-flex"><i class="bi bi-shield-check"></i>Bank-grade security</span>
+    </div>
+  </section>
+
+  <!-- Tabs -->
+  <div class="mb-3 fade-up" style="animation-delay:.04s">
+    <div class="ab-segment gc-tabs" role="tablist" aria-label="Gift card sections">
+      <button role="tab" data-tab="sell" class="active" aria-selected="true"><i class="bi bi-arrow-down-left-circle"></i>Sell</button>
+      <button role="tab" data-tab="buy" aria-selected="false"><i class="bi bi-bag"></i>Buy</button>
+      <button role="tab" data-tab="rates" aria-selected="false"><i class="bi bi-graph-up"></i>Rates</button>
+      <button role="tab" data-tab="trades" aria-selected="false"><i class="bi bi-clock-history"></i>My trades <span class="count" id="tradeCount" hidden>0</span></button>
+    </div>
+  </div>
+
+  <!-- ============ SELL ============ -->
+  <section class="gc-tabpane" data-pane="sell" role="tabpanel">
+    <div class="row g-3 g-lg-4">
+      <div class="col-lg-8">
+        <div class="card"><div class="card-body p-3 p-sm-4">
+          <div class="gc-steps" id="steps"></div>
+          <div id="sellBody"></div>
+          <div class="d-flex justify-content-between gap-2 mt-4 pt-3 border-top" id="sellNav">
+            <button class="btn btn-light-subtle" id="backBtn"><i class="bi bi-arrow-left me-1"></i>Back</button>
+            <button class="btn btn-primary px-4" id="nextBtn">Continue<i class="bi bi-arrow-right ms-1"></i></button>
+          </div>
+        </div></div>
+      </div>
+      <div class="col-lg-4">
+        <div class="ab-sticky">
+          <div class="card mb-3"><div class="card-body" id="sellSummary"></div></div>
+          <div class="card"><div class="card-body">
+            <h6 class="card-title mb-3">How it works</h6>
+            <ul class="ab-list">
+              <li class="ab-list-item py-2"><span class="ab-icon ab-icon-sm tone-pink"><i class="bi bi-1-circle"></i></span><div class="fs-7"><b>Pick your card</b><div class="text-muted fs-8">Brand, country and card type</div></div></li>
+              <li class="ab-list-item py-2"><span class="ab-icon ab-icon-sm tone-violet"><i class="bi bi-2-circle"></i></span><div class="fs-7"><b>Upload or paste code</b><div class="text-muted fs-8">Clear photos or the e-code</div></div></li>
+              <li class="ab-list-item py-2"><span class="ab-icon ab-icon-sm tone-success"><i class="bi bi-3-circle"></i></span><div class="fs-7"><b>Get paid in Naira</b><div class="text-muted fs-8">Credited to your wallet in minutes</div></div></li>
+            </ul>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BUY ============ -->
+  <section class="gc-tabpane" data-pane="buy" role="tabpanel" hidden>
+    <div class="row g-3 g-lg-4">
+      <div class="col-lg-7 col-xl-8">
+        <div class="card"><div class="card-body p-3 p-sm-4">
+          <h6 class="card-title mb-1">1. Choose a gift card</h6>
+          <p class="fs-7 text-muted mb-3">Digital codes, delivered instantly by email and saved in My trades.</p>
+          <div class="gc-grid mb-4" id="buyBrands"></div>
+          <h6 class="card-title mb-2">2. Card value (USD)</h6>
+          <div class="ab-chips flex-wrap mb-3" id="buyDenoms" role="radiogroup" aria-label="Card value"></div>
+          <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+            <div><label class="form-label d-block">Quantity</label>
+              <div class="gc-qty"><button type="button" id="buyQtyMinus" aria-label="Decrease quantity"><i class="bi bi-dash"></i></button><input id="buyQty" value="1" inputmode="numeric" aria-label="Quantity"><button type="button" id="buyQtyPlus" aria-label="Increase quantity"><i class="bi bi-plus"></i></button></div>
+            </div>
+            <div class="fs-8 text-muted mt-3">Max 5 cards per order</div>
+          </div>
+          <h6 class="card-title mb-2">3. Delivery</h6>
+          <label class="form-label" for="buyEmail">Email address</label>
+          <div class="input-icon"><i class="bi bi-envelope"></i><input type="email" class="form-control" id="buyEmail" placeholder="you@example.com" autocomplete="email"></div>
+          <div class="invalid-feedback" id="buyEmailErr">Enter a valid email address</div>
+          <div class="form-text">We'll send the code here. It's also shown on your receipt.</div>
+        </div></div>
+      </div>
+      <div class="col-lg-5 col-xl-4">
+        <div class="ab-sticky">
+          <div class="card"><div class="card-body">
+            <div id="buyPreview" class="mb-3"></div>
+            <div class="ab-summary mb-3" id="buySummary"></div>
+            <button class="btn btn-primary btn-lg w-100" id="buyBtn">Buy now</button>
+            <div class="fs-8 text-muted text-center mt-2"><i class="bi bi-shield-lock me-1"></i>Paid from your Naira wallet · <span data-balance></span></div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RATES ============ -->
+  <section class="gc-tabpane" data-pane="rates" role="tabpanel" hidden>
+    <div class="row g-3 g-lg-4">
+      <div class="col-lg-8 order-2 order-lg-1">
+        <div class="card">
+          <div class="card-header d-flex flex-wrap gap-2 justify-content-between align-items-center">
+            <div><h6 class="card-title">Today's rates</h6><div class="fs-8 text-muted">₦ per $1 · +₦10/$ bonus on trades of $500+</div></div>
+            <div class="input-icon flex-grow-1" style="max-width:280px;min-width:200px"><i class="bi bi-search"></i><input class="form-control" id="rateSearch" placeholder="Search brand or country" aria-label="Search rates"></div>
+          </div>
+          <div class="card-body pb-0 pt-3"><div class="ab-chips" id="rateTypeChips"></div></div>
+          <div class="table-responsive gc-rates-wrap">
+            <table class="table table-hover align-middle mt-2">
+              <thead><tr><th>Card</th><th class="d-none d-sm-table-cell">Country</th><th>Type</th><th class="text-end">Rate</th><th class="text-end d-none d-md-table-cell">$100 gets</th><th class="text-end"><span class="visually-hidden">Action</span></th></tr></thead>
+              <tbody id="rateBody"></tbody>
+            </table>
+          </div>
+          <div id="rateEmpty" hidden></div>
+        </div>
+      </div>
+      <div class="col-lg-4 order-1 order-lg-2">
+        <div class="ab-sticky">
+          <div class="card"><div class="card-body">
+            <h6 class="card-title mb-3"><i class="bi bi-calculator me-1 text-primary"></i>Rate calculator</h6>
+            <label class="form-label" for="qcCard">Gift card</label>
+            <select class="form-select mb-2" id="qcCard"></select>
+            <div class="row g-2 mb-2">
+              <div class="col-6"><label class="form-label" for="qcCountry">Country</label><select class="form-select" id="qcCountry"></select></div>
+              <div class="col-6"><label class="form-label" for="qcType">Type</label><select class="form-select" id="qcType"></select></div>
+            </div>
+            <label class="form-label" for="qcAmt">Amount (USD)</label>
+            <div class="input-group mb-3"><span class="input-group-text">$</span><input type="number" class="form-control" id="qcAmt" value="100" min="1"></div>
+            <div class="gc-calc mb-3">
+              <div class="d-flex justify-content-between fs-7 mb-1"><span class="text-muted">Rate</span><b class="tabular" id="qcRate"></b></div>
+              <div class="fs-8 text-muted">You'll receive</div>
+              <div class="big tabular" id="qcOut">₦0</div>
+              <div class="fs-8 mt-1" id="qcNote"></div>
+            </div>
+            <button class="btn btn-primary w-100" id="qcSell">Sell this card<i class="bi bi-arrow-right ms-1"></i></button>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MY TRADES ============ -->
+  <section class="gc-tabpane" data-pane="trades" role="tabpanel" hidden>
+    <div class="card">
+      <div class="card-header d-flex flex-wrap gap-2 justify-content-between align-items-center">
+        <div><h6 class="card-title">My trades</h6><div class="fs-8 text-muted" id="tradeStats"></div></div>
+        <button class="btn btn-sm btn-soft" data-goto="sell"><i class="bi bi-plus-lg me-1"></i>New trade</button>
+      </div>
+      <div class="card-body">
+        <div class="ab-chips mb-3" id="tradeFilters" role="group" aria-label="Filter trades"></div>
+        <div id="tradeList"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { store, fmt, esc, toast } = AB;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+  /* ---------------- Data & pricing ---------------- */
+  const GC = AB_DATA.giftcards;
+  const BUY_IDS = ["amazon", "apple", "steam", "google", "playstation", "netflix"];
+  const EXTRA = { netflix: { id: "netflix", name: "Netflix", icon: "bi-play-btn-fill", color: "#e50914" } };
+  const brand = (id) => GC.find((c) => c.id === id) || EXTRA[id] || { id, name: id, icon: "bi-gift", color: "#e64980" };
+  const FLAGS = { USA: "us", UK: "gb", Canada: "ca", Australia: "au", Germany: "de", Euro: "eu" };
+  const ADJ = { USA: 0, UK: -15, Canada: -40, Australia: -55, Germany: -35, Euro: -25, Global: -10 };
+  const BONUS_MIN = 500, BONUS = 10;
+  const PROCESS_MS = 6000, DONE_MS = 14000;
+  const TYPE_INFO = {
+    "Physical": ["bi-credit-card", "Upload clear photos of the card (front & back)"],
+    "E-code": ["bi-upc-scan", "Paste the digital code — no photos needed"],
+    "Cash receipt": ["bi-receipt", "Photos of the card + purchase receipt"],
+    "No receipt": ["bi-credit-card-2-back", "Physical card without a receipt"]
+  };
+  const isCode = (type) => type === "E-code";
+  const rateFor = (c, country, type) => (c.types[type] || 0) + (ADJ[country] || 0);
+  const maxRate = (c) => Math.max(...c.countries.map((k) => Math.max(...Object.keys(c.types).map((t) => rateFor(c, k, t)))));
+  const quote = (c, country, type, totalUsd) => {
+    const base = rateFor(c, country, type);
+    const bonus = totalUsd >= BONUS_MIN ? BONUS : 0;
+    const rate = base + bonus;
+    return { base, bonus, rate, naira: Math.round(totalUsd * rate) };
+  };
+  const tile = (b, size = "") => `<span class="gc-tile ${size}" style="--c:${b.color}" aria-hidden="true"><i class="bi ${b.icon}"></i></span>`;
+  const flag = (country) => FLAGS[country] ? `<img class="gc-flag" src="${AB.flag(FLAGS[country], 40)}" alt="" loading="lazy">` : `<span class="gc-flag globe"><i class="bi bi-globe2"></i></span>`;
+  const trades = () => store.get("trades") || [];
+  const STATUS_CLS = { Pending: "pending", Processing: "info", Completed: "success", Failed: "failed" };
+
+  /* ---------------- Hero ---------------- */
+  function renderHero() {
+    $("#topRate").textContent = fmt.naira(Math.max(...GC.map(maxRate))) + "/$";
+    const earned = trades().filter((t) => t.side !== "buy" && t.status === "Completed").reduce((a, t) => a + t.naira, 0);
+    $("#earned").textContent = fmt.naira(earned);
+  }
+  const loadedAt = Date.now();
+  setInterval(() => { $("#ratesUpdated").textContent = fmt.ago(loadedAt - 60000 * 3); }, 30000);
+  $("#ratesUpdated").textContent = "3m ago";
+
+  /* ---------------- Tabs ---------------- */
+  const TABS = ["sell", "buy", "rates", "trades"];
+  function showTab(name, push = true) {
+    if (!TABS.includes(name)) name = "sell";
+    $$(".gc-tabs [data-tab]").forEach((b) => { const on = b.dataset.tab === name; b.classList.toggle("active", on); b.setAttribute("aria-selected", on); });
+    $$(".gc-tabpane").forEach((p) => (p.hidden = p.dataset.pane !== name));
+    if (push) history.replaceState(null, "", "#" + name);
+  }
+  $$(".gc-tabs [data-tab]").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
+  document.addEventListener("click", (e) => { const g = e.target.closest("[data-goto]"); if (g) { e.preventDefault(); showTab(g.dataset.goto); window.scrollTo({ top: 0, behavior: "smooth" }); } });
+
+  /* =================================================================
+     SELL FLOW
+     ================================================================= */
+  const STEP_LABELS = ["Card", "Type", "Amount", "Proof", "Review"];
+  const fresh = () => ({ step: 1, card: null, country: null, type: null, face: "", qty: 1, images: [], codes: [""], note: "", agree: false, q: "" });
+  let S = fresh();
+  const card = () => (S.card ? brand(S.card) : null);
+  const totalUsd = () => (Number(S.face) || 0) * S.qty;
+
+  function renderSteps() {
+    $("#steps").innerHTML = STEP_LABELS.map((l, i) => {
+      const n = i + 1, cls = n < S.step ? "done" : n === S.step ? "current" : "";
+      return `<div class="st ${cls}"><button class="dot-btn" ${n < S.step ? "" : "disabled"} data-jump="${n}" aria-label="Step ${n}: ${l}"><span class="dot">${n < S.step ? '<i class="bi bi-check-lg"></i>' : n}</span><span class="lbl">${l}</span></button>${n < 5 ? '<span class="bar"></span>' : ""}</div>`;
+    }).join("");
+    $$("#steps [data-jump]").forEach((b) => b.addEventListener("click", () => { S.step = +b.dataset.jump; renderSell(); }));
+  }
+
+  function renderSell(focus = true) {
+    renderSteps();
+    const body = $("#sellBody");
+    const c = card();
+    if (S.step === 1) {
+      body.innerHTML = `
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+          <div><h5 class="mb-0">Which card are you selling?</h5><div class="fs-7 text-muted">${GC.length} cards accepted · best rates in Nigeria</div></div>
+          <div class="input-icon" style="min-width:220px;flex:1;max-width:300px"><i class="bi bi-search"></i><input class="form-control" id="brandSearch" placeholder="Search gift cards" aria-label="Search gift cards" value="${esc(S.q)}"></div>
+        </div>
+        <div class="gc-grid" id="brandGrid" role="listbox" aria-label="Gift card brands"></div>
+        <div class="invalid-feedback" id="cardErr">Select a gift card to continue</div>`;
+      renderBrandGrid();
+      $("#brandSearch").addEventListener("input", (e) => { S.q = e.target.value; renderBrandGrid(); });
+    } else if (S.step === 2) {
+      if (!S.country) S.country = c.countries[0];
+      body.innerHTML = `
+        <div class="d-flex align-items-center gap-3 mb-3">${tile(c, "lg")}<div><h5 class="mb-0">${esc(c.name)}</h5><div class="fs-7 text-muted">Accepted $${c.range[0]} – $${c.range[1]} per card</div></div></div>
+        <label class="form-label">Card country / currency</label>
+        <div class="gc-opts mb-4" role="radiogroup" aria-label="Country">${c.countries.map((k) => `
+          <button type="button" class="ab-option d-flex align-items-center gap-2 ${S.country === k ? "active" : ""}" data-country="${k}" role="radio" aria-checked="${S.country === k}">${flag(k)}<span class="fw-semibold fs-7">${k}</span></button>`).join("")}
+        </div>
+        <label class="form-label">Card type</label>
+        <div class="row g-2" role="radiogroup" aria-label="Card type">${Object.keys(c.types).map((t) => `
+          <div class="col-sm-6"><button type="button" class="ab-option gc-type h-100 ${S.type === t ? "active" : ""}" data-type="${t}" role="radio" aria-checked="${S.type === t}">
+            <div class="d-flex align-items-center gap-2 mb-1"><span class="ab-icon ab-icon-sm tone-${isCode(t) ? "violet" : "pink"}"><i class="bi ${(TYPE_INFO[t] || TYPE_INFO.Physical)[0]}"></i></span><span class="fw-bold">${t}</span></div>
+            <div class="fs-8 text-muted mb-2">${(TYPE_INFO[t] || TYPE_INFO.Physical)[1]}</div>
+            <div class="r tabular">${fmt.naira(rateFor(c, S.country, t))}<span class="fs-8 text-muted fw-semibold">/$</span></div>
+          </button></div>`).join("")}
+        </div>
+        <div class="invalid-feedback" id="typeErr">Choose a card type</div>`;
+      $$("[data-country]", body).forEach((b) => b.addEventListener("click", () => { S.country = b.dataset.country; renderSell(false); }));
+      $$("[data-type]", body).forEach((b) => b.addEventListener("click", () => { S.type = b.dataset.type; renderSell(false); }));
+    } else if (S.step === 3) {
+      const presets = [10, 25, 50, 100, 200, 500, 1000].filter((v) => v >= c.range[0] && v <= c.range[1]);
+      body.innerHTML = `
+        <h5 class="mb-1">How much is the card worth?</h5>
+        <p class="fs-7 text-muted mb-3">${esc(c.name)} · ${esc(S.country)} · ${esc(S.type)} — accepted $${c.range[0]}–$${c.range[1]} per card</p>
+        <div class="row g-3 align-items-start">
+          <div class="col-sm-7">
+            <label class="form-label" for="faceInp">Value per card (USD)</label>
+            <div class="input-group input-group-lg"><span class="input-group-text">$</span><input type="number" inputmode="decimal" class="form-control tabular" id="faceInp" min="${c.range[0]}" max="${c.range[1]}" placeholder="0" value="${esc(S.face)}"></div>
+            <div class="invalid-feedback" id="faceErr"></div>
+          </div>
+          <div class="col-sm-5">
+            <label class="form-label d-block" for="qtyInp">Number of cards</label>
+            <div class="gc-qty"><button type="button" id="qtyMinus" aria-label="Fewer cards"><i class="bi bi-dash"></i></button><input id="qtyInp" inputmode="numeric" value="${S.qty}" aria-label="Number of cards"><button type="button" id="qtyPlus" aria-label="More cards"><i class="bi bi-plus"></i></button></div>
+            <div class="fs-8 text-muted mt-1">Same value & type, up to 10</div>
+          </div>
+        </div>
+        <div class="ab-chips flex-wrap mt-3" id="facePresets">${presets.map((v) => `<button type="button" class="ab-chip ${Number(S.face) === v ? "active" : ""}" data-face="${v}">$${v}</button>`).join("")}</div>
+        <div class="gc-calc mt-4" id="calcBox"></div>`;
+      const inp = $("#faceInp");
+      inp.addEventListener("input", () => { S.face = inp.value; inp.classList.remove("is-invalid"); syncPresets(); renderCalc(); renderSummary(); });
+      $$("[data-face]", body).forEach((b) => b.addEventListener("click", () => { S.face = b.dataset.face; inp.value = S.face; inp.classList.remove("is-invalid"); syncPresets(); renderCalc(); renderSummary(); }));
+      const setQty = (n) => { S.qty = Math.max(1, Math.min(10, n || 1)); $("#qtyInp").value = S.qty; $("#qtyMinus").disabled = S.qty <= 1; $("#qtyPlus").disabled = S.qty >= 10; renderCalc(); renderSummary(); };
+      $("#qtyMinus").addEventListener("click", () => setQty(S.qty - 1));
+      $("#qtyPlus").addEventListener("click", () => setQty(S.qty + 1));
+      $("#qtyInp").addEventListener("change", (e) => setQty(parseInt(e.target.value, 10)));
+      setQty(S.qty);
+      if (focus) setTimeout(() => inp.isConnected && inp.focus(), 50);
+    } else if (S.step === 4) {
+      const code = isCode(S.type);
+      while (S.codes.length < S.qty) S.codes.push("");
+      S.codes.length = S.qty;
+      body.innerHTML = `
+        <h5 class="mb-1">${code ? "Enter your e-code" + (S.qty > 1 ? "s" : "") : "Upload card photos"}</h5>
+        <p class="fs-7 text-muted mb-3">${code ? "Copy the code exactly as it appears in your email or app." : "Clear photos of the full card with the scratched PIN visible. JPG, PNG or WEBP · max 5MB each · up to 5 images."}</p>
+        ${code ? S.codes.map((v, i) => `
+          <div class="mb-2">
+            <label class="form-label" for="code${i}">Card ${S.qty > 1 ? i + 1 + " " : ""}code <span class="text-muted fw-normal">($${Number(S.face)})</span></label>
+            <div class="input-icon"><i class="bi bi-upc"></i><input class="form-control tabular text-uppercase" id="code${i}" data-code="${i}" placeholder="e.g. XXXX-XXXX-XXXX-XXXX" value="${esc(v)}" autocomplete="off" spellcheck="false"></div>
+            <div class="invalid-feedback">Enter a valid code (at least 10 letters/numbers)</div>
+          </div>`).join("") + `<div class="fs-8 text-muted mb-3"><i class="bi bi-info-circle me-1"></i>Demo: codes starting with <b>USED</b> are declined so you can see a failed trade.</div>` : `
+          <div class="gc-drop mb-3" id="drop" tabindex="0" role="button" aria-label="Upload card images: click or drop files">
+            <span class="ab-icon ab-icon-lg tone-pink mb-2"><i class="bi bi-cloud-arrow-up"></i></span>
+            <div class="fw-semibold">Drag & drop images here</div>
+            <div class="fs-7 text-muted">or <span class="text-primary fw-semibold">browse files</span> · <span id="imgCount">${S.images.length}</span>/5 added</div>
+            <input type="file" id="fileInp" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden>
+          </div>
+          <div class="invalid-feedback mb-2" id="imgErr">Add at least one photo of your card</div>
+          <div class="gc-thumbs mb-3" id="thumbs"></div>`}
+        <label class="form-label" for="noteInp">Note for our team <span class="text-muted fw-normal">(optional)</span></label>
+        <textarea class="form-control" id="noteInp" rows="2" maxlength="240" placeholder="e.g. Card bought at Walmart, receipt attached">${esc(S.note)}</textarea>`;
+      $("#noteInp").addEventListener("input", (e) => (S.note = e.target.value));
+      if (code) {
+        $$("[data-code]", body).forEach((i) => i.addEventListener("input", () => { S.codes[+i.dataset.code] = i.value.trim(); i.classList.remove("is-invalid"); }));
+        if (focus) setTimeout(() => $("#code0")?.focus(), 50);
+      } else bindDrop();
+    } else if (S.step === 5) {
+      const q = quote(c, S.country, S.type, totalUsd());
+      body.innerHTML = `
+        <h5 class="mb-1">Review your trade</h5>
+        <p class="fs-7 text-muted mb-3">Please confirm the details. Incorrect information may delay payment.</p>
+        <div class="d-flex align-items-center gap-3 p-3 rounded-3 border mb-3">${tile(c, "lg")}
+          <div class="flex-grow-1 min-w-0"><div class="fw-bold">${esc(c.name)}</div><div class="fs-7 text-muted d-flex align-items-center gap-1 flex-wrap">${flag(S.country)} ${esc(S.country)} · ${esc(S.type)}</div></div>
+          <button class="btn btn-sm btn-light-subtle" data-jump2="1">Change</button></div>
+        <div class="ab-summary mb-3">
+          <div class="row-item"><span>Card value</span><span>${S.qty} × ${fmt.usd(Number(S.face))} = ${fmt.usd(totalUsd())}</span></div>
+          <div class="row-item"><span>Rate</span><span>${fmt.naira(q.base)}/$${q.bonus ? ` <span class="text-success">+₦${q.bonus} bonus</span>` : ""}</span></div>
+          <div class="row-item"><span>${isCode(S.type) ? "E-codes" : "Photos"}</span><span>${isCode(S.type) ? S.codes.map((x) => esc(mask(x))).join("<br>") : S.images.length + " image" + (S.images.length > 1 ? "s" : "")}</span></div>
+          ${S.note ? `<div class="row-item"><span>Note</span><span class="text-break">${esc(S.note)}</span></div>` : ""}
+          <div class="row-item total"><span>You'll receive</span><span class="text-success">${fmt.naira(q.naira)}</span></div>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="agree" ${S.agree ? "checked" : ""}>
+          <label class="form-check-label fs-7" for="agree">I confirm this card was obtained legitimately and hasn't been used or shared.</label>
+          <div class="invalid-feedback">Please confirm to continue</div>
+        </div>`;
+      $("#agree").addEventListener("change", (e) => { S.agree = e.target.checked; e.target.classList.remove("is-invalid"); });
+      $("[data-jump2]").addEventListener("click", () => { S.step = 1; renderSell(); });
+    }
+    $("#backBtn").style.visibility = S.step === 1 ? "hidden" : "visible";
+    $("#nextBtn").innerHTML = S.step === 5 ? `<i class="bi bi-send me-1"></i>Submit trade` : `Continue<i class="bi bi-arrow-right ms-1"></i>`;
+    if (S.step === 3) renderCalc();
+    renderSummary();
+  }
+
+  function renderBrandGrid() {
+    const q = S.q.trim().toLowerCase();
+    const list = GC.filter((c) => !q || c.name.toLowerCase().includes(q) || c.countries.some((k) => k.toLowerCase().includes(q)));
+    $("#brandGrid").innerHTML = list.length ? list.map((c) => `
+      <button type="button" class="ab-option gc-brand ${S.card === c.id ? "active" : ""}" data-card="${c.id}" role="option" aria-selected="${S.card === c.id}">
+        ${c.hot ? '<span class="gc-hot"><i class="bi bi-fire"></i>Hot</span>' : ""}
+        ${tile(c)}
+        <div><div class="name">${esc(c.name)}</div><div class="rate">Up to <b class="tabular">${fmt.naira(maxRate(c))}/$</b></div></div>
+      </button>`).join("") : `<div class="ab-empty" style="grid-column:1/-1"><span class="ab-icon ab-icon-lg tone-primary"><i class="bi bi-search"></i></span><h6>No cards match “${esc(S.q)}”</h6><button class="btn btn-sm btn-soft" id="clearBrand">Clear search</button></div>`;
+    $$("[data-card]").forEach((b) => b.addEventListener("click", () => selectCard(b.dataset.card)));
+    const cb = $("#clearBrand"); if (cb) cb.addEventListener("click", () => { S.q = ""; $("#brandSearch").value = ""; renderBrandGrid(); });
+  }
+  function selectCard(id) {
+    if (S.card !== id) { S.card = id; S.country = null; S.type = null; S.face = ""; S.qty = 1; S.codes = [""]; S.images = []; }
+    const c = card();
+    if (Object.keys(c.types).length === 1) S.type = Object.keys(c.types)[0];
+    S.step = 2; renderSell(); scrollToFlow();
+  }
+  const syncPresets = () => $$("#facePresets [data-face]").forEach((b) => b.classList.toggle("active", Number(S.face) === Number(b.dataset.face)));
+  const mask = (code) => { const s = String(code); return s.length <= 6 ? s : s.slice(0, 4) + "••••" + s.slice(-4); };
+  function scrollToFlow() { const el = $("#steps"); const top = el.getBoundingClientRect().top + window.scrollY - 90; if (window.scrollY > top) window.scrollTo({ top, behavior: "smooth" }); }
+
+  function renderCalc() {
+    const box = $("#calcBox"); if (!box) return;
+    const c = card(), usd = totalUsd(), q = quote(c, S.country, S.type, usd);
+    const need = BONUS_MIN - usd;
+    box.innerHTML = `
+      <div class="d-flex flex-wrap justify-content-between gap-3">
+        <div><div class="fs-8 text-muted fw-semibold">YOU'LL RECEIVE</div><div class="big tabular text-success" id="calcOut">${fmt.naira(q.naira)}</div></div>
+        <div class="text-sm-end"><div class="fs-8 text-muted fw-semibold">RATE</div><div class="fw-800 fs-5 tabular">${fmt.naira(q.rate)}/$</div></div>
+      </div>
+      <div class="fs-7 text-muted mt-2">${S.qty} × ${fmt.usd(Number(S.face) || 0)} = <b class="text-body">${fmt.usd(usd)}</b> × ${fmt.naira(q.base)}${q.bonus ? ` + ₦${q.bonus} bonus` : ""}</div>
+      <div class="fs-8 mt-2">${q.bonus ? `<span class="ab-status success">Bonus unlocked · +${fmt.naira(usd * BONUS)}</span>` : usd > 0 ? `<i class="bi bi-stars text-warning me-1"></i>Add <b>${fmt.usd(need)}</b> more to earn <b>+₦${BONUS}/$</b> bonus` : `<i class="bi bi-stars text-warning me-1"></i>Trades of $${BONUS_MIN}+ earn a +₦${BONUS}/$ bonus`}</div>`;
+  }
+
+  function renderSummary() {
+    const c = card(), el = $("#sellSummary");
+    if (!c) {
+      el.innerHTML = `<h6 class="card-title mb-3">Trade summary</h6><div class="ab-empty py-3"><span class="ab-icon ab-icon-lg tone-pink"><i class="bi bi-gift"></i></span><h6 class="mb-1">No card selected</h6><div class="fs-7">Pick a card to see your payout</div></div>`;
+      return;
+    }
+    const usd = totalUsd(), q = S.type ? quote(c, S.country, S.type, usd) : null;
+    el.innerHTML = `
+      <h6 class="card-title mb-3">Trade summary</h6>
+      <div class="d-flex align-items-center gap-3 mb-3">${tile(c)}<div class="min-w-0"><div class="fw-bold text-truncate">${esc(c.name)}</div><div class="fs-8 text-muted">${S.country ? esc(S.country) : "—"} · ${S.type ? esc(S.type) : "Select type"}</div></div></div>
+      <div class="ab-summary mb-3">
+        <div class="row-item"><span>Card value</span><span class="tabular">${usd ? `${S.qty} × ${fmt.usd(Number(S.face))}` : "—"}</span></div>
+        <div class="row-item"><span>Rate</span><span class="tabular">${q ? fmt.naira(q.rate) + "/$" : "—"}</span></div>
+        ${q && q.bonus ? `<div class="row-item"><span>Bonus</span><span class="text-success">+₦${q.bonus}/$</span></div>` : ""}
+      </div>
+      <div class="d-flex justify-content-between align-items-end"><span class="fs-7 text-muted">You'll receive</span><span class="fs-4 fw-800 tabular text-success" id="sumOut">${q && usd ? fmt.naira(q.naira) : "₦0"}</span></div>`;
+  }
+
+  function bindDrop() {
+    const drop = $("#drop"), fi = $("#fileInp");
+    drop.addEventListener("click", () => fi.click());
+    drop.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fi.click(); } });
+    fi.addEventListener("change", () => { addFiles([...fi.files]); fi.value = ""; });
+    ["dragenter", "dragover"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("drag"); }));
+    ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("drag"); }));
+    drop.addEventListener("drop", (e) => addFiles([...(e.dataTransfer?.files || [])]));
+    renderThumbs();
+  }
+  function addFiles(files) {
+    let added = 0;
+    for (const f of files) {
+      if (S.images.length >= 5) { toast("You can upload a maximum of 5 images", "warning"); break; }
+      if (!/^image\/(png|jpe?g|webp|gif)$/.test(f.type)) { toast(`<b>${esc(f.name)}</b> isn't a supported image (JPG, PNG, WEBP)`, "error"); continue; }
+      if (f.size > 5 * 1024 * 1024) { toast(`<b>${esc(f.name)}</b> is larger than 5MB`, "error"); continue; }
+      const img = { id: Math.random().toString(36).slice(2), name: f.name, size: f.size, src: "" };
+      S.images.push(img); added++;
+      const r = new FileReader();
+      r.onload = () => { img.src = r.result; renderThumbs(); };
+      r.readAsDataURL(f);
+    }
+    if (added) { $("#drop")?.classList.remove("is-invalid"); $("#imgErr") && ($("#imgErr").style.display = ""); }
+    renderThumbs();
+  }
+  function renderThumbs() {
+    const t = $("#thumbs"); if (!t) return;
+    $("#imgCount").textContent = S.images.length;
+    t.innerHTML = S.images.map((im) => `
+      <div class="gc-thumb">${im.src ? `<img src="${im.src}" alt="${esc(im.name)}">` : `<div class="skeleton w-100 h-100"></div>`}
+        <button type="button" class="rm" data-rm="${im.id}" aria-label="Remove ${esc(im.name)}"><i class="bi bi-x-lg"></i></button>
+        <div class="cap">${esc(im.name)} · ${(im.size / 1024).toFixed(0)}KB</div></div>`).join("");
+    $$("[data-rm]", t).forEach((b) => b.addEventListener("click", () => { S.images = S.images.filter((x) => x.id !== b.dataset.rm); renderThumbs(); }));
+  }
+
+  function validateStep() {
+    const c = card();
+    if (S.step === 1 && !c) { $("#cardErr").style.display = "block"; toast("Select a gift card to continue", "warning"); return false; }
+    if (S.step === 2 && !S.type) { $("#typeErr").style.display = "block"; return false; }
+    if (S.step === 3) {
+      const v = Number(S.face), inp = $("#faceInp"), err = $("#faceErr");
+      let msg = "";
+      if (!S.face || !v) msg = "Enter the card value";
+      else if (v < c.range[0]) msg = `Minimum is $${c.range[0]} per card`;
+      else if (v > c.range[1]) msg = `Maximum is $${c.range[1]} per card`;
+      else if (!Number.isInteger(v)) msg = "Enter a whole dollar amount";
+      if (msg) { inp.classList.add("is-invalid"); err.textContent = msg; inp.focus(); return false; }
+    }
+    if (S.step === 4) {
+      if (isCode(S.type)) {
+        let ok = true; const seen = new Set();
+        $$("[data-code]").forEach((i) => {
+          const v = i.value.trim(), clean = v.replace(/[^A-Za-z0-9]/g, "");
+          const bad = clean.length < 10 || !/^[A-Za-z0-9\- ]+$/.test(v) || seen.has(clean.toUpperCase());
+          if (bad) { i.classList.add("is-invalid"); i.nextElementSibling && (i.closest(".mb-2").querySelector(".invalid-feedback").textContent = seen.has(clean.toUpperCase()) ? "This code is duplicated" : "Enter a valid code (at least 10 letters/numbers)"); if (ok) i.focus(); ok = false; }
+          seen.add(clean.toUpperCase());
+        });
+        if (!ok) return false;
+        S.codes = S.codes.map((x) => x.toUpperCase());
+      } else if (!S.images.length) { $("#drop").classList.add("is-invalid"); $("#imgErr").style.display = "block"; return false; }
+      else if (S.images.some((i) => !i.src)) { toast("Images are still loading…", "info"); return false; }
+    }
+    if (S.step === 5 && !S.agree) { $("#agree").classList.add("is-invalid"); return false; }
+    return true;
+  }
+
+  $("#nextBtn").addEventListener("click", () => {
+    if (!validateStep()) return;
+    if (S.step === 5) return submitTrade();
+    S.step++; renderSell(); scrollToFlow();
+  });
+  $("#backBtn").addEventListener("click", () => { if (S.step > 1) { S.step--; renderSell(); } });
+
+  async function submitTrade() {
+    const c = card(), usd = totalUsd(), q = quote(c, S.country, S.type, usd), code = isCode(S.type);
+    const ok = await AB.confirmPay({
+      title: "Confirm trade", amount: q.naira, amountLabel: "You'll receive", skipBalanceCheck: true, cta: "Submit trade",
+      rows: [["Card", `${esc(c.name)} · ${esc(S.country)}`], ["Type", esc(S.type)], ["Value", `${S.qty} × ${fmt.usd(Number(S.face))}`], ["Rate", fmt.naira(q.rate) + "/$"]],
+      note: "Your wallet is credited automatically once the card is verified (usually 5–15 min)."
+    });
+    if (!ok) return;
+    const now = Date.now();
+    const t = {
+      id: fmt.ref("GC"), side: "sell", card: c.id, cardName: c.name, country: S.country, type: S.type,
+      face: Number(S.face), qty: S.qty, usd, rate: q.rate, bonus: q.bonus, naira: q.naira, status: "Pending",
+      images: code ? 0 : S.images.length, codes: code ? S.codes.map(mask) : [], note: S.note.trim(),
+      createdAt: now, timeline: [{ s: "Pending", at: now }], credited: false,
+      failReason: code && S.codes.some((x) => /^USED/i.test(x)) ? "This code has already been redeemed. Please contact the card issuer or your seller." : null
+    };
+    store.update("trades", (a) => [t, ...(a || [])]);
+    AB.notify({ icon: "bi-gift", tone: "pink", title: "Trade submitted", body: `${c.name} ${fmt.usd(usd)} is being reviewed. Expected payout ${fmt.naira(q.naira)}.` });
+    S = fresh(); renderSell();
+    AB.success({
+      title: "Trade submitted",
+      message: `We're verifying your ${esc(c.name)} card. You'll be paid <b>${fmt.naira(q.naira)}</b> once it's confirmed.`,
+      rows: [["Trade ID", `<span class="tabular">${t.id}</span>`], ["Card", `${esc(c.name)} · ${esc(t.type)}`], ["Value", fmt.usd(usd)], ["Status", `<span class="ab-status pending">Pending</span>`]],
+      actions: [{ label: '<i class="bi bi-clock-history me-1"></i>Track trade', id: "track", onClick: (m) => { m.close(); showTab("trades"); setTimeout(() => openDetail(t.id), 350); } }]
+    });
+  }
+
+  /* ---------------- Review simulation (guards double credit) ---------------- */
+  function tick(initial = false) {
+    const now = Date.now(), done = [], failed = [];
+    let changed = false;
+    const list = trades().map((t) => {
+      if (t.side === "buy" || !(t.status === "Pending" || t.status === "Processing")) return t;
+      const age = now - t.createdAt;
+      const n = { ...t, timeline: [...(t.timeline || [])] };
+      if (age >= PROCESS_MS && n.status === "Pending") { n.status = "Processing"; n.timeline.push({ s: "Processing", at: Math.min(now, t.createdAt + PROCESS_MS) }); changed = true; }
+      if (age >= DONE_MS) {
+        const at = Math.min(now, t.createdAt + DONE_MS);
+        if (n.failReason) { n.status = "Failed"; n.reason = n.failReason; n.timeline.push({ s: "Failed", at }); failed.push(n); }
+        else { n.status = "Completed"; n.timeline.push({ s: "Completed", at }); if (!n.credited) { n.credited = true; done.push(n); } }
+        changed = true;
+      }
+      return n;
+    });
+    if (!changed) return;
+    // Persist the credited flag BEFORE crediting so a reload/second tick can never pay twice
+    store.set("trades", list);
+    done.forEach((t) => {
+      const tx = AB.wallet.credit(t.naira, { type: "giftcard", title: `${t.cardName} Card Sold`, subtitle: `${fmt.usd(t.usd)} · ${t.type}`, icon: "bi-gift", tone: "pink" });
+      store.update("trades", (a) => a.map((x) => (x.id === t.id ? { ...x, txId: tx.id } : x)));
+      AB.notify({ icon: "bi-gift", tone: "pink", title: "Gift card trade completed", body: `${fmt.naira(t.naira)} from your ${t.cardName} ${fmt.usd(t.usd)} trade has been credited.` });
+    });
+    failed.forEach((t) => AB.notify({ icon: "bi-x-octagon", tone: "danger", title: "Gift card trade declined", body: `${t.cardName} ${fmt.usd(t.usd)}: ${t.reason}` }));
+    if (done.length === 1) toast(`<b>${esc(done[0].cardName)} trade completed</b><div class="fs-7 text-muted">${fmt.naira(done[0].naira)} credited to your wallet</div>`, "success", { duration: 5000 });
+    else if (done.length > 1) toast(`<b>${done.length} trades completed</b><div class="fs-7 text-muted">${fmt.naira(done.reduce((a, t) => a + t.naira, 0))} credited to your wallet</div>`, "success", { duration: 5000 });
+    failed.forEach((t) => toast(`<b>${esc(t.cardName)} trade declined</b><div class="fs-7 text-muted">${esc(t.reason)}</div>`, "error", { duration: 6000 }));
+  }
+
+  /* =================================================================
+     BUY
+     ================================================================= */
+  const DENOMS = [10, 25, 50, 100, 200];
+  const B = { brand: "amazon", face: 25, qty: 1 };
+  const buyPrice = () => { const base = B.face * B.qty * AB_DATA.usdRate; const fee = Math.max(150, Math.round(base * 0.01)); return { base, fee, total: base + fee }; };
+  $("#buyEmail").value = store.get("user").email || "";
+  function renderBuy() {
+    $("#buyBrands").innerHTML = BUY_IDS.map((id) => { const b = brand(id); return `
+      <button type="button" class="ab-option gc-brand ${B.brand === id ? "active" : ""}" data-bbrand="${id}" aria-pressed="${B.brand === id}">${tile(b)}<div><div class="name">${esc(b.name)}</div><div class="rate">Digital · instant</div></div></button>`; }).join("");
+    $("#buyDenoms").innerHTML = DENOMS.map((v) => `<button type="button" class="ab-chip ${B.face === v ? "active" : ""}" data-denom="${v}" role="radio" aria-checked="${B.face === v}">$${v}</button>`).join("");
+    $$("[data-bbrand]").forEach((b) => b.addEventListener("click", () => { B.brand = b.dataset.bbrand; renderBuy(); }));
+    $$("[data-denom]").forEach((b) => b.addEventListener("click", () => { B.face = +b.dataset.denom; renderBuy(); }));
+    $("#buyQty").value = B.qty; $("#buyQtyMinus").disabled = B.qty <= 1; $("#buyQtyPlus").disabled = B.qty >= 5;
+    const b = brand(B.brand), p = buyPrice();
+    $("#buyPreview").innerHTML = `<div class="gc-vcard" style="--c:${b.color}"><div class="d-flex justify-content-between align-items-start"><span class="fw-bold d-flex align-items-center gap-2"><i class="bi ${b.icon} fs-4"></i>${esc(b.name)}</span><span class="badge" style="background:rgba(255,255,255,.2)">${B.qty > 1 ? B.qty + " cards" : "e-Gift card"}</span></div><div><div class="fs-8 opacity-75">Value</div><div class="val tabular">$${B.face}</div></div></div>`;
+    $("#buySummary").innerHTML = `
+      <div class="row-item"><span>${B.qty} × $${B.face} @ ${fmt.naira(AB_DATA.usdRate)}/$</span><span class="tabular">${fmt.naira(p.base)}</span></div>
+      <div class="row-item"><span>Service fee</span><span class="tabular">${fmt.naira(p.fee)}</span></div>
+      <div class="row-item total"><span>Total</span><span class="tabular">${fmt.naira(p.total)}</span></div>`;
+    $("#buyBtn").innerHTML = `<i class="bi bi-bag-check me-1"></i>Buy for ${fmt.naira(p.total)}`;
+  }
+  const setBuyQty = (n) => { B.qty = Math.max(1, Math.min(5, n || 1)); renderBuy(); };
+  $("#buyQtyMinus").addEventListener("click", () => setBuyQty(B.qty - 1));
+  $("#buyQtyPlus").addEventListener("click", () => setBuyQty(B.qty + 1));
+  $("#buyQty").addEventListener("change", (e) => setBuyQty(parseInt(e.target.value, 10)));
+  $("#buyEmail").addEventListener("input", (e) => e.target.classList.remove("is-invalid"));
+  const genCode = () => Array.from({ length: 4 }, () => Array.from({ length: 4 }, () => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 31)]).join("")).join("-");
+
+  $("#buyBtn").addEventListener("click", async () => {
+    const em = $("#buyEmail");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em.value.trim())) { em.classList.add("is-invalid"); em.focus(); return; }
+    const b = brand(B.brand), p = buyPrice(), email = em.value.trim();
+    const ok = await AB.confirmPay({
+      title: `Buy ${b.name} gift card`, amount: p.total, cta: "Pay & get code",
+      rows: [["Card", `${esc(b.name)} · ${B.qty} × $${B.face}`], ["Rate", fmt.naira(AB_DATA.usdRate) + "/$"], ["Fee", fmt.naira(p.fee)], ["Deliver to", esc(email)]]
+    });
+    if (!ok) return;
+    const tx = AB.wallet.debit(p.total, { type: "giftcard", title: `${b.name} Gift Card`, subtitle: `${B.qty} × $${B.face} · e-code`, icon: "bi-gift", tone: "pink" });
+    if (!tx) { toast("Insufficient wallet balance", "error"); return; }
+    const now = Date.now();
+    const codes = Array.from({ length: B.qty }, genCode);
+    const t = { id: fmt.ref("GB"), side: "buy", card: b.id, cardName: b.name, country: "USA", type: "E-code", face: B.face, qty: B.qty, usd: B.face * B.qty, rate: AB_DATA.usdRate, fee: p.fee, naira: p.total, status: "Completed", codes, email, createdAt: now, timeline: [{ s: "Pending", at: now }, { s: "Processing", at: now }, { s: "Completed", at: now }], txId: tx.id };
+    store.update("trades", (a) => [t, ...(a || [])]);
+    AB.notify({ icon: "bi-gift", tone: "pink", title: "Gift card delivered", body: `Your ${b.name} $${t.usd} code was sent to ${email}.` });
+    AB.success({
+      title: "Gift card ready", message: `Your code${codes.length > 1 ? "s were" : " was"} also sent to <b>${esc(email)}</b>.`,
+      rows: [["Card", `${esc(b.name)} · ${fmt.usd(t.usd)}`], ["Paid", fmt.naira(p.total)], ["Reference", `<span class="tabular">${t.id}</span>`]],
+      extra: codesHtml(t, true)
+    }).el.addEventListener("click", copyHandler);
+  });
+  function codesHtml(t, hidden) {
+    return `<div class="text-start mt-2"><div class="small-label mb-2">Your code${t.codes.length > 1 ? "s" : ""}</div>${t.codes.map((c, i) => `
+      <div class="gc-code mb-2"><span data-codeval="${esc(c)}" data-hidden="${hidden ? 1 : 0}">${hidden ? "••••-••••-••••-" + esc(c.slice(-4)) : esc(c)}</span>
+        <span class="d-flex gap-1 flex-shrink-0">${hidden ? `<button type="button" class="btn btn-sm btn-light-subtle" data-reveal aria-label="Reveal code ${i + 1}"><i class="bi bi-eye"></i></button>` : ""}<button type="button" class="btn btn-sm btn-soft" data-copycode="${esc(c)}" aria-label="Copy code ${i + 1}"><i class="bi bi-copy"></i></button></span></div>`).join("")}</div>`;
+  }
+  function copyHandler(e) {
+    const c = e.target.closest("[data-copycode]"); if (c) return AB.copy(c.dataset.copycode, "Gift card code copied");
+    const r = e.target.closest("[data-reveal]");
+    if (r) { const s = r.closest(".gc-code").querySelector("[data-codeval]"); const h = s.dataset.hidden === "1"; s.textContent = h ? s.dataset.codeval : "••••-••••-••••-" + s.dataset.codeval.slice(-4); s.dataset.hidden = h ? "0" : "1"; r.innerHTML = `<i class="bi ${h ? "bi-eye-slash" : "bi-eye"}"></i>`; }
+  }
+
+  /* =================================================================
+     RATES
+     ================================================================= */
+  let rateType = "All";
+  const allRows = GC.flatMap((c) => c.countries.flatMap((k) => Object.keys(c.types).map((t) => ({ c, country: k, type: t, rate: rateFor(c, k, t) }))));
+  const rateTypes = ["All", ...new Set(allRows.map((r) => r.type))];
+  function renderRates() {
+    $("#rateTypeChips").innerHTML = rateTypes.map((t) => `<button type="button" class="ab-chip ${rateType === t ? "active" : ""}" data-rtype="${t}">${t}</button>`).join("");
+    $$("[data-rtype]").forEach((b) => b.addEventListener("click", () => { rateType = b.dataset.rtype; renderRates(); }));
+    const q = $("#rateSearch").value.trim().toLowerCase();
+    const rows = allRows.filter((r) => (rateType === "All" || r.type === rateType) && (!q || r.c.name.toLowerCase().includes(q) || r.country.toLowerCase().includes(q)));
+    $("#rateBody").innerHTML = rows.map((r) => `
+      <tr class="gc-rate-row">
+        <td><div class="gc-mini-tile">${tile(r.c, "sm")}<div class="min-w-0"><div class="fw-semibold fs-7 text-truncate">${esc(r.c.name)}</div><div class="fs-8 text-muted d-sm-none">${esc(r.country)}</div></div>${r.c.hot ? '<i class="bi bi-fire text-danger d-none d-md-inline" title="Hot"></i>' : ""}</div></td>
+        <td class="d-none d-sm-table-cell"><span class="d-inline-flex align-items-center gap-2 fs-7">${flag(r.country)}${esc(r.country)}</span></td>
+        <td class="fs-7">${esc(r.type)}</td>
+        <td class="text-end fw-800 tabular">${fmt.naira(r.rate)}</td>
+        <td class="text-end tabular text-success fw-semibold d-none d-md-table-cell">${fmt.naira(r.rate * 100)}</td>
+        <td class="text-end"><button class="btn btn-sm btn-soft" data-sellrow="${r.c.id}|${r.country}|${r.type}" aria-label="Sell ${esc(r.c.name)} ${esc(r.country)} ${esc(r.type)}">Sell</button></td>
+      </tr>`).join("");
+    $("#rateEmpty").hidden = rows.length > 0;
+    $("#rateEmpty").innerHTML = `<div class="ab-empty"><span class="ab-icon ab-icon-lg tone-primary"><i class="bi bi-search"></i></span><h6>No rates found</h6><div class="fs-7">Try another brand or country</div></div>`;
+    $$("[data-sellrow]").forEach((b) => b.addEventListener("click", () => { const [id, k, t] = b.dataset.sellrow.split("|"); goSell(id, k, t); }));
+  }
+  $("#rateSearch").addEventListener("input", AB.debounce(renderRates, 150));
+  function goSell(id, country, type, face) {
+    S = fresh(); S.card = id; S.country = country; S.type = type; if (face) S.face = String(face);
+    S.step = 3; showTab("sell"); renderSell(); window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  // quick calculator
+  const qc = { card: $("#qcCard"), country: $("#qcCountry"), type: $("#qcType"), amt: $("#qcAmt") };
+  qc.card.innerHTML = GC.map((c) => `<option value="${c.id}">${esc(c.name)}</option>`).join("");
+  function qcOptions() {
+    const c = brand(qc.card.value);
+    qc.country.innerHTML = c.countries.map((k) => `<option>${k}</option>`).join("");
+    qc.type.innerHTML = Object.keys(c.types).map((t) => `<option>${t}</option>`).join("");
+    qcCalc();
+  }
+  function qcCalc() {
+    const c = brand(qc.card.value), usd = Math.max(0, Number(qc.amt.value) || 0), q = quote(c, qc.country.value, qc.type.value, usd);
+    $("#qcRate").textContent = fmt.naira(q.rate) + "/$";
+    $("#qcOut").textContent = fmt.naira(q.naira);
+    const out = usd && (usd < c.range[0] || usd > c.range[1] * 10);
+    $("#qcNote").innerHTML = out ? `<span class="text-danger"><i class="bi bi-exclamation-circle me-1"></i>${esc(c.name)} accepts $${c.range[0]}–$${c.range[1]} per card</span>` : q.bonus ? `<span class="text-success"><i class="bi bi-stars me-1"></i>Includes +₦${BONUS}/$ bonus</span>` : `<span class="text-muted">Bonus +₦${BONUS}/$ from $${BONUS_MIN}</span>`;
+  }
+  qc.card.addEventListener("change", qcOptions);
+  [qc.country, qc.type].forEach((s) => s.addEventListener("change", qcCalc));
+  qc.amt.addEventListener("input", qcCalc);
+  $("#qcSell").addEventListener("click", () => {
+    const c = brand(qc.card.value), v = Number(qc.amt.value) || 0;
+    const face = v >= c.range[0] && v <= c.range[1] && Number.isInteger(v) ? v : "";
+    goSell(c.id, qc.country.value, qc.type.value, face);
+  });
+
+  /* =================================================================
+     MY TRADES
+     ================================================================= */
+  let tFilter = "All";
+  const FILTERS = ["All", "Pending", "Processing", "Completed", "Failed", "Bought"];
+  const progressOf = (t) => t.status === "Completed" || t.status === "Failed" ? 100 : Math.min(95, Math.round(((Date.now() - t.createdAt) / DONE_MS) * 100));
+  function renderTrades() {
+    const all = trades();
+    const cnt = $("#tradeCount"); cnt.textContent = all.length; cnt.hidden = !all.length;
+    const sold = all.filter((t) => t.side !== "buy");
+    $("#tradeStats").textContent = `${sold.length} sold · ${all.length - sold.length} bought · ${fmt.naira(sold.filter((t) => t.status === "Completed").reduce((a, t) => a + t.naira, 0))} earned`;
+    const count = (f) => f === "All" ? all.length : f === "Bought" ? all.filter((t) => t.side === "buy").length : all.filter((t) => t.side !== "buy" && t.status === f).length;
+    $("#tradeFilters").innerHTML = FILTERS.map((f) => `<button type="button" class="ab-chip ${tFilter === f ? "active" : ""}" data-tf="${f}" aria-pressed="${tFilter === f}">${f} <span class="opacity-75">${count(f)}</span></button>`).join("");
+    $$("[data-tf]").forEach((b) => b.addEventListener("click", () => { tFilter = b.dataset.tf; renderTrades(); }));
+    const list = all.filter((t) => tFilter === "All" || (tFilter === "Bought" ? t.side === "buy" : t.side !== "buy" && t.status === tFilter));
+    $("#tradeList").innerHTML = list.length ? list.map((t) => {
+      const b = brand(t.card), buy = t.side === "buy", active = t.status === "Pending" || t.status === "Processing";
+      return `<button type="button" class="gc-trade ab-card-hover" data-trade="${t.id}">
+        ${tile(b)}
+        <div class="flex-grow-1 min-w-0">
+          <div class="fw-semibold text-truncate">${esc(t.cardName)} <span class="badge ${buy ? "tone-violet" : "tone-pink"} ms-1">${buy ? "Bought" : "Sold"}</span></div>
+          <div class="fs-8 text-muted text-truncate">${t.qty > 1 ? t.qty + " × " + fmt.usd(t.face) : fmt.usd(t.usd)} · ${esc(t.type)} · ${esc(t.country)} · ${fmt.ago(t.createdAt)}</div>
+          ${active ? `<div class="prog"><i style="width:${progressOf(t)}%"></i></div>` : ""}
+        </div>
+        <div class="text-end flex-shrink-0">
+          <div class="fw-bold tabular ${buy ? "" : t.status === "Failed" ? "text-muted text-decoration-line-through" : "amount-in"}">${buy ? "−" : "+"}${fmt.naira(t.naira)}</div>
+          <span class="ab-status ${STATUS_CLS[t.status] || "neutral"} mt-1">${t.status}</span>
+        </div>
+      </button>`;
+    }).join("") : `<div class="ab-empty"><span class="ab-icon ab-icon-xl tone-pink"><i class="bi bi-gift"></i></span><h6>${all.length ? "No " + tFilter.toLowerCase() + " trades" : "No trades yet"}</h6><p class="fs-7 mb-3">${all.length ? "Try another filter." : "Sell your first gift card and get paid in minutes."}</p>${all.length ? `<button class="btn btn-sm btn-soft" data-tf-reset>Show all trades</button>` : `<button class="btn btn-primary btn-sm px-3" data-goto="sell">Sell a gift card</button>`}</div>`;
+    $$("[data-trade]").forEach((b) => b.addEventListener("click", () => openDetail(b.dataset.trade)));
+    const rs = $("[data-tf-reset]"); if (rs) rs.addEventListener("click", () => { tFilter = "All"; renderTrades(); });
+  }
+
+  let detail = null;
+  function detailHtml(t) {
+    const b = brand(t.card), buy = t.side === "buy";
+    const steps = buy
+      ? [["Pending", "Payment received", "Debited from your wallet"], ["Processing", "Code generated", "Issued by " + b.name], ["Completed", "Delivered", "Sent to " + (t.email || "your email")]]
+      : [["Pending", "Trade submitted", "We received your card details"], ["Processing", "Verifying card", "Our team is checking your card"], t.status === "Failed" ? ["Failed", "Trade declined", t.reason || "Card could not be verified"] : ["Completed", "Paid to wallet", fmt.naira(t.naira) + " credited"]];
+    const at = (s) => (t.timeline || []).find((x) => x.s === s)?.at;
+    const tl = steps.map(([s, title, d], i) => {
+      const when = at(s), reached = !!when;
+      const nextReached = steps[i + 1] ? !!at(steps[i + 1][0]) : true;
+      const cls = s === "Failed" ? "fail" : reached && (nextReached || s === "Completed") ? "done" : reached ? "now" : "";
+      return `<li class="${cls}"><span class="ic"><i class="bi ${cls === "fail" ? "bi-x-lg" : cls === "done" ? "bi-check-lg" : cls === "now" ? "bi-hourglass-split" : "bi-circle"}"></i></span><div class="t">${title}</div><div class="d">${reached ? esc(d) + " · " + fmt.datetime(when) : "Waiting…"}</div></li>`;
+    }).join("");
+    return `
+      <div class="modal-header"><h5 class="modal-title">Trade details</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body pt-1">
+        <div class="d-flex align-items-center gap-3 mb-3">${tile(b, "lg")}<div class="flex-grow-1 min-w-0"><div class="fw-bold">${esc(t.cardName)}</div><div class="fs-7 text-muted">${buy ? "Bought" : "Sold"} · ${fmt.datetime(t.createdAt)}</div></div><span class="ab-status ${STATUS_CLS[t.status]}">${t.status}</span></div>
+        ${t.status === "Failed" ? `<div class="alert alert-danger fs-7 d-flex gap-2"><i class="bi bi-exclamation-octagon-fill"></i><div><b>Reason:</b> ${esc(t.reason || "Card could not be verified")}<div class="mt-1">No money was deducted. Contact support if you think this is a mistake.</div></div></div>` : ""}
+        <div class="text-center py-2 mb-2"><div class="small-label">${buy ? "You paid" : t.status === "Completed" ? "You received" : t.status === "Failed" ? "Not paid" : "You'll receive"}</div><div class="fs-2 fw-800 tabular ${!buy && t.status !== "Failed" ? "text-success" : t.status === "Failed" ? "text-muted text-decoration-line-through" : ""}">${fmt.naira(t.naira)}</div></div>
+        <div class="ab-summary mb-3">
+          <div class="row-item"><span>Trade ID</span><span class="tabular">${t.id} <button class="btn btn-link btn-sm p-0 ms-1" data-copyid="${t.id}" aria-label="Copy trade ID"><i class="bi bi-copy"></i></button></span></div>
+          <div class="row-item"><span>Card</span><span>${esc(t.country)} · ${esc(t.type)}</span></div>
+          <div class="row-item"><span>Value</span><span class="tabular">${t.qty > 1 ? t.qty + " × " + fmt.usd(t.face) + " = " : ""}${fmt.usd(t.usd)}</span></div>
+          <div class="row-item"><span>Rate</span><span class="tabular">${fmt.naira(t.rate)}/$${t.bonus ? " (incl. bonus)" : ""}</span></div>
+          ${buy ? `<div class="row-item"><span>Fee</span><span class="tabular">${fmt.naira(t.fee || 0)}</span></div><div class="row-item"><span>Delivered to</span><span class="text-break">${esc(t.email || "")}</span></div>` : `<div class="row-item"><span>${t.images ? "Photos" : "E-codes"}</span><span>${t.images ? t.images + " uploaded" : (t.codes || []).map(esc).join("<br>")}</span></div>`}
+          ${t.note ? `<div class="row-item"><span>Note</span><span class="text-break">${esc(t.note)}</span></div>` : ""}
+        </div>
+        ${buy ? codesHtml(t, true) : ""}
+        <div class="small-label mb-2 mt-3">Progress</div>
+        <ul class="gc-tl">${tl}</ul>
+      </div>
+      <div class="modal-footer flex-column flex-sm-row gap-2">
+        <a class="btn btn-light-subtle flex-fill m-0" href="mailto:support@autobiz.ng?subject=Trade%20${t.id}"><i class="bi bi-headset me-1"></i>Get help</a>
+        <button class="btn btn-primary flex-fill m-0" data-again><i class="bi bi-arrow-repeat me-1"></i>${buy ? "Buy again" : "Sell another"}</button>
+      </div>`;
+  }
+  function bindDetail(t) {
+    const el = detail.el;
+    el.querySelector("[data-copyid]").addEventListener("click", () => AB.copy(t.id, "Trade ID copied"));
+    el.querySelector("[data-again]").addEventListener("click", () => {
+      detail.close();
+      if (t.side === "buy") { B.brand = t.card; B.face = DENOMS.includes(t.face) ? t.face : 25; B.qty = 1; renderBuy(); showTab("buy"); }
+      else { const c = GC.find((x) => x.id === t.card); if (c) goSell(c.id, t.country, t.type); }
+    });
+  }
+  function openDetail(id) {
+    const t = trades().find((x) => x.id === id); if (!t) return;
+    detail = AB.modal(`<div data-detail="${id}">${detailHtml(t)}</div>`);
+    detail.el.addEventListener("click", copyHandler);
+    detail.el.addEventListener("hidden.bs.modal", () => (detail = null));
+    bindDetail(t);
+  }
+  function refreshDetail() {
+    if (!detail) return;
+    const wrap = detail.el.querySelector("[data-detail]"), t = trades().find((x) => x.id === wrap.dataset.detail);
+    if (!t) return;
+    wrap.innerHTML = detailHtml(t); bindDetail(t);
+  }
+
+  /* ---------------- Init ---------------- */
+  store.on((k) => { if (k === "trades") { renderTrades(); renderHero(); refreshDetail(); } });
+  tick(true);           // resolve anything that finished while the page was closed (credited once)
+  setInterval(tick, 1000);
+  setInterval(() => { if (!$('[data-pane="trades"]').hidden && trades().some((t) => t.status === "Pending" || t.status === "Processing")) $$(".gc-trade .prog i").forEach((i) => { const t = trades().find((x) => x.id === i.closest("[data-trade]").dataset.trade); if (t) i.style.width = progressOf(t) + "%"; }); }, 1000);
+
+  renderHero(); renderSell(false); renderBuy(); renderRates(); qcOptions(); renderTrades();
+  const initTab = (location.hash || "").slice(1) || AB.qs("tab");
+  showTab(initTab || "sell", false);
+  const pre = AB.qs("card");
+  if (pre && GC.find((c) => c.id === pre)) selectCard(pre);
+});
+</script>
+</body>
+</html>

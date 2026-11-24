@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Marketplace · AutoBiz</title>
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/app.css" rel="stylesheet">
+  <script src="../assets/js/brand.js"></script>
+  <style>
+    /* Promo carousel */
+    .mk-slide { border-radius: var(--ab-radius-lg); min-height: 268px; padding: 1.75rem 2rem; color: #fff; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
+    .mk-slide .big-ic { position: absolute; right: 6%; top: 50%; transform: translateY(-50%) rotate(-10deg); font-size: 9.5rem; opacity: .9; filter: drop-shadow(0 20px 30px rgba(0,0,0,.25)); }
+    .mk-slide::before { content: ""; position: absolute; width: 340px; height: 340px; border-radius: 50%; right: -60px; top: -80px; background: radial-gradient(circle, rgba(255,255,255,.22), transparent 70%); }
+    .mk-slide::after { content: ""; position: absolute; width: 240px; height: 240px; border-radius: 50%; left: 40%; bottom: -170px; border: 34px solid rgba(255,255,255,.07); }
+    .mk-slide > * { position: relative; z-index: 1; max-width: 62%; }
+    .mk-slide .big-ic { max-width: none; }
+    .mk-slide h2 { color: #fff; font-size: clamp(1.35rem, 3vw, 2rem); font-weight: 800; letter-spacing: -.03em; margin-bottom: .35rem; }
+    .mk-slide .eyebrow { display: inline-flex; align-items: center; gap: .35rem; background: rgba(255,255,255,.18); padding: .25rem .6rem; border-radius: 999px; font-size: .72rem; font-weight: 700; margin-bottom: .75rem; align-self: flex-start; }
+    .mk-slide .btn-white { background: #fff; color: #111; align-self: flex-start; }
+    .mk-slide .btn-white:hover { background: #f1f3ff; }
+    .s1 { background: radial-gradient(120% 140% at 100% 0%, #3a3f5c 0%, #15172b 55%, #0b0c18 100%); }
+    .s1 .big-ic { color: #ffd43b; }
+    .s2 { background: linear-gradient(135deg, #e64980 0%, #9c36b5 100%); }
+    .s3 { background: linear-gradient(135deg, #f59f00 0%, #e8590c 100%); }
+    @media (max-width: 575.98px) {
+      .mk-slide { min-height: 220px; padding: 1.25rem 1.25rem 2rem; }
+      .mk-slide > * { max-width: 72%; }
+      .mk-slide .big-ic { font-size: 5.5rem; right: -2%; opacity: .5; }
+      #promo .carousel-indicators { margin-left: 1.25rem; margin-bottom: .75rem; }
+    }
+    #promo .carousel-indicators { justify-content: flex-start; margin: 0 0 1rem 2rem; }
+    #promo .carousel-indicators [data-bs-target] { width: 22px; height: 5px; border-radius: 4px; border: 0; }
+    .mk-side-tile { border-radius: var(--ab-radius); padding: 1.1rem 1.2rem; display: flex; align-items: center; gap: .9rem; color: var(--ab-text); background: var(--ab-surface); border: 1px solid var(--ab-border); height: 100%; }
+    /* Category tiles */
+    .mk-cats { display: grid; grid-template-columns: repeat(8, 1fr); gap: .75rem; }
+    .mk-cat { display: flex; flex-direction: column; align-items: center; gap: .5rem; padding: .9rem .4rem; border-radius: 16px; text-align: center; font-size: .78rem; font-weight: 600; color: var(--ab-text); background: var(--ab-surface); border: 1px solid var(--ab-border); transition: all .15s ease; cursor: pointer; }
+    .mk-cat:hover { border-color: rgba(var(--ab-primary-rgb), .4); transform: translateY(-2px); }
+    .mk-cat.active { border-color: var(--ab-primary); box-shadow: 0 0 0 3px rgba(var(--ab-primary-rgb), .12); }
+    @media (max-width: 1199.98px) { .mk-cats { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 575.98px) { .mk-cats { display: flex; overflow-x: auto; scrollbar-width: none; gap: .6rem; } .mk-cats::-webkit-scrollbar { display: none; } .mk-cat { flex: 0 0 84px; padding: .75rem .3rem; font-size: .7rem; } .mk-cat .ab-icon { width: 44px; height: 44px; } }
+    /* Flash deals */
+    .mk-flash { background: linear-gradient(135deg, rgba(240,62,62,.08), rgba(253,126,20,.06)); border-color: rgba(240,62,62,.25); }
+    .mk-cd { display: inline-flex; align-items: center; gap: .25rem; font-variant-numeric: tabular-nums; }
+    .mk-cd b { background: var(--ab-danger); color: #fff; border-radius: 8px; padding: .2rem .45rem; min-width: 2.1rem; text-align: center; font-size: .9rem; }
+    .mk-flash .hscroll > * { width: 200px; }
+    @media (max-width: 575.98px) { .mk-flash .hscroll > * { width: 160px; } }
+    /* Filters */
+    .mk-filters .f-group { padding: 1rem 0; border-bottom: 1px dashed var(--ab-border); }
+    .mk-filters .f-group:first-child { padding-top: 0; }
+    .mk-filters .f-group:last-child { border-bottom: 0; }
+    .mk-filters .f-title { font-weight: 700; font-size: .85rem; margin-bottom: .65rem; display: flex; justify-content: space-between; align-items: center; }
+    .mk-filters .form-check { margin-bottom: .4rem; font-size: .85rem; }
+    .mk-filters .form-check-label { display: flex; justify-content: space-between; width: 100%; cursor: pointer; }
+    .mk-filters .form-check { display: flex; gap: .5rem; padding-left: 0; }
+    .mk-filters .form-check .form-check-input { margin-left: 0; flex-shrink: 0; }
+    .mk-filters .form-switch { padding-left: 0; }
+    .mk-filters .form-switch .form-check-input { width: 2.2em; }
+    .brand-list { max-height: 220px; overflow-y: auto; padding-right: .25rem; }
+    @media (min-width: 992px) { .mk-filters-card { position: sticky; top: calc(var(--ab-topbar-h) + 1rem); } }
+    @media (max-width: 991.98px) { .offcanvas-lg.mk-oc { width: min(360px, 88vw); } .mk-filters-card { border: 0; box-shadow: none; background: transparent; } .mk-filters-card > .card-body { padding: 0; } }
+    .mk-toolbar .form-select { min-width: 0; }
+    .ab-segment .btn-view { padding: .4rem .65rem; }
+    .mk-active .ab-chip { padding: .3rem .7rem; font-size: .75rem; }
+    .grid-skel { border-radius: var(--ab-radius); overflow: hidden; border: 1px solid var(--ab-border); background: var(--ab-surface); }
+    #grid.list-mode > * { width: 100%; }
+  </style>
+</head>
+<body data-page="marketplace" data-title="Marketplace" data-public="true">
+<main class="ab-content">
+
+  <div class="ab-page-head fade-up">
+    <div>
+      <h1>Marketplace</h1>
+      <p>Genuine products from verified sellers. Pay from your wallet or on delivery.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="orders.html?tab=wishlist" class="btn btn-light-subtle"><i class="bi bi-heart me-1"></i>Wishlist <span class="badge bg-primary ms-1" id="wishCount" hidden></span></a>
+      <a href="orders.html" class="btn btn-light-subtle"><i class="bi bi-box-seam me-1"></i>Orders</a>
+    </div>
+  </div>
+
+  <!-- Promo -->
+  <div class="row g-3 mb-4 fade-up">
+    <div class="col-xl-8">
+      <div id="promo" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5500" aria-label="Promotions">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#promo" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#promo" data-bs-slide-to="1" aria-label="Slide 2"></button>
+          <button type="button" data-bs-target="#promo" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner rounded-2xl">
+          <div class="carousel-item active">
+            <div class="mk-slide s1">
+              <span class="eyebrow"><i class="bi bi-lightning-charge-fill"></i>Black Friday week</span>
+              <h2>Up to 30% off phones & gadgets</h2>
+              <p class="opacity-75 mb-3 fs-7">Samsung, Apple, Xiaomi & more — free delivery nationwide.</p>
+              <button class="btn btn-white btn-sm px-3" data-goto-cat="phones">Shop phones <i class="bi bi-arrow-right ms-1"></i></button>
+              <i class="bi bi-phone big-ic"></i>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="mk-slide s2">
+              <span class="eyebrow"><i class="bi bi-cloud-download"></i>Delivered instantly</span>
+              <h2>Netflix, Steam & Microsoft 365 codes</h2>
+              <p class="opacity-75 mb-3 fs-7">Pay from your wallet, get your code in seconds.</p>
+              <button class="btn btn-white btn-sm px-3" data-goto-cat="digital">Browse digital <i class="bi bi-arrow-right ms-1"></i></button>
+              <i class="bi bi-play-btn big-ic"></i>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="mk-slide s3">
+              <span class="eyebrow"><i class="bi bi-sun"></i>Beat the grid</span>
+              <h2>Solar inverter kits from ₦1.15m</h2>
+              <p class="opacity-75 mb-3 fs-7">Power your home 24/7. Installation available in Lagos & Abuja.</p>
+              <a class="btn btn-white btn-sm px-3" href="product.html?id=p22">View deal <i class="bi bi-arrow-right ms-1"></i></a>
+              <i class="bi bi-sun big-ic"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4 d-none d-xl-flex flex-column gap-3">
+      <a href="#" class="mk-side-tile ab-card-hover" data-goto-cat="digital">
+        <span class="ab-icon ab-icon-lg tone-warning"><i class="bi bi-lightning-charge"></i></span>
+        <div><div class="fw-bold">Instant digital goods</div><div class="fs-7 text-muted">Vouchers & licences delivered in seconds</div></div>
+      </a>
+      <a href="#" class="mk-side-tile ab-card-hover" id="tileFree">
+        <span class="ab-icon ab-icon-lg tone-success"><i class="bi bi-truck"></i></span>
+        <div><div class="fw-bold">Free delivery picks</div><div class="fs-7 text-muted">No delivery fee on hundreds of items</div></div>
+      </a>
+      <a href="#flash" class="mk-side-tile ab-card-hover">
+        <span class="ab-icon ab-icon-lg tone-danger"><i class="bi bi-alarm"></i></span>
+        <div><div class="fw-bold">Flash sales</div><div class="fs-7 text-muted">New deals every 6 hours — don't miss out</div></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Categories -->
+  <div class="mb-4 fade-up">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h6 class="card-title">Shop by category</h6>
+    </div>
+    <div class="mk-cats" id="catTiles"></div>
+  </div>
+
+  <!-- Flash deals -->
+  <section class="card mk-flash mb-4 fade-up" id="flash" aria-label="Flash deals">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2 border-0 pb-0">
+      <div class="d-flex align-items-center gap-2">
+        <span class="ab-icon ab-icon-sm tone-danger"><i class="bi bi-lightning-charge-fill"></i></span>
+        <div><h6 class="card-title">Flash deals</h6><div class="fs-8 text-muted">Biggest discounts, limited stock</div></div>
+      </div>
+      <div class="d-flex align-items-center gap-2 fs-7"><span class="text-muted">Ends in</span><span class="mk-cd" id="countdown" aria-live="off"><b>00</b>:<b>00</b>:<b>00</b></span></div>
+    </div>
+    <div class="card-body"><div class="hscroll" id="flashList"></div></div>
+  </section>
+
+  <!-- Catalogue -->
+  <div class="row g-3 g-lg-4" id="catalogue">
+    <div class="col-lg-3">
+      <div class="offcanvas-lg offcanvas-start mk-oc" tabindex="-1" id="filtersOc" aria-labelledby="filtersOcLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="filtersOcLabel">Filters</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#filtersOc" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-block">
+          <div class="card mk-filters-card w-100">
+            <div class="card-body mk-filters">
+              <div class="d-none d-lg-flex justify-content-between align-items-center mb-3">
+                <h6 class="card-title">Filters</h6>
+                <button class="btn btn-link btn-sm p-0" data-reset>Reset all</button>
+              </div>
+              <div class="f-group">
+                <div class="f-title">Price (₦)</div>
+                <div class="d-flex gap-2 align-items-center mb-2">
+                  <input type="number" min="0" class="form-control form-control-sm" id="pMin" placeholder="Min" aria-label="Minimum price">
+                  <span class="text-muted">–</span>
+                  <input type="number" min="0" class="form-control form-control-sm" id="pMax" placeholder="Max" aria-label="Maximum price">
+                </div>
+                <div class="text-danger fs-8 mb-2" id="pErr" hidden>Min price can't be greater than max.</div>
+                <div class="d-flex flex-wrap gap-1" id="pricePresets">
+                  <button class="ab-chip" data-range="0-50000">Under ₦50k</button>
+                  <button class="ab-chip" data-range="50000-200000">₦50k–₦200k</button>
+                  <button class="ab-chip" data-range="200000-1000000">₦200k–₦1m</button>
+                  <button class="ab-chip" data-range="1000000-">₦1m+</button>
+                </div>
+              </div>
+              <div class="f-group">
+                <div class="f-title">Brand <button class="btn btn-link btn-sm p-0 fs-8" id="brandClear" hidden>Clear</button></div>
+                <div class="brand-list" id="brandList"></div>
+              </div>
+              <div class="f-group">
+                <div class="f-title">Customer rating</div>
+                <div id="ratingList"></div>
+              </div>
+              <div class="f-group">
+                <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" role="switch" id="fFree"><label class="form-check-label" for="fFree"><span><i class="bi bi-truck me-1 text-success"></i>Free delivery</span></label></div>
+                <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" role="switch" id="fStock"><label class="form-check-label" for="fStock"><span><i class="bi bi-box-seam me-1 text-primary"></i>In stock (10+ units)</span></label></div>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" role="switch" id="fSale"><label class="form-check-label" for="fSale"><span><i class="bi bi-percent me-1 text-danger"></i>15% off or more</span></label></div>
+              </div>
+            </div>
+          </div>
+          <div class="d-lg-none d-flex gap-2 mt-3 position-sticky bottom-0 py-3" style="background:var(--ab-surface)">
+            <button class="btn btn-light-subtle flex-fill" data-reset>Reset</button>
+            <button class="btn btn-primary flex-fill" data-bs-dismiss="offcanvas" data-bs-target="#filtersOc" id="showResults">Show results</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-9">
+      <div class="d-flex flex-wrap gap-2 align-items-center mb-3 mk-toolbar">
+        <form class="input-icon flex-grow-1" style="min-width:200px" role="search" id="searchForm">
+          <i class="bi bi-search"></i>
+          <input type="search" class="form-control" id="q" placeholder="Search products, brands, sellers…" aria-label="Search products">
+        </form>
+        <button class="btn btn-light-subtle d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#filtersOc" aria-controls="filtersOc"><i class="bi bi-sliders me-1"></i>Filters <span class="badge bg-primary ms-1" id="fCount" hidden></span></button>
+        <select class="form-select w-auto" id="sort" aria-label="Sort products">
+          <option value="popular">Most popular</option>
+          <option value="price-asc">Price: low to high</option>
+          <option value="price-desc">Price: high to low</option>
+          <option value="rating">Top rated</option>
+          <option value="discount">Biggest discount</option>
+        </select>
+        <div class="ab-segment" role="group" aria-label="View mode">
+          <button class="btn-view active" data-view="grid" aria-label="Grid view" aria-pressed="true"><i class="bi bi-grid-3x3-gap"></i></button>
+          <button class="btn-view" data-view="list" aria-label="List view" aria-pressed="false"><i class="bi bi-list-ul"></i></button>
+        </div>
+      </div>
+      <div class="ab-chips mb-3" id="chips" role="tablist" aria-label="Categories"></div>
+      <div class="d-flex flex-wrap align-items-center gap-2 mb-3 mk-active">
+        <div class="fs-7 text-muted me-1" id="count" aria-live="polite"></div>
+        <div class="d-flex flex-wrap gap-1" id="activePills"></div>
+      </div>
+      <div class="row g-2 g-sm-3 row-cols-2 row-cols-md-3 row-cols-xl-4" id="grid"></div>
+      <div class="text-center mt-4" id="moreWrap" hidden>
+        <div class="fs-8 text-muted mb-2" id="moreInfo"></div>
+        <button class="btn btn-light-subtle px-4" id="loadMore"><i class="bi bi-arrow-down-circle me-1"></i>Load more</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/shop.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { fmt, esc, store } = AB;
+  const PRODUCTS = AB_DATA.products, CATS = AB_DATA.categories;
+  const PAGE = 12;
+  const $ = (id) => document.getElementById(id);
+
+  const S = {
+    q: AB.qs("q") || "", cat: AB.qs("cat") || "all", seller: AB.qs("seller") || "",
+    min: null, max: null, brands: new Set(), rating: 0, free: false, stock: false, sale: false,
+    sort: "popular", view: "grid", shown: PAGE
+  };
+  if (S.cat !== "all" && !CATS.some(c => c.id === S.cat)) S.cat = "all";
+  try { S.view = localStorage.getItem("ab_mk_view") || "grid"; } catch (e) {}
+  if (AB.qs("free") === "1") S.free = true;
+
+  // Prefill search (page + topbar)
+  $("q").value = S.q;
+  const topQ = document.querySelector(".ab-topbar input[name=q]"); if (topQ) topQ.value = S.q;
+
+  /* ---------- Categories ---------- */
+  const countIn = (cat) => PRODUCTS.filter(p => p.category === cat).length;
+  $("catTiles").innerHTML = CATS.map(c => `
+    <button class="mk-cat" data-cat="${c.id}" aria-label="${esc(c.name)} (${countIn(c.id)} items)">
+      <span class="ab-icon ab-icon-lg tone-${c.tone}"><i class="bi ${c.icon}"></i></span>${esc(c.name)}
+    </button>`).join("");
+  $("chips").innerHTML = `<button class="ab-chip" data-cat="all" role="tab">All</button>` + CATS.map(c => `<button class="ab-chip" data-cat="${c.id}" role="tab"><i class="bi ${c.icon}"></i>${esc(c.name)}</button>`).join("");
+  document.querySelectorAll("[data-cat]").forEach(b => b.addEventListener("click", () => {
+    S.cat = (b.classList.contains("mk-cat") && S.cat === b.dataset.cat) ? "all" : b.dataset.cat;
+    S.brands.clear();
+    update(true);
+    if (b.classList.contains("mk-cat")) scrollToCatalogue();
+  }));
+  document.querySelectorAll("[data-goto-cat]").forEach(b => b.addEventListener("click", (e) => { e.preventDefault(); S.cat = b.dataset.gotoCat; S.brands.clear(); update(true); scrollToCatalogue(); }));
+  $("tileFree").addEventListener("click", (e) => { e.preventDefault(); S.free = true; $("fFree").checked = true; update(true); scrollToCatalogue(); });
+  function scrollToCatalogue() { const y = $("catalogue").getBoundingClientRect().top + scrollY - 90; window.scrollTo({ top: y, behavior: "smooth" }); }
+
+  /* ---------- Flash deals + countdown ---------- */
+  const flash = [...PRODUCTS].sort((a, b) => SHOP.disc(b) - SHOP.disc(a)).slice(0, 8);
+  $("flashList").innerHTML = flash.map(p => `<div>${SHOP.card(p, { flash: true })}</div>`).join("");
+  function tick() {
+    const now = new Date(), end = new Date(now);
+    end.setHours(Math.floor(now.getHours() / 6) * 6 + 6, 0, 0, 0);
+    let s = Math.max(0, Math.floor((end - now) / 1000));
+    const parts = [Math.floor(s / 3600), Math.floor(s % 3600 / 60), s % 60].map(n => String(n).padStart(2, "0"));
+    $("countdown").innerHTML = parts.map(p => `<b>${p}</b>`).join(":");
+    $("countdown").setAttribute("aria-label", `Ends in ${parts[0]} hours ${parts[1]} minutes`);
+  }
+  tick(); setInterval(tick, 1000);
+
+  /* ---------- Rating filter ---------- */
+  $("ratingList").innerHTML = [[0, "Any rating"], [4.5, "4.5 & above"], [4, "4.0 & above"], [3, "3.0 & above"]].map(([v, l], i) => `
+    <div class="form-check"><input class="form-check-input" type="radio" name="rating" id="r${i}" value="${v}" ${v === 0 ? "checked" : ""}>
+    <label class="form-check-label" for="r${i}"><span>${v ? SHOP.stars(v) + " " : ""}${l}</span></label></div>`).join("");
+  document.querySelectorAll("input[name=rating]").forEach(r => r.addEventListener("change", () => { S.rating = Number(r.value); update(true); }));
+
+  /* ---------- Filter logic ---------- */
+  function base() { // everything except brand (used for brand counts)
+    const q = S.q.trim().toLowerCase();
+    const terms = q.split(/\s+/).filter(Boolean);
+    return PRODUCTS.filter(p => {
+      if (S.cat !== "all" && p.category !== S.cat) return false;
+      if (S.seller && p.seller !== S.seller) return false;
+      if (terms.length) {
+        const hay = (p.name + " " + p.brand + " " + p.seller + " " + (SHOP.category(p.category)?.name || "")).toLowerCase();
+        if (!terms.every(t => hay.includes(t))) return false;
+      }
+      if (S.min != null && p.price < S.min) return false;
+      if (S.max != null && p.price > S.max) return false;
+      if (S.rating && p.rating < S.rating) return false;
+      if (S.free && !(p.freeShipping || p.digital)) return false;
+      if (S.stock && p.stock < 10) return false;
+      if (S.sale && SHOP.disc(p) < 15) return false;
+      return true;
+    });
+  }
+  function results() {
+    let r = base().filter(p => !S.brands.size || S.brands.has(p.brand));
+    const sorters = {
+      popular: (a, b) => b.reviews * b.rating - a.reviews * a.rating,
+      "price-asc": (a, b) => a.price - b.price,
+      "price-desc": (a, b) => b.price - a.price,
+      rating: (a, b) => b.rating - a.rating || b.reviews - a.reviews,
+      discount: (a, b) => SHOP.disc(b) - SHOP.disc(a)
+    };
+    return r.sort(sorters[S.sort]);
+  }
+
+  function renderBrands() {
+    const pool = base();
+    const brands = [...new Set(PRODUCTS.filter(p => S.cat === "all" || p.category === S.cat).map(p => p.brand))].sort();
+    $("brandList").innerHTML = brands.map((b, i) => {
+      const n = pool.filter(p => p.brand === b).length;
+      return `<div class="form-check"><input class="form-check-input" type="checkbox" id="b${i}" value="${esc(b)}" ${S.brands.has(b) ? "checked" : ""}>
+        <label class="form-check-label" for="b${i}"><span>${esc(b)}</span><span class="text-muted fs-8">${n}</span></label></div>`;
+    }).join("") || `<div class="fs-8 text-muted">No brands</div>`;
+    $("brandList").querySelectorAll("input").forEach(c => c.addEventListener("change", () => { c.checked ? S.brands.add(c.value) : S.brands.delete(c.value); update(true); }));
+    $("brandClear").hidden = !S.brands.size;
+  }
+  $("brandClear").addEventListener("click", () => { S.brands.clear(); update(true); });
+
+  function activeFilters() {
+    const a = [];
+    if (S.q) a.push(["q", `“${S.q}”`]);
+    if (S.seller) a.push(["seller", `Seller: ${S.seller}`]);
+    if (S.min != null || S.max != null) a.push(["price", `${S.min != null ? fmt.naira(S.min) : "₦0"} – ${S.max != null ? fmt.naira(S.max) : "any"}`]);
+    S.brands.forEach(b => a.push(["brand:" + b, b]));
+    if (S.rating) a.push(["rating", `${S.rating}★ & up`]);
+    if (S.free) a.push(["free", "Free delivery"]);
+    if (S.stock) a.push(["stock", "In stock"]);
+    if (S.sale) a.push(["sale", "15%+ off"]);
+    return a;
+  }
+  function clearFilter(k) {
+    if (k === "q") { S.q = ""; $("q").value = ""; if (topQ) topQ.value = ""; }
+    else if (k === "seller") S.seller = "";
+    else if (k === "price") { S.min = S.max = null; $("pMin").value = $("pMax").value = ""; }
+    else if (k.startsWith("brand:")) S.brands.delete(k.slice(6));
+    else if (k === "rating") { S.rating = 0; $("r0").checked = true; }
+    else if (k === "free") { S.free = false; $("fFree").checked = false; }
+    else if (k === "stock") { S.stock = false; $("fStock").checked = false; }
+    else if (k === "sale") { S.sale = false; $("fSale").checked = false; }
+    update(true);
+  }
+  function resetAll() {
+    Object.assign(S, { q: "", cat: "all", seller: "", min: null, max: null, rating: 0, free: false, stock: false, sale: false });
+    S.brands.clear();
+    $("q").value = ""; if (topQ) topQ.value = "";
+    $("pMin").value = $("pMax").value = ""; $("pMin").classList.remove("is-invalid"); $("pErr").hidden = true;
+    $("r0").checked = true; ["fFree", "fStock", "fSale"].forEach(id => $(id).checked = false);
+    update(true);
+  }
+  document.querySelectorAll("[data-reset]").forEach(b => b.addEventListener("click", resetAll));
+
+  /* ---------- Render ---------- */
+  let skelTimer;
+  function skeleton() {
+    $("grid").innerHTML = Array.from({ length: S.view === "list" ? 3 : 8 }, () => `<div class="${S.view === "list" ? "col-12" : "col"}"><div class="grid-skel p-2">
+      <div class="skeleton" style="${S.view === "list" ? "height:120px" : "aspect-ratio:1"}"></div>
+      <div class="p-2"><div class="skeleton mb-2" style="height:10px;width:50%"></div><div class="skeleton mb-2" style="height:14px"></div><div class="skeleton" style="height:16px;width:40%"></div></div>
+    </div></div>`).join("");
+  }
+  function render() {
+    const r = results();
+    const list = S.view === "list";
+    const grid = $("grid");
+    grid.className = list ? "row g-3 row-cols-1" : "row g-2 g-sm-3 row-cols-2 row-cols-md-3 row-cols-xl-4";
+    $("count").innerHTML = `<b class="text-body">${r.length}</b> ${r.length === 1 ? "product" : "products"}${S.cat !== "all" ? ` in <b class="text-body">${esc(SHOP.category(S.cat).name)}</b>` : ""}`;
+    if (!r.length) {
+      grid.className = "";
+      grid.innerHTML = `<div class="card"><div class="ab-empty">
+        <span class="ab-icon ab-icon-xl tone-primary"><i class="bi bi-search"></i></span>
+        <h6>No products match your filters</h6>
+        <p class="fs-7 mb-3">Try a different search term, widen your price range or clear some filters.</p>
+        <button class="btn btn-primary" data-reset-empty><i class="bi bi-arrow-counterclockwise me-1"></i>Clear all filters</button>
+      </div></div>`;
+      grid.querySelector("[data-reset-empty]").addEventListener("click", resetAll);
+      $("moreWrap").hidden = true;
+      return;
+    }
+    grid.innerHTML = r.slice(0, S.shown).map((p, i) => `<div class="col fade-up" style="animation-delay:${Math.min(i % PAGE, 8) * .03}s">${SHOP.card(p, { list })}</div>`).join("");
+    $("moreWrap").hidden = r.length <= S.shown;
+    $("moreInfo").textContent = `Showing ${Math.min(S.shown, r.length)} of ${r.length}`;
+  }
+  function renderMeta() {
+    document.querySelectorAll("#chips [data-cat], #catTiles [data-cat]").forEach(b => {
+      const on = b.dataset.cat === S.cat;
+      b.classList.toggle("active", on);
+      if (b.closest("#chips")) b.setAttribute("aria-selected", on);
+    });
+    const af = activeFilters();
+    $("activePills").innerHTML = af.map(([k, l]) => `<button class="ab-chip" data-clear="${esc(k)}" aria-label="Remove filter ${esc(l)}">${esc(l)}<i class="bi bi-x-lg"></i></button>`).join("") + (af.length > 1 ? `<button class="btn btn-link btn-sm p-0 ms-1 fs-8" data-clear-all>Clear all</button>` : "");
+    $("activePills").querySelectorAll("[data-clear]").forEach(b => b.addEventListener("click", () => clearFilter(b.dataset.clear)));
+    const ca = $("activePills").querySelector("[data-clear-all]"); if (ca) ca.addEventListener("click", resetAll);
+    const n = af.filter(([k]) => k !== "q").length;
+    $("fCount").textContent = n; $("fCount").hidden = !n;
+    document.querySelectorAll("#pricePresets [data-range]").forEach(b => { const [a, z] = b.dataset.range.split("-"); b.classList.toggle("active", S.min === Number(a) && (z ? S.max === Number(z) : S.max == null)); });
+    document.querySelectorAll("[data-view]").forEach(b => { b.classList.toggle("active", b.dataset.view === S.view); b.setAttribute("aria-pressed", b.dataset.view === S.view); });
+    $("showResults").textContent = `Show ${results().length} results`;
+    const w = store.get("wishlist").length; $("wishCount").textContent = w; $("wishCount").hidden = !w;
+    // URL sync
+    const p = new URLSearchParams();
+    if (S.q) p.set("q", S.q); if (S.cat !== "all") p.set("cat", S.cat); if (S.seller) p.set("seller", S.seller);
+    history.replaceState(null, "", location.pathname + (p.toString() ? "?" + p : ""));
+  }
+  function update(withSkeleton) {
+    S.shown = PAGE;
+    renderBrands(); renderMeta();
+    clearTimeout(skelTimer);
+    if (withSkeleton) { skeleton(); skelTimer = setTimeout(render, 380); } else render();
+  }
+
+  /* ---------- Controls ---------- */
+  const doSearch = AB.debounce(() => { S.q = $("q").value.trim(); if (topQ) topQ.value = S.q; update(true); }, 300);
+  $("q").addEventListener("input", doSearch);
+  $("searchForm").addEventListener("submit", (e) => { e.preventDefault(); S.q = $("q").value.trim(); update(true); $("q").blur(); });
+  $("sort").addEventListener("change", () => { S.sort = $("sort").value; update(true); });
+  document.querySelectorAll("[data-view]").forEach(b => b.addEventListener("click", () => {
+    S.view = b.dataset.view; try { localStorage.setItem("ab_mk_view", S.view); } catch (e) {}
+    renderMeta(); render();
+  }));
+  const readPrice = AB.debounce(() => {
+    const a = $("pMin").value === "" ? null : Math.max(0, Number($("pMin").value));
+    const z = $("pMax").value === "" ? null : Math.max(0, Number($("pMax").value));
+    const bad = a != null && z != null && a > z;
+    $("pMin").classList.toggle("is-invalid", bad); $("pMax").classList.toggle("is-invalid", bad); $("pErr").hidden = !bad;
+    if (bad) return;
+    S.min = a; S.max = z; update(true);
+  }, 450);
+  $("pMin").addEventListener("input", readPrice); $("pMax").addEventListener("input", readPrice);
+  document.querySelectorAll("#pricePresets [data-range]").forEach(b => b.addEventListener("click", () => {
+    const [a, z] = b.dataset.range.split("-");
+    if (b.classList.contains("active")) { S.min = S.max = null; $("pMin").value = $("pMax").value = ""; }
+    else { S.min = Number(a); S.max = z ? Number(z) : null; $("pMin").value = a; $("pMax").value = z || ""; }
+    $("pMin").classList.remove("is-invalid"); $("pMax").classList.remove("is-invalid"); $("pErr").hidden = true;
+    update(true);
+  }));
+  $("fFree").checked = S.free;
+  [["fFree", "free"], ["fStock", "stock"], ["fSale", "sale"]].forEach(([id, k]) => $(id).addEventListener("change", () => { S[k] = $(id).checked; update(true); }));
+  $("loadMore").addEventListener("click", (e) => {
+    AB.loading(e.currentTarget, 600).then(() => { S.shown += PAGE; render(); });
+  });
+
+  // keep wishlist hearts/count in sync
+  store.on((k) => { if (k === "wishlist") { const w = store.get("wishlist").length; $("wishCount").textContent = w; $("wishCount").hidden = !w; } });
+
+  $("sort").value = S.sort;
+  update(true);
+});
+</script>
+</body>
+</html>

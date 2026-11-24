@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Dashboard · AutoBiz</title>
+  <meta name="theme-color" content="#191919">
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/app.css" rel="stylesheet">
+  <script src="../assets/js/brand.js"></script>
+  <style>
+    .db-col { display: flex; flex-direction: column; }
+    .db-card { flex: 1; }
+    .db-card .card-body { padding: 1.4rem; }
+    .db-sep { border-bottom: 1px solid var(--ab-border); }
+    .db-big { font-size: 1.45rem; font-weight: 800; letter-spacing: -.02em; }
+
+    /* Total balance: account carousel */
+    .acct { border-radius: 8px; padding: 1.1rem 1.2rem; color: #fff; background: var(--ab-primary); position: relative; overflow: hidden; min-height: 128px; display: flex; flex-direction: column; justify-content: space-between; }
+    .acct::after { content: ""; position: absolute; width: 180px; height: 180px; border-radius: 50%; right: -60px; top: -80px; background: rgba(255, 255, 255, .08); }
+    .acct > * { position: relative; z-index: 1; }
+    .acct.usd { background: var(--ab-primary-700); } .acct.card-v { background: #3d4a5c; }
+    .acct .lbl { font-size: .78rem; opacity: .75; }
+    .acct .typ { font-weight: 700; }
+    .acct .num { font-size: .85rem; letter-spacing: .08em; opacity: .9; }
+    .acct .amt { font-weight: 800; font-size: 1.1rem; }
+    .acct .go { width: 26px; height: 26px; border-radius: 50%; background: #fff; color: var(--ab-primary); display: grid; place-items: center; font-size: .8rem; }
+    .acct .brandmark { display: flex; }
+    .acct .brandmark i { width: 26px; height: 26px; border-radius: 50%; display: block; }
+    .acct .brandmark i:first-child { background: #eb001b; } .acct .brandmark i:last-child { background: #f79e1b; margin-left: -10px; opacity: .95; }
+    .acct-nav { display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; font-size: .85rem; }
+    .acct-nav button { border: 0; background: none; color: var(--ab-text); font-weight: 600; padding: 0; display: inline-flex; align-items: center; gap: .35rem; }
+    .acct-nav button:disabled { color: var(--ab-muted); opacity: .6; font-weight: 500; }
+    .dots { display: flex; gap: 6px; } .dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--ab-border); } .dots i.on { background: var(--ab-primary); }
+
+    /* Budget gauge */
+    .gauge text { font-family: inherit; }
+    .db-mini { display: flex; gap: .6rem; align-items: flex-start; }
+    .db-mini i { color: var(--ab-muted); font-size: 1.05rem; margin-top: 1px; }
+    .db-mini .k { font-size: .75rem; color: var(--ab-muted); }
+    .db-mini .v { font-weight: 700; }
+    .icon-btn-sm { width: 30px; height: 30px; border-radius: 6px; border: 0; background: var(--ab-surface-2); color: var(--ab-muted); display: inline-grid; place-items: center; }
+    .icon-btn-sm:hover { color: var(--ab-primary); }
+
+    /* Upcoming bills */
+    .bill { display: flex; align-items: center; gap: 1rem; padding: .95rem 0; }
+    .bill + .bill { border-top: 1px solid var(--ab-border); }
+    .bill .dt { width: 52px; flex-shrink: 0; text-align: center; background: var(--ab-surface-2); border-radius: 8px; padding: .4rem 0; }
+    .bill .dt small { display: block; font-size: .7rem; color: var(--ab-muted); }
+    .bill .dt b { font-size: 1.25rem; line-height: 1.1; }
+    .bill .pv { font-size: .75rem; color: var(--ab-muted); }
+    .bill .nm { font-weight: 700; font-size: .95rem; }
+    .bill .lc { font-size: .72rem; color: var(--ab-muted); }
+    .bill .amt { border: 1px solid var(--ab-border); border-radius: 8px; padding: .45rem .75rem; font-weight: 700; font-size: .85rem; color: var(--ab-text); white-space: nowrap; }
+    .bill .amt:hover { border-color: var(--ab-primary); color: var(--ab-primary); }
+
+    /* Recent transactions */
+    .db-tabs { display: flex; gap: 1.5rem; border-bottom: 1px solid var(--ab-border); margin-bottom: .25rem; }
+    .db-tabs button { border: 0; background: none; padding: .2rem .25rem .7rem; font-weight: 600; color: var(--ab-text); border-bottom: 3px solid transparent; margin-bottom: -1px; }
+    .db-tabs button.active { color: var(--ab-primary); border-bottom-color: var(--ab-primary); }
+    .tx { display: flex; align-items: center; gap: .9rem; padding: .95rem 0; color: var(--ab-text); }
+    .tx + .tx { border-top: 1px solid var(--ab-border); }
+    .tx .ic { width: 40px; height: 40px; border-radius: 8px; background: var(--ab-surface-2); color: #666; display: grid; place-items: center; font-size: 1.1rem; flex-shrink: 0; }
+    [data-bs-theme="dark"] .tx .ic { color: #bbb; }
+    .tx .t { font-weight: 700; font-size: .92rem; }
+    .tx .s { font-size: .75rem; color: var(--ab-muted); }
+    .tx .a { font-weight: 700; font-size: .92rem; }
+    .tx:hover .t { color: var(--ab-primary); }
+
+    /* Weekly comparison chart */
+    .chart { display: grid; grid-template-columns: 46px 1fr; gap: .5rem; height: 230px; }
+    .chart .y { display: flex; flex-direction: column; justify-content: space-between; font-size: .72rem; color: var(--ab-muted); text-align: right; padding-bottom: 24px; }
+    .chart .plot { position: relative; display: flex; align-items: stretch; justify-content: space-around; gap: .5rem; }
+    .chart .grid { position: absolute; inset: 0 0 24px 0; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
+    .chart .grid i { border-top: 1px dashed var(--ab-border); }
+    .chart .day { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
+    .chart .bars { flex: 1; display: flex; align-items: flex-end; gap: 6px; }
+    .chart .bars span { width: 14px; border-radius: 3px 3px 0 0; height: 0; transition: height .6s cubic-bezier(.2, .8, .2, 1); }
+    .chart .bars .lw { background: #e8e8e8; } [data-bs-theme="dark"] .chart .bars .lw { background: #3a3a3e; }
+    .chart .bars .tw { background: var(--ab-primary); }
+    .chart .lbl { height: 24px; font-size: .72rem; color: var(--ab-muted); padding-top: 6px; white-space: nowrap; }
+    .legend { display: flex; gap: 1rem; font-size: .78rem; color: var(--ab-muted); }
+    .legend i { display: inline-block; width: 14px; height: 6px; border-radius: 3px; margin-right: 6px; vertical-align: middle; }
+    @media (max-width: 575.98px) { .chart .bars span { width: 8px; } .chart .bars { gap: 3px; } .chart { grid-template-columns: 38px 1fr; } }
+
+    /* Expenses breakdown */
+    .exp { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .exp a { display: flex; align-items: center; gap: .9rem; padding: 1.1rem 1.25rem; color: var(--ab-text); border-right: 1px solid var(--ab-border); border-bottom: 1px solid var(--ab-border); }
+    .exp a:nth-child(3n) { border-right: 0; }
+    .exp a:nth-last-child(-n+3) { border-bottom: 0; }
+    .exp .ic { width: 44px; height: 52px; border-radius: 8px; background: var(--ab-surface-2); color: #666; display: grid; place-items: center; font-size: 1.15rem; flex-shrink: 0; }
+    [data-bs-theme="dark"] .exp .ic { color: #bbb; }
+    .exp .k { font-size: .75rem; color: var(--ab-muted); }
+    .exp .v { font-weight: 800; }
+    .exp .pc { font-size: .72rem; color: var(--ab-muted); }
+    .exp .arrow { margin-left: auto; color: var(--ab-muted); font-size: 1.1rem; }
+    .exp a:hover .arrow { color: var(--ab-primary); transform: translateX(3px); transition: transform .2s; }
+    @media (max-width: 767.98px) {
+      .exp { grid-template-columns: 1fr 1fr; }
+      .exp a { border-right: 1px solid var(--ab-border) !important; border-bottom: 1px solid var(--ab-border) !important; padding: .9rem; gap: .6rem; }
+      .exp a:nth-child(2n) { border-right: 0 !important; }
+      .exp a:nth-last-child(-n+2) { border-bottom: 0 !important; }
+      .exp .arrow { display: none; }
+      .exp .ic { width: 38px; height: 44px; }
+    }
+
+    /* Quick actions */
+    .qa { display: grid; grid-template-columns: repeat(8, 1fr); gap: .5rem; }
+    .qa a { display: flex; flex-direction: column; align-items: center; gap: .45rem; padding: .7rem .25rem; border-radius: 8px; color: var(--ab-text); font-size: .78rem; font-weight: 600; text-align: center; }
+    .qa a:hover { background: var(--ab-surface-2); }
+    .qa .ic { width: 44px; height: 44px; border-radius: 10px; background: var(--ab-primary-soft); color: var(--ab-primary); display: grid; place-items: center; font-size: 1.2rem; }
+    @media (max-width: 767.98px) { .qa { grid-template-columns: repeat(4, 1fr); } }
+  </style>
+</head>
+<body data-page="dashboard" data-title="Dashboard">
+<main class="ab-content">
+
+  <!-- Row 1: Total balance · Budget · Upcoming bills -->
+  <div class="row g-4 mb-4">
+    <div class="col-lg-6 col-xl-4 db-col fade-up">
+      <div class="dash-title"><h2>Total Balance</h2><button class="btn btn-link p-0 fs-7 link-muted" id="toggleBal" aria-label="Show or hide balances"></button></div>
+      <div class="card db-card"><div class="card-body">
+        <div class="d-flex justify-content-between align-items-center pb-3 mb-3 db-sep">
+          <div class="db-big tabular" id="totalBal"></div>
+          <span class="fs-7 fw-semibold">All Accounts</span>
+        </div>
+        <div id="acct"></div>
+        <div class="acct-nav">
+          <button id="accPrev"><i class="bi bi-chevron-left"></i>Previous</button>
+          <div class="dots" id="accDots"></div>
+          <button id="accNext">Next<i class="bi bi-chevron-right"></i></button>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="col-lg-6 col-xl-4 db-col fade-up" style="animation-delay:.04s">
+      <div class="dash-title"><h2>Monthly Budget</h2></div>
+      <div class="card db-card"><div class="card-body">
+        <div class="d-flex justify-content-between align-items-center pb-3 mb-3 db-sep">
+          <div class="d-flex align-items-center gap-2"><span class="db-big tabular" id="budgetAmt"></span><button class="icon-btn-sm" id="editBudget" aria-label="Edit monthly budget"><i class="bi bi-pencil"></i></button></div>
+          <span class="fs-7 fw-semibold" id="budgetMonth"></span>
+        </div>
+        <div class="row align-items-center g-2">
+          <div class="col-5 d-flex flex-column gap-4">
+            <div class="db-mini"><i class="bi bi-graph-down-arrow"></i><div><div class="k">Spent so far</div><div class="v tabular" id="spentAmt"></div></div></div>
+            <div class="db-mini"><i class="bi bi-bullseye"></i><div><div class="k">Left to spend</div><div class="v tabular" id="leftAmt"></div></div></div>
+          </div>
+          <div class="col-7 text-center">
+            <svg class="gauge w-100" viewBox="0 0 200 120" role="img" id="gauge" aria-label="Spending against budget"></svg>
+            <div class="fs-8 fw-semibold mt-1">Spent vs Budget</div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="col-xl-4 db-col fade-up" style="animation-delay:.08s">
+      <div class="dash-title"><h2>Upcoming Bill</h2><a href="bills.html">View All <i class="bi bi-chevron-right"></i></a></div>
+      <div class="card db-card"><div class="card-body py-2" id="bills"></div></div>
+    </div>
+  </div>
+
+  <!-- Quick actions -->
+  <div class="dash-title"><h2>Quick Actions</h2><a href="#" data-open-fund>Fund wallet <i class="bi bi-plus-lg"></i></a></div>
+  <div class="card mb-4 fade-up" style="animation-delay:.1s"><div class="card-body py-2">
+    <div class="qa">
+      <a href="bills.html?tab=airtime"><span class="ic"><i class="bi bi-phone"></i></span>Airtime</a>
+      <a href="bills.html?tab=data"><span class="ic"><i class="bi bi-wifi"></i></span>Data</a>
+      <a href="bills.html?tab=electricity"><span class="ic"><i class="bi bi-lightning-charge"></i></span>Electricity</a>
+      <a href="bills.html?tab=cable"><span class="ic"><i class="bi bi-tv"></i></span>Cable TV</a>
+      <a href="esim.html"><span class="ic"><i class="bi bi-sim"></i></span>eSIM</a>
+      <a href="flights.html"><span class="ic"><i class="bi bi-airplane"></i></span>Flights</a>
+      <a href="virtual-cards.html"><span class="ic"><i class="bi bi-credit-card-2-front"></i></span>USD Card</a>
+      <a href="giftcards.html"><span class="ic"><i class="bi bi-gift"></i></span>Gift Cards</a>
+    </div>
+  </div></div>
+
+  <!-- Row 2: Recent transactions · Statistics + Expenses -->
+  <div class="row g-4">
+    <div class="col-xl-4 db-col">
+      <div class="dash-title"><h2>Recent Transaction</h2><a href="transactions.html">View All <i class="bi bi-chevron-right"></i></a></div>
+      <div class="card db-card"><div class="card-body">
+        <div class="db-tabs" role="tablist" id="txTabs">
+          <button class="active" data-f="all" role="tab" aria-selected="true">All</button>
+          <button data-f="in" role="tab" aria-selected="false">Money in</button>
+          <button data-f="out" role="tab" aria-selected="false">Money out</button>
+        </div>
+        <div id="txList"></div>
+      </div></div>
+    </div>
+
+    <div class="col-xl-8">
+      <div class="dash-title"><h2>Statistics</h2></div>
+      <div class="card mb-4"><div class="card-body">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+          <div class="dropdown">
+            <button class="btn p-0 fw-bold d-flex align-items-center gap-2 border-0" data-bs-toggle="dropdown" id="cmpBtn">Weekly Comparison <i class="bi bi-chevron-down fs-7"></i></button>
+            <ul class="dropdown-menu"><li><button class="dropdown-item" data-cmp="week">Weekly Comparison</button></li><li><button class="dropdown-item" data-cmp="month">Monthly Comparison</button></li></ul>
+          </div>
+          <div class="legend"><span><i style="background:var(--ab-primary)"></i><span id="lgA">This week</span></span><span><i style="background:#e8e8e8"></i><span id="lgB">Last week</span></span></div>
+        </div>
+        <div class="chart" role="img" aria-label="Spending comparison chart">
+          <div class="y" id="yAxis"></div>
+          <div class="plot"><div class="grid"><i></i><i></i><i></i><i></i><i></i></div><div class="d-flex w-100 justify-content-around" id="plot"></div></div>
+        </div>
+      </div></div>
+
+      <div class="dash-title"><h2>Expenses Breakdown</h2><span class="fs-8 text-muted">*Compared to last month</span></div>
+      <div class="card"><div class="exp" id="exp"></div></div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { store, fmt, esc } = AB;
+  const $ = (id) => document.getElementById(id);
+  const rate = AB_DATA.usdRate;
+  const hidden = () => store.get("settings").hideBalance;
+  const mask = (txt) => (hidden() ? "••••••" : txt);
+  const monthStart = (offset = 0) => { const d = new Date(); d.setMonth(d.getMonth() + offset, 1); d.setHours(0, 0, 0, 0); return d.getTime(); };
+
+  /* ---------------- Total balance + accounts ---------------- */
+  let accIdx = 0;
+  function accounts() {
+    const w = store.get("wallet");
+    const list = [
+      { cls: "", type: "Naira Wallet", num: "7821 4436 09", amt: fmt.naira(w.balance, 2), href: "wallet.html", icon: "bi-wallet2" },
+      { cls: "usd", type: "USD Wallet", num: "AutoBiz · USD", amt: fmt.usd(w.usd), href: "wallet.html#convert", icon: "bi-currency-dollar" }
+    ];
+    store.get("cards").forEach((c) => list.push({ cls: "card-v", type: `${c.brand === "mastercard" ? "Mastercard" : "Visa"} · ${c.label || c.name || "Virtual card"}`, num: c.number, amt: fmt.usd(c.balance), href: "virtual-cards.html", brand: c.brand, gradient: c.gradient }));
+    return list;
+  }
+  function renderBalance() {
+    const w = store.get("wallet");
+    const cardsUsd = store.get("cards").reduce((a, c) => a + (c.balance || 0), 0);
+    $("totalBal").textContent = mask(fmt.naira(w.balance + (w.usd + cardsUsd) * rate, 2));
+    $("toggleBal").innerHTML = hidden() ? '<i class="bi bi-eye me-1"></i>Show' : '<i class="bi bi-eye-slash me-1"></i>Hide';
+    const list = accounts();
+    accIdx = Math.min(accIdx, list.length - 1);
+    const a = list[accIdx];
+    const digits = String(a.num).replace(/\s/g, "");
+    const masked = /^\d{10,}$/.test(digits) ? (digits.length > 10 ? "**** **** **** " : "**** ") + digits.slice(-4) : a.num;
+    $("acct").innerHTML = `
+      <a href="${a.href}" class="acct ${a.cls} text-white d-flex" style="${a.gradient ? `background:${a.gradient}` : ""}">
+        <div class="d-flex justify-content-between align-items-start">
+          <div><div class="lbl">Account Type</div><div class="typ">${esc(a.type)}</div></div>
+          ${a.brand === "mastercard" ? `<span class="brandmark"><i></i><i></i></span>` : a.brand === "visa" ? `<b class="fst-italic">VISA</b>` : `<i class="bi ${a.icon} fs-4 opacity-75"></i>`}
+        </div>
+        <div class="d-flex justify-content-between align-items-end gap-2">
+          <span class="num tabular text-truncate">${esc(masked)}</span>
+          <span class="d-flex align-items-center gap-2"><span class="amt tabular">${mask(a.amt)}</span><span class="go"><i class="bi bi-arrow-up-right"></i></span></span>
+        </div>
+      </a>`;
+    $("accDots").innerHTML = list.map((_, i) => `<i class="${i === accIdx ? "on" : ""}"></i>`).join("");
+    $("accPrev").disabled = accIdx === 0;
+    $("accNext").disabled = accIdx === list.length - 1;
+  }
+  $("accPrev").addEventListener("click", () => { accIdx--; renderBalance(); });
+  $("accNext").addEventListener("click", () => { accIdx++; renderBalance(); });
+  $("toggleBal").addEventListener("click", () => store.update("settings", (s) => ({ ...s, hideBalance: !s.hideBalance })));
+
+  /* ---------------- Monthly budget gauge ---------------- */
+  const spentThisMonth = () => store.get("transactions").filter((t) => t.direction === "out" && t.status === "success" && t.date >= monthStart()).reduce((a, t) => a + t.amount, 0);
+  function renderBudget() {
+    const budget = store.get("settings").budget || 300000;
+    const spent = spentThisMonth();
+    const pct = Math.min(spent / budget, 1);
+    $("budgetAmt").textContent = fmt.naira(budget);
+    $("budgetMonth").textContent = new Date().toLocaleDateString("en-US", { month: "short", year: "numeric" });
+    $("spentAmt").textContent = fmt.naira(spent);
+    $("leftAmt").textContent = fmt.naira(Math.max(budget - spent, 0));
+    // Semicircle gauge: arc from 180° to 0°
+    const cx = 100, cy = 100, r = 72;
+    const pt = (p) => { const a = Math.PI * (1 - p); return [cx + r * Math.cos(a), cy - r * Math.sin(a)]; };
+    const [ex, ey] = pt(pct);
+    const needle = pt(pct).map((v, i) => (i === 0 ? cx + (v - cx) * .72 : cy + (v - cy) * .72));
+    const over = spent > budget;
+    const k = (n) => n >= 1000 ? "₦" + Math.round(n / 1000) + "k" : "₦" + n;
+    $("gauge").innerHTML = `
+      <path d="M28 100 A72 72 0 0 1 172 100" fill="none" stroke="var(--ab-border)" stroke-width="16" stroke-linecap="round"/>
+      ${pct > 0 ? `<path d="M28 100 A72 72 0 0 1 ${ex.toFixed(1)} ${ey.toFixed(1)}" fill="none" stroke="${over ? "var(--ab-danger)" : "var(--ab-primary)"}" stroke-width="16" stroke-linecap="round"/>` : ""}
+      <line x1="${cx}" y1="${cy}" x2="${needle[0].toFixed(1)}" y2="${needle[1].toFixed(1)}" stroke="var(--ab-primary)" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="${cx}" cy="${cy}" r="6" fill="var(--ab-primary)"/>
+      <text x="22" y="118" font-size="10" fill="var(--ab-muted)">₦0</text>
+      <text x="100" y="118" font-size="13" font-weight="800" text-anchor="middle" fill="var(--ab-text)">${Math.round(pct * 100)}%</text>
+      <text x="178" y="118" font-size="10" text-anchor="end" fill="var(--ab-muted)">${k(budget)}</text>`;
+  }
+  $("editBudget").addEventListener("click", () => {
+    const m = AB.modal(`
+      <div class="modal-header"><h5 class="modal-title">Set monthly budget</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body pt-1">
+        <label class="form-label" for="bIn">Budget for ${new Date().toLocaleDateString("en-US", { month: "long" })}</label>
+        <div class="input-group input-group-lg"><span class="input-group-text">₦</span><input id="bIn" type="number" min="1000" step="1000" class="form-control" value="${store.get("settings").budget || 300000}"></div>
+        <div class="invalid-feedback" id="bErr">Enter at least ₦1,000</div>
+        <div class="d-flex gap-2 flex-wrap mt-3">${[100000, 250000, 500000, 1000000].map((v) => `<button class="ab-chip" data-v="${v}">${fmt.naira(v)}</button>`).join("")}</div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-primary btn-lg w-100" id="bSave">Save budget</button></div>`);
+    m.el.querySelectorAll("[data-v]").forEach((b) => b.addEventListener("click", () => (m.el.querySelector("#bIn").value = b.dataset.v)));
+    m.el.querySelector("#bSave").addEventListener("click", () => {
+      const v = Number(m.el.querySelector("#bIn").value);
+      if (!v || v < 1000) { m.el.querySelector("#bIn").classList.add("is-invalid"); m.el.querySelector("#bErr").style.display = "block"; return; }
+      store.update("settings", (s) => ({ ...s, budget: v }));
+      m.close(); AB.toast("Monthly budget updated", "success");
+    });
+  });
+
+  /* ---------------- Upcoming bills (from the user's recurring payments) ---------------- */
+  function renderBills() {
+    const tx = store.get("transactions");
+    const last = (type) => tx.find((t) => t.type === type && t.status === "success");
+    const plusMonth = (d) => { const x = new Date(d); x.setMonth(x.getMonth() + 1); return x; };
+    const items = [];
+    const cable = last("cable") || tx.find((t) => t.type === "cable");
+    items.push({ due: cable ? plusMonth(cable.date) : new Date(Date.now() + 6 * 864e5), provider: "DStv", name: cable ? cable.title : "DStv Compact", last: cable ? fmt.date(cable.date) : "—", amount: cable ? cable.amount : 19000, href: "bills.html?tab=cable" });
+    const power = last("electricity");
+    items.push({ due: power ? new Date(power.date + 14 * 864e5) : new Date(Date.now() + 9 * 864e5), provider: "Electricity", name: power ? power.title : "Prepaid token", last: power ? fmt.date(power.date) : "—", amount: power ? power.amount : 10000, href: "bills.html?tab=electricity" });
+    const esim = store.get("esims").find((e) => e.status === "Active" && e.expiresAt);
+    if (esim) items.push({ due: new Date(esim.expiresAt), provider: "eSIM", name: `${esim.country} ${esim.data || ""}`.trim(), last: "Expires", amount: null, href: "esim.html?tab=mine" });
+    items.sort((a, b) => a.due - b.due);
+    $("bills").innerHTML = items.slice(0, 2).map((b) => `
+      <div class="bill">
+        <div class="dt"><small>${b.due.toLocaleDateString("en-US", { month: "short" })}</small><b>${b.due.getDate()}</b></div>
+        <div class="min-w-0 flex-grow-1"><div class="pv">${esc(b.provider)}</div><div class="nm text-truncate">${esc(b.name)}</div><div class="lc">Last charge · ${esc(b.last)}</div></div>
+        <a href="${b.href}" class="amt tabular">${b.amount ? fmt.naira(b.amount) : "Top up"}</a>
+      </div>`).join("");
+  }
+
+  /* ---------------- Recent transactions ---------------- */
+  let txFilter = "all";
+  function renderTx() {
+    const tx = store.get("transactions").filter((t) => txFilter === "all" || t.direction === txFilter).slice(0, 5);
+    $("txList").innerHTML = tx.length ? tx.map((t) => `
+      <a class="tx" href="transactions.html?id=${encodeURIComponent(t.id)}">
+        <span class="ic"><i class="bi ${t.icon}"></i></span>
+        <div class="min-w-0 flex-grow-1"><div class="t text-truncate">${esc(t.title)}</div><div class="s text-truncate">${esc(t.subtitle || "")}</div></div>
+        <div class="text-end flex-shrink-0"><div class="a tabular ${t.direction === "in" ? "text-success" : ""}">${t.direction === "in" ? "+" : ""}${fmt.naira(t.amount, 2)}</div><div class="s">${t.status === "success" ? fmt.date(t.date) : `<span class="ab-status ${t.status === "pending" ? "pending" : "failed"}">${t.status}</span>`}</div></div>
+      </a>`).join("") : `<div class="ab-empty"><span class="ab-icon ab-icon-lg tone-primary"><i class="bi bi-receipt"></i></span><h6>No transactions yet</h6><p class="fs-7 mb-0">Fund your wallet to get started.</p></div>`;
+  }
+  document.querySelectorAll("#txTabs button").forEach((b) => b.addEventListener("click", () => {
+    txFilter = b.dataset.f;
+    document.querySelectorAll("#txTabs button").forEach((x) => { x.classList.toggle("active", x === b); x.setAttribute("aria-selected", x === b); });
+    renderTx();
+  }));
+
+  /* ---------------- Statistics: weekly / monthly comparison ----------------
+     Real outflows are added on top of a demo baseline so the chart reads well
+     with little history. Replace `baseline` with API data when wiring the backend. */
+  let cmp = "week";
+  const baseline = { week: [[38, 22, 41, 30, 52, 47, 26], [31, 28, 35, 36, 40, 44, 33]], month: [[180, 240, 210, 305], [160, 220, 260, 280]] };
+  function series(mode) {
+    const out = store.get("transactions").filter((t) => t.direction === "out" && t.status === "success");
+    const now = new Date(); now.setHours(0, 0, 0, 0);
+    if (mode === "week") {
+      const labels = [], a = [], b = [];
+      for (let i = 6; i >= 0; i--) {
+        const d0 = now.getTime() - i * 864e5, d1 = d0 + 864e5;
+        const sum = (from, to) => out.filter((t) => t.date >= from && t.date < to).reduce((s, t) => s + t.amount, 0);
+        const day = new Date(d0);
+        labels.push(`<span class="d-none d-sm-inline">${day.getDate()} </span>${day.toLocaleDateString("en-US", { weekday: "short" })}`);
+        a.push(baseline.week[0][6 - i] * 1000 + sum(d0, d1));
+        b.push(baseline.week[1][6 - i] * 1000 + sum(d0 - 7 * 864e5, d1 - 7 * 864e5));
+      }
+      return { labels, a, b, la: "This week", lb: "Last week" };
+    }
+    const labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
+    const ms = monthStart(), ls = monthStart(-1);
+    const wk = (start, w) => out.filter((t) => t.date >= start + w * 7 * 864e5 && t.date < start + (w + 1) * 7 * 864e5).reduce((s, t) => s + t.amount, 0);
+    return { labels, a: labels.map((_, w) => baseline.month[0][w] * 1000 + wk(ms, w)), b: labels.map((_, w) => baseline.month[1][w] * 1000 + wk(ls, w)), la: "This month", lb: "Last month" };
+  }
+  function renderChart() {
+    const s = series(cmp);
+    const max = Math.max(...s.a, ...s.b) * 1.1;
+    const step = Math.ceil(max / 4 / 5000) * 5000;
+    const top = step * 4;
+    const k = (n) => (n >= 1e6 ? "₦" + (n / 1e6).toFixed(1) + "m" : "₦" + Math.round(n / 1000) + "k");
+    $("yAxis").innerHTML = [4, 3, 2, 1, 0].map((i) => `<span>${i ? k(step * i) : "₦0"}</span>`).join("");
+    $("lgA").textContent = s.la; $("lgB").textContent = s.lb;
+    $("cmpBtn").firstChild.textContent = cmp === "week" ? "Weekly Comparison " : "Monthly Comparison ";
+    $("plot").innerHTML = s.labels.map((l, i) => `
+      <div class="day">
+        <div class="bars"><span class="lw" data-h="${(s.b[i] / top) * 100}" data-bs-toggle="tooltip" title="${s.lb}: ${fmt.naira(s.b[i])}"></span><span class="tw" data-h="${(s.a[i] / top) * 100}" data-bs-toggle="tooltip" title="${s.la}: ${fmt.naira(s.a[i])}"></span></div>
+        <div class="lbl">${l}</div>
+      </div>`).join("");
+    requestAnimationFrame(() => document.querySelectorAll("#plot .bars span").forEach((el) => { el.style.height = el.dataset.h + "%"; new bootstrap.Tooltip(el); }));
+  }
+  document.querySelectorAll("[data-cmp]").forEach((b) => b.addEventListener("click", () => { cmp = b.dataset.cmp; renderChart(); }));
+
+  /* ---------------- Expenses breakdown ---------------- */
+  const CATS = [
+    { k: "Shopping", icon: "bi-bag", types: ["shop"], href: "transactions.html?type=shop", base: 42000 },
+    { k: "Bills & Utilities", icon: "bi-lightning-charge", types: ["electricity", "cable", "education", "betting"], href: "transactions.html?type=electricity", base: 31000 },
+    { k: "Airtime & Data", icon: "bi-phone", types: ["airtime", "data"], href: "transactions.html?type=airtime", base: 6500 },
+    { k: "Travel", icon: "bi-airplane", types: ["flight", "esim"], href: "transactions.html?type=flight", base: 0 },
+    { k: "USD Cards", icon: "bi-credit-card-2-front", types: ["card"], href: "transactions.html?type=card", base: 12000 },
+    { k: "Transfers", icon: "bi-send", types: ["transfer", "withdrawal"], href: "transactions.html?type=transfer", base: 25000 }
+  ];
+  function renderExpenses() {
+    const out = store.get("transactions").filter((t) => t.direction === "out" && t.status === "success");
+    const ms = monthStart(), ls = monthStart(-1);
+    $("exp").innerHTML = CATS.map((c) => {
+      const cur = out.filter((t) => c.types.includes(t.type) && t.date >= ms).reduce((a, t) => a + t.amount, 0);
+      // last month = real history (plus a demo baseline until the backend supplies it)
+      const prev = c.base + out.filter((t) => c.types.includes(t.type) && t.date >= ls && t.date < ms).reduce((a, t) => a + t.amount, 0);
+      const ch = prev ? Math.round(((cur - prev) / prev) * 100) : null;
+      return `<a href="${c.href}">
+        <span class="ic"><i class="bi ${c.icon}"></i></span>
+        <div class="min-w-0"><div class="k text-truncate">${c.k}</div><div class="v tabular">${fmt.naira(cur)}</div>
+          <div class="pc">${ch === null ? "New" : `${Math.abs(ch)}%* <i class="bi ${ch > 0 ? "bi-arrow-up text-danger" : "bi-arrow-down text-success"}"></i>`}</div></div>
+        <i class="bi bi-arrow-right arrow"></i>
+      </a>`;
+    }).join("");
+  }
+
+  const all = () => { renderBalance(); renderBudget(); renderBills(); renderTx(); renderChart(); renderExpenses(); };
+  all();
+  store.on((k) => { if (["wallet", "transactions", "cards", "settings", "esims"].includes(k)) all(); });
+});
+</script>
+</body>
+</html>

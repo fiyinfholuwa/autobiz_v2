@@ -1,0 +1,920 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Virtual Cards · AutoBiz</title>
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/app.css" rel="stylesheet">
+  <script src="../assets/js/brand.js"></script>
+  <style>
+    /* ---------- 3D virtual card ---------- */
+    .vc-scene { perspective: 1400px; width: 100%; max-width: 420px; margin: 0 auto; container-type: inline-size; }
+    .vc-tilt { transition: transform .25s ease; transform-style: preserve-3d; }
+    .vc { position: relative; width: 100%; aspect-ratio: 1.586; transform-style: preserve-3d; transition: transform .8s cubic-bezier(.2,.8,.2,1); cursor: pointer; border-radius: 20px; outline: none; }
+    .vc:focus-visible { box-shadow: 0 0 0 4px rgba(var(--ab-primary-rgb), .35); }
+    .vc.flipped { transform: rotateY(180deg); }
+    .vc-face { position: absolute; inset: 0; border-radius: 20px; overflow: hidden; color: #fff; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+      box-shadow: 0 24px 48px -18px rgba(10, 15, 40, .55), inset 0 1px 0 rgba(255,255,255,.18); }
+    .vc-face::before { content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(120% 90% at 100% 0%, rgba(255,255,255,.22), transparent 55%), radial-gradient(80% 70% at 0% 100%, rgba(0,0,0,.25), transparent 60%); }
+    .vc-face::after { content: ""; position: absolute; width: 70%; aspect-ratio: 1; right: -22%; bottom: -48%; border-radius: 50%; border: 34px solid rgba(255,255,255,.06); pointer-events: none; }
+    .vc-front { padding: 6% 7%; display: flex; flex-direction: column; }
+    .vc-front > *, .vc-back > * { position: relative; z-index: 1; }
+    .vc-back { transform: rotateY(180deg); display: flex; flex-direction: column; }
+    .vc-top { display: flex; justify-content: space-between; align-items: center; }
+    .vc-logo { font-weight: 800; letter-spacing: -.02em; font-size: 4.4cqw; display: flex; align-items: center; gap: .4rem; }
+    .vc-logo .tag { font-size: 2.4cqw; font-weight: 700; padding: .12rem .4rem; border-radius: 6px; background: rgba(255,255,255,.18); letter-spacing: .04em; }
+    .vc-mid { display: flex; align-items: center; gap: 12px; margin-top: 7%; }
+    .vc-chip { width: 15%; aspect-ratio: 1.3; }
+    .vc-contactless { width: 7%; opacity: .9; }
+    .vc-number { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 5.5cqw; letter-spacing: .06em; margin-top: auto; white-space: nowrap; text-shadow: 0 1px 2px rgba(0,0,0,.25); }
+    .vc-bottom { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 4%; gap: .5rem; }
+    .vc-lbl { font-size: 2.2cqw; text-transform: uppercase; letter-spacing: .12em; opacity: .7; }
+    .vc-val { font-weight: 700; font-size: 3.4cqw; letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .vc-brand { height: 9cqw; flex-shrink: 0; }
+    .vc-bal { text-align: right; }
+    .vc-bal .amt { font-size: 5.6cqw; font-weight: 800; letter-spacing: -.02em; }
+    .vc-stripe { height: 20%; background: linear-gradient(180deg, #111, #2a2a2a); margin-top: 8%; }
+    .vc-sig { display: flex; align-items: center; margin: 6% 7% 0; gap: 10px; }
+    .vc-sig .pad { flex: 1; height: 9cqw; border-radius: 4px; background: repeating-linear-gradient(135deg, #f4f1e8 0 6px, #e8e3d3 6px 12px); }
+    .vc-sig .cvv { background: #fff; color: #111; font-family: ui-monospace, Menlo, monospace; font-weight: 800; padding: 1.6cqw 2.6cqw; border-radius: 4px; font-size: 3.8cqw; min-width: 15cqw; text-align: center; font-style: italic; }
+    .vc-back-foot { margin: auto 7% 6%; display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; font-size: 2.3cqw; opacity: .75; line-height: 1.35; }
+    .vc-frost { position: absolute; inset: 0; border-radius: 20px; z-index: 5; display: none; align-items: center; justify-content: center; flex-direction: column; gap: .3rem;
+      background: rgba(210, 230, 255, .28); backdrop-filter: blur(5px) saturate(.6); -webkit-backdrop-filter: blur(5px) saturate(.6); color: #fff; font-weight: 800; letter-spacing: .02em;
+      text-shadow: 0 1px 6px rgba(0,0,0,.35); }
+    .vc-frost i { font-size: 10cqw; }
+    .vc-frost::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: repeating-linear-gradient(60deg, rgba(255,255,255,.12) 0 2px, transparent 2px 14px); }
+    .vc.frozen .vc-frost { display: flex; }
+    .vc-hint { font-size: .75rem; color: var(--ab-muted); text-align: center; margin-top: .75rem; }
+
+    /* card selector */
+    #thumbs { padding: 6px 6px .6rem; margin: -6px -6px 0; }
+    .vc-thumb { width: 150px; border-radius: 14px; aspect-ratio: 1.586; color: #fff; padding: .7rem .8rem; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;
+      border: 0; text-align: left; box-shadow: 0 8px 18px -10px rgba(10,15,40,.5); transition: transform .15s ease, box-shadow .15s ease; outline: 3px solid transparent; outline-offset: 2px; }
+    .vc-thumb:hover { transform: translateY(-2px); }
+    .vc-thumb.active { outline-color: var(--ab-primary); }
+    .vc-thumb .t-label { font-size: .72rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .vc-thumb .t-bal { font-weight: 800; font-size: .95rem; }
+    .vc-thumb .t-num { font-size: .68rem; opacity: .85; font-family: ui-monospace, Menlo, monospace; }
+    .vc-thumb .frz { position: absolute; top: .5rem; right: .55rem; font-size: .85rem; }
+    .vc-thumb.is-frozen { filter: saturate(.35) brightness(.95); }
+    .vc-thumb-new { width: 150px; aspect-ratio: 1.586; border-radius: 14px; border: 2px dashed var(--ab-border); background: var(--ab-surface-2); color: var(--ab-muted);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .3rem; font-weight: 600; font-size: .8rem; }
+    .vc-thumb-new:hover { border-color: var(--ab-primary); color: var(--ab-primary); }
+
+    /* actions */
+    .vc-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem; }
+    .vc-act { display: flex; flex-direction: column; align-items: center; gap: .4rem; padding: .7rem .3rem; border-radius: 14px; border: 1px solid var(--ab-border); background: var(--ab-surface);
+      color: var(--ab-text); font-size: .78rem; font-weight: 600; transition: all .15s ease; }
+    .vc-act:hover:not(:disabled) { border-color: rgba(var(--ab-primary-rgb), .45); color: var(--ab-primary); transform: translateY(-1px); }
+    .vc-act:disabled { opacity: .45; cursor: not-allowed; }
+    .vc-act.danger:hover:not(:disabled) { border-color: var(--ab-danger); color: var(--ab-danger); }
+
+    /* reveal panel */
+    .vc-reveal { border: 1px solid var(--ab-border); border-radius: 16px; background: var(--ab-surface-2); padding: 1rem; }
+    .vc-reveal .field { display: flex; justify-content: space-between; align-items: center; gap: .75rem; padding: .55rem 0; border-bottom: 1px dashed var(--ab-border); }
+    .vc-reveal .field:last-of-type { border-bottom: 0; }
+    .vc-reveal .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-weight: 700; letter-spacing: .04em; word-break: break-all; }
+    .vc-count { height: 4px; border-radius: 4px; background: var(--ab-border); overflow: hidden; }
+    .vc-count > span { display: block; height: 100%; background: var(--ab-warning); transition: width 1s linear; }
+
+    /* stepper */
+    .vc-steps { display: flex; gap: .4rem; margin-bottom: 1rem; }
+    .vc-steps .s { flex: 1; }
+    .vc-steps .bar { height: 4px; border-radius: 4px; background: var(--ab-border); transition: background .2s; }
+    .vc-steps .s.done .bar, .vc-steps .s.cur .bar { background: var(--ab-primary); }
+    .vc-steps .nm { font-size: .68rem; font-weight: 600; color: var(--ab-muted); margin-top: .35rem; }
+    .vc-steps .s.cur .nm { color: var(--ab-primary); }
+    .vc-preview { max-width: 300px; margin: 0 auto 1.1rem; }
+    .vc-preview .vc { cursor: default; }
+    .brand-opt { display: flex; align-items: center; gap: .85rem; }
+    .brand-opt .bmark { width: 64px; height: 42px; border-radius: 10px; display: grid; place-items: center; background: #1a1f71; flex-shrink: 0; }
+    .brand-opt .bmark.mc { background: #111; }
+    .design-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
+    .design-sw { aspect-ratio: 1.586; border-radius: 12px; border: 0; position: relative; color: #fff; font-size: .7rem; font-weight: 700; display: flex; align-items: flex-end; padding: .45rem .55rem;
+      outline: 3px solid transparent; outline-offset: 2px; transition: outline-color .15s, transform .15s; }
+    .design-sw:hover { transform: translateY(-2px); }
+    .design-sw.active { outline-color: var(--ab-primary); }
+    .design-sw.active::after { content: "\F26A"; font-family: "bootstrap-icons"; position: absolute; top: 6px; right: 8px; font-size: 1rem; }
+
+    /* txns */
+    .mtx-icon { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-size: 1.15rem; flex-shrink: 0; }
+    .ab-status.declined { background: var(--ab-danger-soft); color: var(--ab-danger); }
+    .ab-status.reversed { background: var(--ab-surface-2); color: var(--ab-muted); border: 1px solid var(--ab-border); }
+    .ab-status.pending .spinner-border { width: .7rem; height: .7rem; border-width: .12em; }
+    .ab-status.pending.live::before { display: none; }
+    .amt-declined { text-decoration: line-through; color: var(--ab-muted); }
+
+    /* side */
+    .merchant-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem; }
+    .merchant { display: flex; flex-direction: column; align-items: center; gap: .35rem; font-size: .68rem; font-weight: 600; color: var(--ab-muted); text-align: center; }
+    .merchant .mtx-icon { width: 46px; height: 46px; }
+    .addr-line { display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding: .5rem 0; border-bottom: 1px dashed var(--ab-border); }
+    .addr-line:last-child { border-bottom: 0; }
+    .addr-line .k { font-size: .72rem; color: var(--ab-muted); }
+    .addr-line .v { font-weight: 600; font-size: .86rem; }
+    .btn-copy { width: 32px; height: 32px; padding: 0; display: inline-grid; place-items: center; border-radius: 9px; flex-shrink: 0; }
+    .fee-table td { padding: .6rem .25rem !important; font-size: .84rem; }
+    .fee-table td:last-child { text-align: right; font-weight: 700; }
+
+    /* empty hero */
+    .vc-empty { border-radius: 24px; padding: clamp(1.5rem, 4vw, 2.75rem); background: linear-gradient(135deg, #1e2a78, #0b1230); color: #fff; position: relative; overflow: hidden; }
+    .vc-empty h2 { color: #fff; }
+    .vc-empty .stack { position: relative; height: 210px; max-width: 360px; margin: 0 auto; }
+    .vc-empty .stack .vc-scene { position: absolute; width: 270px; left: 50%; }
+    .vc-empty .stack .s1 { transform: translateX(-62%) rotate(-10deg); top: 26px; opacity: .85; }
+    .vc-empty .stack .s2 { transform: translateX(-38%) rotate(6deg); top: 0; }
+    .vc-empty .perk { display: flex; gap: .6rem; align-items: flex-start; font-size: .86rem; }
+    .vc-empty .perk i { color: #63e6be; }
+    .range-big { height: 1.6rem; }
+    .limit-bar { height: 8px; }
+    @media (max-width: 575.98px) {
+      .vc-actions { grid-template-columns: repeat(4, 1fr); gap: .45rem; }
+      .vc-act { font-size: .7rem; padding: .6rem .15rem; }
+      .vc-thumb, .vc-thumb-new { width: 132px; }
+      .vc-empty .stack { height: 170px; }
+      .vc-empty .stack .vc-scene { width: 220px; }
+      .merchant-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (prefers-reduced-motion: reduce) { .vc, .vc-tilt { transition: none; } }
+  </style>
+</head>
+<body data-page="cards" data-title="Virtual Cards" data-public="true">
+<main class="ab-content">
+
+  <div class="ab-page-head fade-up">
+    <div>
+      <h1 class="mb-1">Virtual Cards</h1>
+      <p class="mb-0 text-muted fs-7">USD cards for Netflix, Spotify, AWS, AliExpress, Apple & any online merchant.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <span class="btn btn-light-subtle pe-none d-none d-sm-inline-flex align-items-center gap-1"><i class="bi bi-currency-exchange text-primary"></i><span class="tabular" id="rateChip"></span></span>
+      <button class="btn btn-primary" id="newCardBtn"><i class="bi bi-plus-lg me-1"></i>New card</button>
+    </div>
+  </div>
+
+  <div class="row g-3 g-lg-4">
+    <div class="col-xl-8">
+      <div id="mainArea"></div>
+    </div>
+
+    <!-- Side info -->
+    <div class="col-xl-4">
+      <div class="d-flex flex-column gap-3 gap-lg-4">
+        <div class="card fade-up">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <div><h6 class="card-title mb-0">Billing address</h6><div class="fs-8 text-muted">Use this at checkout for any card</div></div>
+            <button class="btn btn-sm btn-soft" id="copyAddr"><i class="bi bi-copy me-1"></i>Copy all</button>
+          </div>
+          <div class="card-body pt-1" id="addrBox"></div>
+        </div>
+
+        <div class="card fade-up">
+          <div class="card-header"><h6 class="card-title mb-0">Works on</h6><div class="fs-8 text-muted">Accepted by 40M+ online merchants worldwide</div></div>
+          <div class="card-body pt-2"><div class="merchant-grid" id="merchGrid"></div></div>
+        </div>
+
+        <div class="card fade-up">
+          <div class="card-header"><h6 class="card-title mb-0">Fees & limits</h6></div>
+          <div class="card-body pt-0">
+            <table class="table fee-table"><tbody id="feeTable"></tbody></table>
+          </div>
+        </div>
+
+        <div class="card fade-up">
+          <div class="card-header"><h6 class="card-title mb-0">Frequently asked</h6></div>
+          <div class="card-body pt-1">
+            <div class="accordion accordion-flush" id="faq"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { store, fmt, esc, wallet } = AB;
+  const RATE = AB_DATA.usdRate || 1580;          // ₦ per $1 when buying USD (funding)
+  const SELL_RATE = RATE - 40;                    // ₦ per $1 when withdrawing back to NGN
+  const CREATE_FEE = 2, FUND_FEE = 0.01, MIN_CREATE = 5, MIN_FUND = 1, MAX_BAL = 10000, MAX_CARDS = 5;
+  const THEMES = [
+    { id: "midnight", name: "Midnight", bg: "linear-gradient(135deg, #2b3a9e 0%, #141b4d 55%, #0b1230 100%)" },
+    { id: "aurora", name: "Aurora", bg: "linear-gradient(135deg, #7048e8 0%, #b43fb0 55%, #e64980 100%)" },
+    { id: "ocean", name: "Ocean", bg: "linear-gradient(135deg, #15aabf 0%, #1971c2 55%, #2348ff 100%)" },
+    { id: "emerald", name: "Emerald", bg: "linear-gradient(135deg, #20c997 0%, #0ca678 45%, #065a45 100%)" },
+    { id: "sunset", name: "Sunset", bg: "linear-gradient(135deg, #ffa94d 0%, #fd7e14 40%, #e64980 100%)" },
+    { id: "onyx", name: "Onyx", bg: "linear-gradient(135deg, #495057 0%, #212529 50%, #0b0b0f 100%)" }
+  ];
+  const MERCHANTS = {
+    netflix: { name: "Netflix", icon: "bi-play-btn-fill", bg: "#e50914", fg: "#fff", cat: "Streaming" },
+    spotify: { name: "Spotify", icon: "bi-spotify", bg: "#1db954", fg: "#fff", cat: "Music" },
+    aws: { name: "Amazon Web Services", short: "AWS", icon: "bi-amazon", bg: "#232f3e", fg: "#ff9900", cat: "Cloud" },
+    aliexpress: { name: "AliExpress", icon: "bi-bag-heart-fill", bg: "#ff4747", fg: "#fff", cat: "Shopping" },
+    apple: { name: "Apple.com/bill", short: "Apple", icon: "bi-apple", bg: "#1d1d1f", fg: "#fff", cat: "Apps" },
+    google: { name: "Google Workspace", short: "Google", icon: "bi-google", bg: "#4285f4", fg: "#fff", cat: "Productivity" },
+    amazon: { name: "Amazon.com", short: "Amazon", icon: "bi-cart-fill", bg: "#ff9900", fg: "#111", cat: "Shopping" },
+    meta: { name: "Meta Ads", short: "Meta Ads", icon: "bi-meta", bg: "#0866ff", fg: "#fff", cat: "Advertising" },
+    youtube: { name: "YouTube Premium", short: "YouTube", icon: "bi-youtube", bg: "#ff0033", fg: "#fff", cat: "Streaming" },
+    steam: { name: "Steam", icon: "bi-steam", bg: "#171a21", fg: "#66c0f4", cat: "Gaming" },
+    microsoft: { name: "Microsoft 365", short: "Microsoft", icon: "bi-microsoft", bg: "#0078d4", fg: "#fff", cat: "Software" },
+    openai: { name: "ChatGPT Plus", short: "ChatGPT", icon: "bi-stars", bg: "#10a37f", fg: "#fff", cat: "AI tools" },
+    udemy: { name: "Udemy", icon: "bi-mortarboard-fill", bg: "#a435f0", fg: "#fff", cat: "Learning" },
+    airbnb: { name: "Airbnb", icon: "bi-house-heart-fill", bg: "#ff5a5f", fg: "#fff", cat: "Travel" },
+    uber: { name: "Uber", icon: "bi-car-front-fill", bg: "#000", fg: "#fff", cat: "Rides" },
+    playstation: { name: "PlayStation Store", short: "PlayStation", icon: "bi-playstation", bg: "#003791", fg: "#fff", cat: "Gaming" }
+  };
+  const ADDRESS = [["Street", "8 The Green, Suite 7421"], ["City", "Dover"], ["State", "Delaware (DE)"], ["ZIP code", "19901"], ["Country", "United States"]];
+  const user = store.get("user");
+  const HOLDER = (user.firstName + " " + user.lastName).toUpperCase();
+
+  let selId = null;
+  try { selId = sessionStorage.getItem("ab_vc_sel"); } catch (e) {}
+  let flipped = false, revealed = null, revealTimer = null, revealLeft = 30, txFilter = "all";
+
+  const cards = () => store.get("cards") || [];
+  const current = () => cards().find((c) => c.id === selId) || cards()[0] || null;
+  const setSel = (id) => { selId = id; flipped = false; hideReveal(true); try { sessionStorage.setItem("ab_vc_sel", id); } catch (e) {} render(); };
+  const updateCard = (id, fn) => store.update("cards", (cs) => cs.map((c) => (c.id === id ? fn({ ...c }) : c)));
+  const r2 = (n) => Math.round(n * 100) / 100;
+  const themeOf = (g) => THEMES.find((t) => t.bg === g) || THEMES[0];
+
+  /* ---------- Card number helpers ---------- */
+  function luhnCheckDigit(partial) {
+    let sum = 0;
+    for (let i = 0; i < partial.length; i++) {
+      let d = +partial[partial.length - 1 - i];
+      if (i % 2 === 0) { d *= 2; if (d > 9) d -= 9; }
+      sum += d;
+    }
+    return (10 - (sum % 10)) % 10;
+  }
+  function genNumber(brand) {
+    let p = brand === "visa" ? "4" + ["53958", "84718", "16631"][Math.floor(Math.random() * 3)] : ["5399", "5196", "2223"][Math.floor(Math.random() * 3)];
+    while (p.length < 15) p += Math.floor(Math.random() * 10);
+    return p + luhnCheckDigit(p);
+  }
+  const groupNum = (n) => n.replace(/(.{4})/g, "$1 ").trim();
+  const maskNum = (n) => "•••• •••• •••• " + n.slice(-4);
+
+  /* ---------- SVG marks ---------- */
+  const CHIP = `<svg class="vc-chip" viewBox="0 0 52 40" aria-hidden="true"><defs><linearGradient id="chipG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e7a6"/><stop offset=".5" stop-color="#d4af37"/><stop offset="1" stop-color="#b8902a"/></linearGradient></defs>
+    <rect x="1" y="1" width="50" height="38" rx="7" fill="url(#chipG)" stroke="rgba(0,0,0,.25)"/><path d="M1 14h15M1 26h15M36 14h15M36 26h15M16 1v38M36 1v38M16 20h20" stroke="rgba(90,60,0,.45)" stroke-width="1.3" fill="none"/><rect x="20" y="9" width="12" height="22" rx="3" fill="none" stroke="rgba(90,60,0,.45)" stroke-width="1.3"/></svg>`;
+  const NFC = `<svg class="vc-contactless" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 8.5a5 5 0 0 1 0 7"/><path d="M10.5 6a9 9 0 0 1 0 12"/><path d="M14 3.5a13 13 0 0 1 0 17"/></svg>`;
+  const brandMark = (b, cls = "vc-brand") => b === "mastercard"
+    ? `<svg class="${cls}" viewBox="0 0 64 40" aria-label="Mastercard" role="img"><circle cx="24" cy="20" r="16" fill="#eb001b"/><circle cx="40" cy="20" r="16" fill="#f79e1b"/><path d="M32 6.1a16 16 0 0 1 0 27.8 16 16 0 0 1 0-27.8z" fill="#ff5f00"/></svg>`
+    : `<svg class="${cls}" viewBox="0 0 80 32" aria-label="Visa" role="img"><text x="40" y="26" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="28" font-weight="900" font-style="italic" fill="#fff" letter-spacing="-1">VISA</text></svg>`;
+
+  /* ---------- Card renderer ---------- */
+  function cardHtml(c, { show = false, id = "", preview = false } = {}) {
+    const num = show ? groupNum(c.number) : maskNum(c.number);
+    return `<div class="vc-scene"><div class="vc-tilt"><div class="vc ${c.status === "frozen" ? "frozen" : ""} ${!preview && flipped ? "flipped" : ""}" ${id ? `id="${id}"` : ""} ${preview ? "" : `tabindex="0" role="button" aria-label="Virtual card ending ${c.number.slice(-4)}. Press to flip."`}>
+      <div class="vc-face vc-front" style="background:${c.gradient}">
+        <div class="vc-top"><div class="vc-logo">AutoBiz <span class="tag">USD</span></div><div class="fs-8 fw-semibold opacity-75 text-truncate ms-2" style="max-width:45%">${esc(c.label || "")}</div></div>
+        <div class="vc-mid">${CHIP}${NFC}<div class="vc-bal ms-auto"><div class="vc-lbl">Balance</div><div class="amt tabular">${fmt.usd(c.balance)}</div></div></div>
+        <div class="vc-number tabular">${num}</div>
+        <div class="vc-bottom">
+          <div class="min-w-0"><div class="vc-lbl">Card holder</div><div class="vc-val">${esc(c.name)}</div></div>
+          <div><div class="vc-lbl">Expires</div><div class="vc-val">${show ? c.expiry : "••/••"}</div></div>
+          ${brandMark(c.brand)}
+        </div>
+      </div>
+      <div class="vc-face vc-back" style="background:${c.gradient}">
+        <div class="vc-stripe"></div>
+        <div class="vc-sig"><div class="pad"></div><div class="cvv">${show ? c.cvv : "•••"}</div></div>
+        <div class="vc-lbl mx-auto mt-1" style="margin-right:7%!important;margin-left:auto!important">CVV</div>
+        <div class="vc-back-foot"><div>This card is issued by AutoBiz Card Services for online payments in USD. Use the billing address shown in the app. Report issues: help@autobiz.ng</div>${brandMark(c.brand)}</div>
+      </div>
+      <div class="vc-frost"><i class="bi bi-snow2"></i><span>Card frozen</span></div>
+    </div></div></div>`;
+  }
+
+  const merchIcon = (m) => {
+    const M = MERCHANTS[m] || null;
+    if (!M) return `<span class="mtx-icon" style="background:var(--ab-surface-2);color:var(--ab-text)"><i class="bi bi-globe2"></i></span>`;
+    return `<span class="mtx-icon" style="background:${M.bg};color:${M.fg}"><i class="bi ${M.icon}"></i></span>`;
+  };
+
+  /* ---------- Spending ---------- */
+  function monthSpend(c) {
+    const ms = new Date(); ms.setDate(1); ms.setHours(0, 0, 0, 0);
+    return r2((c.txns || []).filter((t) => t.kind === "purchase" && t.status === "success" && t.date >= +ms).reduce((a, t) => a + t.amount, 0));
+  }
+
+  /* ---------- Main render ---------- */
+  const main = document.getElementById("mainArea");
+  function render() {
+    document.getElementById("rateChip").textContent = `$1 = ${fmt.naira(RATE)}`;
+    const cs = cards();
+    if (!cs.length) return renderEmpty();
+    const c = current();
+    selId = c.id;
+    const frozen = c.status === "frozen";
+    const spent = monthSpend(c);
+    const pct = Math.min(100, (spent / c.limit) * 100);
+    main.innerHTML = `
+      <div class="card mb-3 mb-lg-4 fade-up">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3 gap-2">
+            <div class="min-w-0"><h6 class="card-title mb-0">My cards <span class="text-muted fw-semibold">(${cs.length}/${MAX_CARDS})</span></h6><div class="fs-8 text-muted">Total balance <b class="tabular text-body">${fmt.usd(cs.reduce((a, x) => a + x.balance, 0))}</b></div></div>
+            <span class="ab-status ${frozen ? "info" : "success"}">${frozen ? "Frozen" : "Active"}</span>
+          </div>
+          <div class="hscroll mb-4" id="thumbs" role="tablist" aria-label="Select card">
+            ${cs.map((x) => `<button class="vc-thumb ${x.id === c.id ? "active" : ""} ${x.status === "frozen" ? "is-frozen" : ""}" style="background:${x.gradient}" data-sel="${x.id}" role="tab" aria-selected="${x.id === c.id}" aria-label="${esc(x.label)} card ending ${x.number.slice(-4)}">
+              ${x.status === "frozen" ? `<i class="bi bi-snow2 frz"></i>` : ""}
+              <div class="t-label">${esc(x.label)}</div>
+              <div><div class="t-bal tabular">${fmt.usd(x.balance)}</div><div class="d-flex justify-content-between align-items-center"><span class="t-num">•••• ${x.number.slice(-4)}</span>${brandMark(x.brand, "").replace("<svg ", '<svg style="height:16px" ')}</div></div>
+            </button>`).join("")}
+            ${cs.length < MAX_CARDS ? `<button class="vc-thumb-new" data-new><i class="bi bi-plus-circle fs-4"></i>New card</button>` : ""}
+          </div>
+
+          <div class="row g-4 align-items-center">
+            <div class="col-lg-7">
+              <div id="cardWrap">${cardHtml(c, { show: revealed === c.id, id: "theCard" })}</div>
+              <div class="vc-hint"><i class="bi bi-arrow-repeat me-1"></i>Tap the card to flip it</div>
+            </div>
+            <div class="col-lg-5">
+              <div class="d-flex justify-content-between align-items-end mb-1">
+                <div><div class="small-label">Available balance</div><div class="fs-2 fw-800 tabular lh-1 mt-1">${fmt.usd(c.balance)}</div></div>
+                <div class="text-end fs-8 text-muted">≈ ${fmt.naira(c.balance * SELL_RATE)}</div>
+              </div>
+              <div class="fs-8 text-muted mb-3">${c.brand === "visa" ? "Visa" : "Mastercard"} · •••• ${c.number.slice(-4)} · Created ${fmt.date(c.createdAt)}</div>
+              ${frozen ? `<div class="alert alert-info py-2 px-3 fs-7 d-flex gap-2 align-items-start mb-3"><i class="bi bi-snow2 mt-1"></i><div>This card is frozen. Payments, funding and withdrawals are paused until you unfreeze it.</div></div>` : ""}
+              <div class="mb-3">
+                <div class="d-flex justify-content-between fs-8 mb-1"><span class="text-muted">Monthly spend</span><span class="fw-semibold tabular">${fmt.usd(spent)} / ${fmt.usd(c.limit)}</span></div>
+                <div class="progress limit-bar" role="progressbar" aria-label="Monthly spending" aria-valuenow="${Math.round(pct)}" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar ${pct > 85 ? "bg-danger" : ""}" style="width:${pct}%"></div></div>
+              </div>
+              <button class="btn btn-light-subtle w-100 mb-2" id="revealBtn" ${revealed === c.id ? "hidden" : ""}><i class="bi bi-eye me-1"></i>Reveal card details</button>
+              <button class="btn btn-soft w-100" id="testPayBtn"><i class="bi bi-bag-check me-1"></i>Test online payment</button>
+            </div>
+          </div>
+
+          <div id="revealPanel"></div>
+
+          <div class="vc-actions mt-4">
+            <button class="vc-act" data-act="fund" ${frozen ? "disabled" : ""}><span class="ab-icon ab-icon-sm tone-success"><i class="bi bi-plus-lg"></i></span>Fund</button>
+            <button class="vc-act" data-act="withdraw" ${frozen || c.balance <= 0 ? "disabled" : ""}><span class="ab-icon ab-icon-sm tone-primary"><i class="bi bi-arrow-up-right"></i></span>Withdraw</button>
+            <button class="vc-act" data-act="freeze"><span class="ab-icon ab-icon-sm tone-cyan"><i class="bi ${frozen ? "bi-sun" : "bi-snow2"}"></i></span>${frozen ? "Unfreeze" : "Freeze"}</button>
+            <button class="vc-act" data-act="limit"><span class="ab-icon ab-icon-sm tone-warning"><i class="bi bi-speedometer2"></i></span>Limit</button>
+            <button class="vc-act" data-act="rename"><span class="ab-icon ab-icon-sm tone-violet"><i class="bi bi-pencil"></i></span>Rename</button>
+            <button class="vc-act" data-act="flip"><span class="ab-icon ab-icon-sm tone-orange"><i class="bi bi-arrow-repeat"></i></span>Flip card</button>
+            <button class="vc-act" data-act="statement"><span class="ab-icon ab-icon-sm tone-pink"><i class="bi bi-file-earmark-arrow-down"></i></span>Statement</button>
+            <button class="vc-act danger" data-act="terminate"><span class="ab-icon ab-icon-sm tone-danger"><i class="bi bi-trash3"></i></span>Terminate</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card fade-up" id="txCard">
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div><h6 class="card-title mb-0">Card transactions</h6><div class="fs-8 text-muted">${esc(c.label)} · •••• ${c.number.slice(-4)}</div></div>
+          <div class="ab-segment" id="txSeg">${[["all", "All"], ["purchase", "Payments"], ["topup", "Top-ups"], ["declined", "Declined"]].map(([k, l]) => `<button class="${txFilter === k ? "active" : ""}" data-f="${k}">${l}</button>`).join("")}</div>
+        </div>
+        <div class="card-body pt-1"><ul class="ab-list" id="txList"></ul></div>
+      </div>`;
+    renderTx(c);
+    if (revealed === c.id) renderRevealPanel(c);
+    bindMain(c);
+  }
+
+  function renderTx(c) {
+    const list = (c.txns || []).filter((t) => txFilter === "all" ? true : txFilter === "declined" ? t.status === "declined" : txFilter === "topup" ? t.kind !== "purchase" : t.kind === "purchase");
+    const el = document.getElementById("txList");
+    if (!el) return;
+    el.innerHTML = list.length ? list.map((t) => {
+      const isIn = t.direction === "in";
+      const M = MERCHANTS[t.merchant];
+      const icon = t.kind === "purchase" ? merchIcon(t.merchant)
+        : `<span class="ab-icon tone-${isIn ? "success" : "primary"}" style="width:42px;height:42px"><i class="bi ${isIn ? "bi-arrow-down-left" : "bi-arrow-up-right"}"></i></span>`;
+      const status = t.status === "pending" ? `<span class="ab-status pending live mt-1"><span class="spinner-border"></span>pending</span>` : `<span class="ab-status ${t.status} mt-1">${t.status}</span>`;
+      return `<li class="ab-list-item">${icon}
+        <div class="flex-grow-1 min-w-0"><div class="title text-truncate">${esc(t.title || (M ? M.name : "Online payment"))}</div><div class="meta text-truncate">${esc(t.note || (M ? M.cat : ""))} · ${fmt.ago(t.date)}</div></div>
+        <div class="text-end flex-shrink-0"><div class="fw-bold tabular ${t.status === "declined" || t.status === "reversed" ? "amt-declined" : isIn ? "amount-in" : "amount-out"}">${isIn ? "+" : "−"}${fmt.usd(t.amount)}</div>${status}</div>
+      </li>`;
+    }).join("") : `<div class="ab-empty py-4"><span class="ab-icon ab-icon-lg tone-primary"><i class="bi bi-receipt"></i></span><h6 class="mb-1">No transactions here</h6><div class="fs-7">Payments made with this card will show up here.</div></div>`;
+  }
+
+  function renderEmpty() {
+    const demo = { name: HOLDER, brand: "visa", number: "4539580000004821", expiry: "", cvv: "", balance: 250, status: "active", gradient: THEMES[0].bg, label: "Shopping" };
+    const demo2 = { ...demo, brand: "mastercard", number: "5399000000001234", gradient: THEMES[1].bg, balance: 49.99, label: "Subscriptions" };
+    main.innerHTML = `
+      <div class="vc-empty fade-up mb-3 mb-lg-4">
+        <div class="row g-4 align-items-center">
+          <div class="col-lg-6 order-lg-2"><div class="stack" aria-hidden="true"><div class="s1 vc-scene">${cardHtml(demo2, { preview: true }).replace(/^<div class="vc-scene">/, "<div>")}</div><div class="s2 vc-scene">${cardHtml(demo, { preview: true }).replace(/^<div class="vc-scene">/, "<div>")}</div></div></div>
+          <div class="col-lg-6 order-lg-1">
+            <span class="badge rounded-pill px-3 py-2 mb-3" style="background:rgba(255,255,255,.14)"><i class="bi bi-lightning-charge-fill me-1 text-warning"></i>Ready in 30 seconds</span>
+            <h2 class="fw-800 mb-2">Get your USD virtual card</h2>
+            <p class="opacity-75 mb-3">Pay for subscriptions, ads, cloud services and shopping worldwide — fund it straight from your Naira wallet.</p>
+            <div class="d-flex flex-column gap-2 mb-4">
+              <div class="perk"><i class="bi bi-check-circle-fill"></i>Visa or Mastercard, 6 beautiful designs</div>
+              <div class="perk"><i class="bi bi-check-circle-fill"></i>Freeze, set limits & withdraw anytime</div>
+              <div class="perk"><i class="bi bi-check-circle-fill"></i>Only $2 to create · 1% funding fee</div>
+            </div>
+            <button class="btn btn-lg fw-bold px-4" style="background:#fff;color:var(--ab-primary-700)" data-new><i class="bi bi-plus-circle me-2"></i>Create my card</button>
+          </div>
+        </div>
+      </div>
+      <div class="card fade-up"><div class="card-body">
+        <h6 class="card-title mb-3">How it works</h6>
+        <div class="row g-3">
+          ${[["bi-palette", "violet", "Design it", "Pick Visa or Mastercard and a card design you love."], ["bi-wallet2", "success", "Fund in Naira", `Top up from your wallet at ${fmt.naira(RATE)}/$1.`], ["bi-globe2", "primary", "Pay anywhere", "Use it on Netflix, AWS, AliExpress, Apple & more."]].map(([ic, t, h, p], i) => `
+          <div class="col-md-4"><div class="d-flex gap-3"><span class="ab-icon tone-${t}"><i class="bi ${ic}"></i></span><div><div class="fw-bold">${i + 1}. ${h}</div><div class="fs-7 text-muted">${p}</div></div></div></div>`).join("")}
+        </div>
+      </div></div>`;
+    main.querySelectorAll("[data-new]").forEach((b) => b.addEventListener("click", openCreate));
+  }
+
+  function bindMain(c) {
+    main.querySelectorAll("[data-sel]").forEach((b) => b.addEventListener("click", () => setSel(b.dataset.sel)));
+    main.querySelectorAll("[data-new]").forEach((b) => b.addEventListener("click", openCreate));
+    const card = document.getElementById("theCard");
+    const flip = () => { flipped = !flipped; card.classList.toggle("flipped", flipped); };
+    card.addEventListener("click", flip);
+    card.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); } });
+    // subtle tilt on pointer devices
+    const tilt = card.parentElement;
+    if (matchMedia("(hover: hover)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      card.addEventListener("mousemove", (e) => { const r = card.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; tilt.style.transform = `rotateX(${-y * 8}deg) rotateY(${x * 10}deg)`; });
+      card.addEventListener("mouseleave", () => (tilt.style.transform = ""));
+    }
+    const rb = document.getElementById("revealBtn"); if (rb) rb.addEventListener("click", () => reveal(c));
+    document.getElementById("testPayBtn").addEventListener("click", () => openTestPay(c));
+    main.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", () => {
+      const a = b.dataset.act;
+      ({ fund: openFund, withdraw: openWithdraw, freeze: toggleFreeze, limit: openLimit, rename: openRename, terminate: openTerminate, statement: downloadStatement, flip: () => flip() })[a](current());
+    }));
+    document.querySelectorAll("#txSeg button").forEach((b) => b.addEventListener("click", () => {
+      txFilter = b.dataset.f; document.querySelectorAll("#txSeg button").forEach((x) => x.classList.toggle("active", x === b)); renderTx(current());
+    }));
+  }
+
+  /* ---------- Reveal details ---------- */
+  function pinPrompt(title, sub) {
+    return new Promise((resolve) => {
+      const m = AB.modal(`
+        <div class="modal-header"><h5 class="modal-title">${esc(title)}</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body pt-1 text-center">
+          <span class="ab-icon ab-icon-lg tone-primary mb-3"><i class="bi bi-shield-lock"></i></span>
+          <p class="fs-7 text-muted mb-3">${sub}</p>
+          <div class="ab-pin mb-2">${[0, 1, 2, 3].map(() => `<input inputmode="numeric" maxlength="1" autocomplete="off" aria-label="PIN digit">`).join("")}</div>
+          <div class="fs-8 text-muted">Demo: any PIN works except 0000</div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-primary btn-lg w-100" data-ok>Verify PIN</button></div>`, { size: "modal-sm" });
+      const inputs = [...m.el.querySelectorAll(".ab-pin input")], btn = m.el.querySelector("[data-ok]"), pin = m.el.querySelector(".ab-pin");
+      let done = false;
+      m.el.addEventListener("shown.bs.modal", () => inputs[0].focus());
+      const shake = () => { pin.classList.add("shake"); setTimeout(() => pin.classList.remove("shake"), 400); };
+      inputs.forEach((inp, i) => {
+        inp.addEventListener("input", () => { inp.value = inp.value.replace(/\D/g, "").slice(-1); if (inp.value && inputs[i + 1]) inputs[i + 1].focus(); if (inputs.every((x) => x.value)) btn.click(); });
+        inp.addEventListener("keydown", (e) => { if (e.key === "Backspace" && !inp.value && inputs[i - 1]) inputs[i - 1].focus(); });
+      });
+      btn.addEventListener("click", () => {
+        const v = inputs.map((x) => x.value).join("");
+        if (v.length < 4) return shake();
+        if (v === "0000") { inputs.forEach((x) => (x.value = "")); inputs[0].focus(); shake(); return AB.toast("Incorrect PIN. Try again.", "error"); }
+        btn.disabled = true; btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Verifying…`;
+        setTimeout(() => { done = true; m.close(); resolve(true); }, 600);
+      });
+      m.el.addEventListener("hidden.bs.modal", () => { if (!done) resolve(false); });
+    });
+  }
+
+  async function reveal(c) {
+    if (!(await pinPrompt("Reveal card details", "Enter your transaction PIN to view the full card number, expiry date and CVV."))) return;
+    revealed = c.id; flipped = false;
+    revealLeft = 30;
+    clearInterval(revealTimer);
+    render();
+    revealTimer = setInterval(() => {
+      revealLeft--;
+      const left = revealLeft;
+      const cd = document.getElementById("revealCd"), bar = document.getElementById("revealBar");
+      if (cd) cd.textContent = left + "s";
+      if (bar) bar.style.width = (left / 30) * 100 + "%";
+      if (left <= 0) { hideReveal(); AB.toast("Card details hidden for your security", "info"); }
+    }, 1000);
+  }
+  function hideReveal(silent) {
+    clearInterval(revealTimer); revealTimer = null;
+    const was = revealed; revealed = null;
+    if (was && !silent) render();
+  }
+  function renderRevealPanel(c) {
+    const p = document.getElementById("revealPanel");
+    const field = (k, v, copyVal, label) => `<div class="field"><div class="min-w-0"><div class="fs-8 text-muted">${k}</div><div class="mono">${v}</div></div><button class="btn btn-light-subtle btn-copy" data-copy="${copyVal}" data-msg="${label} copied" aria-label="Copy ${label}"><i class="bi bi-copy"></i></button></div>`;
+    p.innerHTML = `<div class="vc-reveal mt-4">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="fw-bold fs-7"><i class="bi bi-shield-check text-success me-1"></i>Card details</div>
+        <div class="d-flex align-items-center gap-2"><span class="fs-8 text-muted">Hides in <b id="revealCd" class="tabular">${revealLeft}s</b></span><button class="btn btn-sm btn-light-subtle" id="hideNow"><i class="bi bi-eye-slash me-1"></i>Hide</button></div>
+      </div>
+      <div class="vc-count mb-2"><span id="revealBar" style="width:${(revealLeft / 30) * 100}%"></span></div>
+      ${field("Card number", groupNum(c.number), c.number, "Card number")}
+      <div class="row g-0"><div class="col-6 pe-2">${field("Expiry", c.expiry, c.expiry, "Expiry date")}</div><div class="col-6 ps-2">${field("CVV", c.cvv, c.cvv, "CVV")}</div></div>
+      ${field("Name on card", esc(c.name), esc(c.name), "Name")}
+    </div>`;
+    p.querySelectorAll("[data-copy]").forEach((b) => b.addEventListener("click", () => AB.copy(b.dataset.copy, b.dataset.msg)));
+    document.getElementById("hideNow").addEventListener("click", () => hideReveal());
+  }
+
+  /* ---------- Create card stepper ---------- */
+  function openCreate() {
+    if (cards().length >= MAX_CARDS) return AB.toast(`You can have up to ${MAX_CARDS} cards. Terminate one to create another.`, "warning");
+    const st = { step: 0, brand: "visa", theme: THEMES[cards().length % THEMES.length].id, label: cards().length ? "Card " + (cards().length + 1) : "Online Shopping", amount: 10 };
+    const STEPS = ["Brand", "Design", "Details", "Review"];
+    const m = AB.modal(`
+      <div class="modal-header"><h5 class="modal-title">Create USD card</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body pt-1">
+        <div class="vc-steps" id="cSteps"></div>
+        <div class="vc-preview" id="cPreview"></div>
+        <div id="cBody"></div>
+      </div>
+      <div class="modal-footer d-flex gap-2 flex-nowrap">
+        <button class="btn btn-light-subtle btn-lg flex-fill m-0" id="cBack">Back</button>
+        <button class="btn btn-primary btn-lg flex-fill m-0" id="cNext">Continue</button>
+      </div>`);
+    const el = m.el, $ = (s) => el.querySelector(s);
+    const theme = () => THEMES.find((t) => t.id === st.theme);
+    const calc = () => { const fee = r2(st.amount * FUND_FEE); const total = r2(st.amount + CREATE_FEE + fee); return { fee, total, naira: r2(total * RATE) }; };
+    const preview = () => { $("#cPreview").innerHTML = cardHtml({ name: HOLDER, brand: st.brand, number: st.brand === "visa" ? "4539580000004821" : "5399000000004821", balance: Number(st.amount) || 0, status: "active", gradient: theme().bg, label: st.label }, { preview: true }); };
+    function draw() {
+      $("#cSteps").innerHTML = STEPS.map((s, i) => `<div class="s ${i < st.step ? "done" : i === st.step ? "cur" : ""}"><div class="bar"></div><div class="nm">${i + 1}. ${s}</div></div>`).join("");
+      $("#cBack").textContent = st.step === 0 ? "Cancel" : "Back";
+      $("#cNext").innerHTML = st.step === 3 ? `<i class="bi bi-lock me-1"></i>Pay ${fmt.naira(calc().naira)}` : "Continue";
+      $("#cPreview").hidden = st.step === 3;
+      preview();
+      const b = $("#cBody");
+      if (st.step === 0) {
+        b.innerHTML = `<div class="small-label mb-2">Choose card network</div><div class="d-flex flex-column gap-2">
+          ${[["visa", "Visa", "Best for subscriptions, ads & most US merchants"], ["mastercard", "Mastercard", "Great for AliExpress, Amazon & travel bookings"]].map(([k, n, d]) => `
+          <button class="ab-option brand-opt ${st.brand === k ? "active" : ""}" data-brand="${k}" aria-pressed="${st.brand === k}"><span class="bmark ${k === "mastercard" ? "mc" : ""}">${brandMark(k, "").replace("<svg ", '<svg style="height:26px" ')}</span><span><span class="fw-bold d-block">${n}</span><span class="fs-8 text-muted">${d}</span></span></button>`).join("")}</div>`;
+        b.querySelectorAll("[data-brand]").forEach((x) => x.addEventListener("click", () => { st.brand = x.dataset.brand; draw(); }));
+      } else if (st.step === 1) {
+        b.innerHTML = `<div class="small-label mb-2">Pick a design</div><div class="design-grid">${THEMES.map((t) => `<button class="design-sw ${st.theme === t.id ? "active" : ""}" style="background:${t.bg}" data-theme="${t.id}" aria-label="${t.name} design" aria-pressed="${st.theme === t.id}">${t.name}</button>`).join("")}</div>`;
+        b.querySelectorAll("[data-theme]").forEach((x) => {
+          x.addEventListener("click", () => { st.theme = x.dataset.theme; draw(); });
+          x.addEventListener("mouseenter", () => { const keep = st.theme; st.theme = x.dataset.theme; preview(); st.theme = keep; });
+          x.addEventListener("mouseleave", preview);
+        });
+      } else if (st.step === 2) {
+        b.innerHTML = `
+          <div class="mb-3"><label class="form-label fw-semibold" for="cLabel">Card nickname</label>
+            <input class="form-control form-control-lg" id="cLabel" maxlength="20" value="${esc(st.label)}" placeholder="e.g. Netflix & Spotify"><div class="invalid-feedback">Enter a nickname (2–20 characters).</div></div>
+          <div class="mb-2"><label class="form-label fw-semibold" for="cAmt">Initial funding</label>
+            <div class="input-group input-group-lg has-validation"><span class="input-group-text">$</span><input type="number" class="form-control tabular" id="cAmt" min="${MIN_CREATE}" step="1" value="${st.amount}" inputmode="decimal"><div class="invalid-feedback" id="cAmtErr"></div></div></div>
+          <div class="d-flex gap-2 flex-wrap mb-3">${[5, 10, 25, 50, 100].map((v) => `<button class="ab-chip ${Number(st.amount) === v ? "active" : ""}" data-preset="${v}">$${v}</button>`).join("")}</div>
+          <div class="ab-summary" id="cMini"></div>`;
+        const mini = () => { const k = calc(); $("#cMini").innerHTML = `<div class="row-item"><span>Fees ($2 + 1%)</span><span class="tabular">${fmt.usd(CREATE_FEE + k.fee)}</span></div><div class="row-item"><span>You pay (at ${fmt.naira(RATE)}/$)</span><span class="tabular">${fmt.naira(k.naira, 2)}</span></div>`; };
+        mini();
+        $("#cLabel").addEventListener("input", (e) => { st.label = e.target.value; e.target.classList.remove("is-invalid"); preview(); });
+        $("#cAmt").addEventListener("input", (e) => { st.amount = Number(e.target.value) || 0; e.target.classList.remove("is-invalid"); b.querySelectorAll("[data-preset]").forEach((x) => x.classList.toggle("active", Number(x.dataset.preset) === st.amount)); preview(); mini(); });
+        b.querySelectorAll("[data-preset]").forEach((x) => x.addEventListener("click", () => { $("#cAmt").value = x.dataset.preset; $("#cAmt").dispatchEvent(new Event("input")); }));
+      } else {
+        const k = calc();
+        b.innerHTML = `
+          <div class="d-flex align-items-center gap-3 p-3 rounded-3 border mb-3">
+            <div style="width:84px;flex-shrink:0;aspect-ratio:1.586;border-radius:10px;background:${theme().bg};display:grid;place-items:center">${brandMark(st.brand, "").replace("<svg ", '<svg style="height:20px" ')}</div>
+            <div class="min-w-0"><div class="fw-bold text-truncate">${esc(st.label)}</div><div class="fs-8 text-muted">${st.brand === "visa" ? "Visa" : "Mastercard"} · ${theme().name} design</div></div>
+          </div>
+          <div class="ab-summary mb-3">
+            <div class="row-item"><span>Initial card balance</span><span class="tabular">${fmt.usd(st.amount)}</span></div>
+            <div class="row-item"><span>Card creation fee</span><span class="tabular">${fmt.usd(CREATE_FEE)}</span></div>
+            <div class="row-item"><span>Funding fee (1%)</span><span class="tabular">${fmt.usd(k.fee)}</span></div>
+            <div class="row-item"><span>Total in USD</span><span class="tabular">${fmt.usd(k.total)}</span></div>
+            <div class="row-item"><span>Exchange rate</span><span class="tabular">$1 = ${fmt.naira(RATE)}</span></div>
+            <div class="row-item total"><span>You pay</span><span class="tabular">${fmt.naira(k.naira, 2)}</span></div>
+          </div>
+          <div class="fs-8 text-muted d-flex gap-2"><i class="bi bi-info-circle"></i><span>Charged from your Naira wallet (${fmt.naira(wallet.balance(), 2)} available).</span></div>`;
+      }
+    }
+    function validate() {
+      if (st.step !== 2) return true;
+      let ok = true;
+      const l = $("#cLabel"), a = $("#cAmt");
+      st.label = l.value.trim();
+      if (st.label.length < 2) { l.classList.add("is-invalid"); ok = false; }
+      const v = Number(a.value);
+      let err = "";
+      if (!v || v < MIN_CREATE) err = `Minimum initial funding is ${fmt.usd(MIN_CREATE)}.`;
+      else if (v > 2500) err = "Maximum initial funding is $2,500.";
+      else if (Math.round(v * 100) !== v * 100) err = "Use at most 2 decimal places.";
+      if (err) { a.classList.add("is-invalid"); $("#cAmtErr").textContent = err; ok = false; }
+      st.amount = v;
+      return ok;
+    }
+    $("#cBack").addEventListener("click", () => { if (st.step === 0) return m.close(); st.step--; draw(); });
+    $("#cNext").addEventListener("click", () => {
+      if (!validate()) return;
+      if (st.step < 3) { st.step++; return draw(); }
+      const k = calc();
+      m.close();
+      setTimeout(async () => {
+        const ok = await AB.confirmPay({ title: "Create USD card", amount: k.naira, cta: "Create card",
+          rows: [["Card", `${st.brand === "visa" ? "Visa" : "Mastercard"} · ${esc(st.label)}`], ["Initial balance", fmt.usd(st.amount)], ["Fees", fmt.usd(CREATE_FEE + k.fee)], ["Rate", `${fmt.naira(RATE)}/$`]] });
+        if (!ok) return;
+        const tx = wallet.debit(k.naira, { type: "card", title: "Virtual Card Created", subtitle: `${st.brand === "visa" ? "Visa" : "Mastercard"} · ${st.label} · ${fmt.usd(st.amount)}`, icon: "bi-credit-card-2-front", tone: "success" });
+        if (!tx) return AB.toast("Insufficient wallet balance", "error");
+        const c = createCard(st);
+        AB.notify({ icon: "bi-credit-card-2-front", tone: "success", title: "Your USD card is ready", body: `${c.label} (•••• ${c.number.slice(-4)}) funded with ${fmt.usd(c.balance)}.` });
+        setSel(c.id);
+        if (AB.qs("create")) history.replaceState(null, "", location.pathname);
+        AB.success({ title: "Card created!", message: `Your ${c.brand === "visa" ? "Visa" : "Mastercard"} USD card is ready to use online.`,
+          rows: [["Card", `•••• ${c.number.slice(-4)}`], ["Balance", fmt.usd(c.balance)], ["Charged", fmt.naira(k.naira, 2)], ["Reference", tx.id]],
+          actions: [{ id: "rv", label: '<i class="bi bi-eye me-1"></i>Reveal details', onClick: (mm) => { mm.close(); setTimeout(() => reveal(current()), 350); } }] });
+      }, 320);
+    });
+    draw();
+  }
+
+  function createCard(st) {
+    const now = Date.now(), d = new Date();
+    const exp = String(d.getMonth() + 1).padStart(2, "0") + "/" + String((d.getFullYear() + 3) % 100).padStart(2, "0");
+    const H = 36e5;
+    const seed = [
+      { merchant: "netflix", amount: 1.00, status: "reversed", note: "Card verification · reversed", date: now - 1000 },
+      { merchant: "spotify", amount: 0.00, status: "success", note: "Card linked · $0 authorization", date: now - 2000 },
+      { merchant: "aws", amount: 1.00, status: "reversed", note: "Account verification hold", date: now - 3000 },
+      { merchant: "aliexpress", amount: 12.49, status: "declined", note: "Declined · billing address mismatch", date: now - 4000 },
+      { merchant: "apple", amount: 0.00, status: "success", note: "Apple ID payment method added", date: now - 5000 }
+    ].map((t, i) => ({ id: AB.fmt.ref("CT"), kind: "purchase", direction: "out", title: MERCHANTS[t.merchant].name, ...t }));
+    const c = {
+      id: "VC" + now.toString(36).toUpperCase(), name: HOLDER, brand: st.brand, number: genNumber(st.brand), expiry: exp,
+      cvv: String(Math.floor(100 + Math.random() * 900)), balance: r2(st.amount), status: "active", gradient: THEMES.find((t) => t.id === st.theme).bg,
+      label: st.label, limit: 1000, createdAt: now,
+      txns: [...seed, { id: AB.fmt.ref("CT"), kind: "topup", direction: "in", title: "Initial funding", note: "From NGN wallet", amount: r2(st.amount), status: "success", date: now - 6000 }]
+    };
+    store.update("cards", (cs) => [...(cs || []), c]);
+    return c;
+  }
+
+  const addCardTx = (id, t) => { const tx = { id: AB.fmt.ref("CT"), date: Date.now(), ...t }; updateCard(id, (c) => ({ ...c, txns: [tx, ...(c.txns || [])].slice(0, 80) })); return tx; };
+
+  /* ---------- Fund ---------- */
+  function openFund(c) {
+    if (c.status === "frozen") return AB.toast("Unfreeze this card to fund it", "warning");
+    const m = AB.modal(`
+      <div class="modal-header"><h5 class="modal-title">Fund card •••• ${c.number.slice(-4)}</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body pt-1">
+        <label class="form-label fw-semibold" for="fAmt">Amount (USD)</label>
+        <div class="input-group input-group-lg has-validation mb-2"><span class="input-group-text">$</span><input type="number" class="form-control tabular" id="fAmt" min="${MIN_FUND}" step="1" placeholder="0.00" inputmode="decimal"><div class="invalid-feedback" id="fErr"></div></div>
+        <div class="d-flex gap-2 flex-wrap mb-3">${[5, 10, 20, 50, 100].map((v) => `<button class="ab-chip" data-preset="${v}">$${v}</button>`).join("")}</div>
+        <div class="ab-summary" id="fSum"></div>
+        <div class="fs-8 text-muted mt-2">Card balance after: <b id="fAfter" class="tabular">${fmt.usd(c.balance)}</b> · Wallet: ${fmt.naira(wallet.balance(), 2)}</div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-primary btn-lg w-100" id="fGo">Continue</button></div>`);
+    const el = m.el, inp = el.querySelector("#fAmt");
+    const calc = () => { const a = Number(inp.value) || 0, fee = r2(a * FUND_FEE); return { a, fee, naira: r2((a + fee) * RATE) }; };
+    const sum = () => { const k = calc(); el.querySelector("#fSum").innerHTML = `<div class="row-item"><span>Funding fee (1%)</span><span class="tabular">${fmt.usd(k.fee)}</span></div><div class="row-item"><span>Rate</span><span>$1 = ${fmt.naira(RATE)}</span></div><div class="row-item total"><span>You pay</span><span class="tabular">${fmt.naira(k.naira, 2)}</span></div>`; el.querySelector("#fAfter").textContent = fmt.usd(c.balance + k.a); };
+    sum();
+    m.el.addEventListener("shown.bs.modal", () => inp.focus());
+    inp.addEventListener("input", () => { inp.classList.remove("is-invalid"); el.querySelectorAll("[data-preset]").forEach((x) => x.classList.toggle("active", Number(x.dataset.preset) === Number(inp.value))); sum(); });
+    el.querySelectorAll("[data-preset]").forEach((x) => x.addEventListener("click", () => { inp.value = x.dataset.preset; inp.dispatchEvent(new Event("input")); }));
+    el.querySelector("#fGo").addEventListener("click", () => {
+      const k = calc();
+      let err = "";
+      if (!k.a || k.a < MIN_FUND) err = `Enter at least ${fmt.usd(MIN_FUND)}.`;
+      else if (c.balance + k.a > MAX_BAL) err = `Card balance can't exceed ${fmt.usd(MAX_BAL)}.`;
+      else if (!wallet.canAfford(k.naira)) err = `Insufficient wallet balance (needs ${fmt.naira(k.naira, 2)}).`;
+      if (err) { inp.classList.add("is-invalid"); el.querySelector("#fErr").textContent = err; return; }
+      m.close();
+      setTimeout(async () => {
+        const ok = await AB.confirmPay({ title: "Fund virtual card", amount: k.naira, cta: "Fund card", rows: [["Card", `${esc(c.label)} · •••• ${c.number.slice(-4)}`], ["Amount", fmt.usd(k.a)], ["Fee", fmt.usd(k.fee)], ["Rate", `${fmt.naira(RATE)}/$`]] });
+        if (!ok) return;
+        const tx = wallet.debit(k.naira, { type: "card", title: "Card Funding", subtitle: `${c.label} •••• ${c.number.slice(-4)} · ${fmt.usd(k.a)}`, icon: "bi-credit-card-2-front", tone: "success" });
+        if (!tx) return AB.toast("Insufficient wallet balance", "error");
+        updateCard(c.id, (x) => ({ ...x, balance: r2(x.balance + k.a) }));
+        addCardTx(c.id, { kind: "topup", direction: "in", title: "Card top-up", note: "From NGN wallet", amount: k.a, status: "success" });
+        AB.notify({ icon: "bi-credit-card-2-front", tone: "success", title: "Card funded", body: `${fmt.usd(k.a)} added to ${c.label} (•••• ${c.number.slice(-4)}).` });
+        AB.success({ title: "Card funded", message: `${fmt.usd(k.a)} has been added to your card.`, rows: [["New card balance", fmt.usd(current().balance)], ["Charged", fmt.naira(k.naira, 2)], ["Reference", tx.id]] });
+      }, 320);
+    });
+  }
+
+  /* ---------- Withdraw ---------- */
+  function openWithdraw(c) {
+    if (c.status === "frozen") return AB.toast("Unfreeze this card to withdraw", "warning");
+    const m = AB.modal(`
+      <div class="modal-header"><h5 class="modal-title">Withdraw to Naira wallet</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body pt-1">
+        <div class="d-flex justify-content-between fs-7 mb-2"><span class="text-muted">Available on card</span><b class="tabular">${fmt.usd(c.balance)}</b></div>
+        <div class="input-group input-group-lg has-validation mb-2"><span class="input-group-text">$</span><input type="number" class="form-control tabular" id="wAmt" min="1" max="${c.balance}" placeholder="0.00" inputmode="decimal" aria-label="Amount in USD"><button class="btn btn-light-subtle" id="wMax" type="button">Max</button><div class="invalid-feedback" id="wErr"></div></div>
+        <div class="ab-summary mt-3" id="wSum"></div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-primary btn-lg w-100" id="wGo">Continue</button></div>`);
+    const el = m.el, inp = el.querySelector("#wAmt");
+    const sum = () => { const a = Number(inp.value) || 0; el.querySelector("#wSum").innerHTML = `<div class="row-item"><span>Withdrawal rate</span><span>$1 = ${fmt.naira(SELL_RATE)}</span></div><div class="row-item total"><span>You'll receive</span><span class="tabular">${fmt.naira(a * SELL_RATE, 2)}</span></div>`; };
+    sum();
+    m.el.addEventListener("shown.bs.modal", () => inp.focus());
+    inp.addEventListener("input", () => { inp.classList.remove("is-invalid"); sum(); });
+    el.querySelector("#wMax").addEventListener("click", () => { inp.value = c.balance; sum(); });
+    el.querySelector("#wGo").addEventListener("click", () => {
+      const a = r2(Number(inp.value) || 0);
+      let err = "";
+      if (!a || a < 1) err = "Minimum withdrawal is $1.00.";
+      else if (a > c.balance) err = "Amount exceeds card balance.";
+      if (err) { inp.classList.add("is-invalid"); el.querySelector("#wErr").textContent = err; return; }
+      const naira = r2(a * SELL_RATE);
+      m.close();
+      setTimeout(async () => {
+        const ok = await AB.confirmPay({ title: "Withdraw from card", amount: naira, amountLabel: "You'll receive", skipBalanceCheck: true, cta: "Withdraw", rows: [["From", `${esc(c.label)} · •••• ${c.number.slice(-4)}`], ["Amount", fmt.usd(a)], ["Rate", `${fmt.naira(SELL_RATE)}/$`]] });
+        if (!ok) return;
+        const fresh = current();
+        if (a > fresh.balance) return AB.toast("Card balance changed. Try again.", "error");
+        updateCard(c.id, (x) => ({ ...x, balance: r2(x.balance - a) }));
+        addCardTx(c.id, { kind: "withdraw", direction: "out", title: "Withdrawal", note: "To NGN wallet", amount: a, status: "success" });
+        const tx = wallet.credit(naira, { type: "card", title: "Card Withdrawal", subtitle: `${c.label} •••• ${c.number.slice(-4)} · ${fmt.usd(a)}`, icon: "bi-credit-card-2-front", tone: "success" });
+        AB.notify({ icon: "bi-arrow-down-left", tone: "success", title: "Card withdrawal", body: `${fmt.naira(naira)} credited to your wallet.` });
+        AB.success({ title: "Withdrawal successful", message: `${fmt.naira(naira, 2)} has been credited to your Naira wallet.`, rows: [["Card balance", fmt.usd(current().balance)], ["Wallet balance", fmt.naira(wallet.balance(), 2)], ["Reference", tx.id]] });
+      }, 320);
+    });
+  }
+
+  /* ---------- Freeze ---------- */
+  function toggleFreeze(c) {
+    const toFrozen = c.status !== "frozen";
+    if (revealed === c.id) hideReveal(true);
+    updateCard(c.id, (x) => ({ ...x, status: toFrozen ? "frozen" : "active" }));
+    AB.toast(toFrozen ? `<b>${esc(c.label)}</b> frozen. All payments are paused.` : `<b>${esc(c.label)}</b> unfrozen and ready to use.`, toFrozen ? "info" : "success");
+    AB.notify({ icon: toFrozen ? "bi-snow2" : "bi-sun", tone: "cyan", title: toFrozen ? "Card frozen" : "Card unfrozen", body: `${c.label} (•••• ${c.number.slice(-4)})` });
+  }
+
+  /* ---------- Limit ---------- */
+  function openLimit(c) {
+    const spent = monthSpend(c);
+    const m = AB.modal(`
+      <div class="modal-header"><h5 class="modal-title">Monthly spending limit</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body pt-1">
+        <p class="fs-7 text-muted">Payments that would take this month's spend above the limit will be declined.</p>
+        <div class="text-center my-3"><div class="fs-1 fw-800 tabular" id="lVal">${fmt.usd(c.limit)}</div><div class="fs-8 text-muted">per month · spent so far ${fmt.usd(spent)}</div></div>
+        <input type="range" class="form-range range-big" id="lRange" min="50" max="5000" step="50" value="${c.limit}" aria-label="Monthly limit">
+        <div class="d-flex justify-content-between fs-8 text-muted"><span>$50</span><span>$5,000</span></div>
+        <div class="d-flex gap-2 flex-wrap mt-3">${[100, 250, 500, 1000, 2500].map((v) => `<button class="ab-chip" data-preset="${v}">$${v.toLocaleString()}</button>`).join("")}</div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-primary btn-lg w-100" id="lSave">Save limit</button></div>`);
+    const r = m.el.querySelector("#lRange"), v = m.el.querySelector("#lVal");
+    const sync = () => { v.textContent = fmt.usd(r.value); m.el.querySelectorAll("[data-preset]").forEach((x) => x.classList.toggle("active", x.dataset.preset === r.value)); };
+    sync();
+    r.addEventListener("input", sync);
+    m.el.querySelectorAll("[data-preset]").forEach((x) => x.addEventListener("click", () => { r.value = x.dataset.preset; sync(); }));
+    m.el.querySelector("#lSave").addEventListener("click", () => {
+      const lim = Number(r.value);
+      updateCard(c.id, (x) => ({ ...x, limit: lim }));
+      m.close();
+      AB.toast(`Monthly limit set to <b>${fmt.usd(lim)}</b>`, "success");
+    });
+  }
+
+  /* ---------- Rename ---------- */
+  function openRename(c) {
+    const m = AB.modal(`
+      <div class="modal-header"><h5 class="modal-title">Rename card</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body pt-1">
+        <label class="form-label fw-semibold" for="rnInp">Nickname</label>
+        <input class="form-control form-control-lg" id="rnInp" maxlength="20" value="${esc(c.label)}"><div class="invalid-feedback">Enter 2–20 characters.</div>
+        <div class="d-flex gap-2 flex-wrap mt-3">${["Subscriptions", "Shopping", "Ads", "Travel", "Business"].map((s) => `<button class="ab-chip" data-s="${s}">${s}</button>`).join("")}</div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-primary btn-lg w-100" id="rnSave">Save</button></div>`);
+    const inp = m.el.querySelector("#rnInp");
+    m.el.addEventListener("shown.bs.modal", () => { inp.focus(); inp.select(); });
+    m.el.querySelectorAll("[data-s]").forEach((x) => x.addEventListener("click", () => { inp.value = x.dataset.s; inp.classList.remove("is-invalid"); }));
+    const save = () => {
+      const v = inp.value.trim();
+      if (v.length < 2) return inp.classList.add("is-invalid");
+      updateCard(c.id, (x) => ({ ...x, label: v }));
+      m.close(); AB.toast("Card renamed", "success");
+    };
+    m.el.querySelector("#rnSave").addEventListener("click", save);
+    inp.addEventListener("keydown", (e) => { if (e.key === "Enter") save(); });
+  }
+
+  /* ---------- Terminate ---------- */
+  function openTerminate(c) {
+    const naira = r2(c.balance * SELL_RATE);
+    const m = AB.modal(`
+      <div class="modal-body text-center pt-4">
+        <span class="ab-icon ab-icon-xl tone-danger mb-3"><i class="bi bi-exclamation-triangle"></i></span>
+        <h5 class="mb-2">Terminate this card?</h5>
+        <p class="fs-7 text-muted mb-3">${esc(c.label)} (•••• ${c.number.slice(-4)}) will be permanently closed. Subscriptions using it will fail.</p>
+        <div class="ab-summary text-start mb-3">
+          <div class="row-item"><span>Card balance</span><span class="tabular">${fmt.usd(c.balance)}</span></div>
+          <div class="row-item"><span>Returned to wallet</span><span class="tabular">${fmt.naira(naira, 2)}</span></div>
+        </div>
+        <div class="form-check text-start"><input class="form-check-input" type="checkbox" id="tAgree"><label class="form-check-label fs-7" for="tAgree">I understand this action cannot be undone</label></div>
+      </div>
+      <div class="modal-footer d-flex gap-2 flex-nowrap"><button class="btn btn-light-subtle flex-fill m-0" data-bs-dismiss="modal">Keep card</button><button class="btn btn-danger flex-fill m-0" id="tGo" disabled>Terminate</button></div>`);
+    const agree = m.el.querySelector("#tAgree"), go = m.el.querySelector("#tGo");
+    agree.addEventListener("change", () => (go.disabled = !agree.checked));
+    go.addEventListener("click", () => {
+      m.close();
+      setTimeout(async () => {
+        const ok = await AB.confirmPay({ title: "Confirm termination", amount: naira, amountLabel: "Refund to wallet", skipBalanceCheck: true, cta: "Terminate card", rows: [["Card", `•••• ${c.number.slice(-4)}`], ["Balance", fmt.usd(c.balance)]] });
+        if (!ok) return;
+        hideReveal(true);
+        store.update("cards", (cs) => cs.filter((x) => x.id !== c.id));
+        let tx = null;
+        if (naira > 0) tx = wallet.credit(naira, { type: "card", title: "Card Terminated · Refund", subtitle: `${c.label} •••• ${c.number.slice(-4)} · ${fmt.usd(c.balance)}`, icon: "bi-credit-card-2-front", tone: "success" });
+        AB.notify({ icon: "bi-trash3", tone: "danger", title: "Card terminated", body: `${c.label} (•••• ${c.number.slice(-4)}) was closed.` });
+        selId = null;
+        render();
+        AB.success({ title: "Card terminated", message: naira > 0 ? `${fmt.naira(naira, 2)} has been returned to your wallet.` : "Your card has been closed.", rows: tx ? [["Refund", fmt.naira(naira, 2)], ["Reference", tx.id]] : [] });
+      }, 320);
+    });
+  }
+
+  /* ---------- Test online payment ---------- */
+  function openTestPay(c) {
+    const keys = Object.keys(MERCHANTS);
+    const pick = keys[Math.floor(Math.random() * keys.length)];
+    const m = AB.modal(`
+      <div class="modal-header"><h5 class="modal-title">Simulate online payment</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body pt-1">
+        <p class="fs-7 text-muted">Pretend a merchant charges card •••• ${c.number.slice(-4)} (balance ${fmt.usd(c.balance)}).</p>
+        <label class="form-label fw-semibold" for="tpM">Merchant</label>
+        <select class="form-select form-select-lg mb-3" id="tpM">${keys.map((k) => `<option value="${k}" ${k === pick ? "selected" : ""}>${MERCHANTS[k].name}</option>`).join("")}</select>
+        <label class="form-label fw-semibold" for="tpA">Amount (USD)</label>
+        <div class="input-group input-group-lg has-validation"><span class="input-group-text">$</span><input type="number" class="form-control tabular" id="tpA" value="${(Math.random() * 14 + 1).toFixed(2)}" min="0.5" step="0.01" inputmode="decimal"><div class="invalid-feedback">Enter an amount of at least $0.50.</div></div>
+        <div class="fs-8 text-muted mt-2"><i class="bi bi-info-circle me-1"></i>Declines if the card is frozen, the balance is too low or the monthly limit is exceeded.</div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-primary btn-lg w-100" id="tpGo"><i class="bi bi-bag-check me-1"></i>Send charge</button></div>`);
+    m.el.querySelector("#tpGo").addEventListener("click", () => {
+      const ai = m.el.querySelector("#tpA"), a = r2(Number(ai.value) || 0), mk = m.el.querySelector("#tpM").value;
+      if (a < 0.5) return ai.classList.add("is-invalid");
+      m.close();
+      const M = MERCHANTS[mk];
+      const tx = addCardTx(c.id, { kind: "purchase", direction: "out", merchant: mk, title: M.name, note: "Authorizing…", amount: a, status: "pending" });
+      txFilter = "all";
+      render();
+      document.getElementById("txCard")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      setTimeout(() => {
+        const cur = cards().find((x) => x.id === c.id);
+        if (!cur) return;
+        let reason = "";
+        if (cur.status === "frozen") reason = "card frozen";
+        else if (a > cur.balance) reason = "insufficient funds";
+        else if (monthSpend(cur) + a > cur.limit) reason = "monthly limit exceeded";
+        updateCard(c.id, (x) => ({
+          ...x,
+          balance: reason ? x.balance : r2(x.balance - a),
+          txns: x.txns.map((t) => (t.id === tx.id ? { ...t, status: reason ? "declined" : "success", note: reason ? "Declined · " + reason : M.cat + " · online" } : t))
+        }));
+        if (reason) {
+          AB.toast(`<b>${esc(M.name)}</b> ${fmt.usd(a)} declined — ${reason}`, "error");
+          AB.notify({ icon: "bi-x-octagon", tone: "danger", title: "Card payment declined", body: `${M.name} ${fmt.usd(a)} · ${reason}` });
+        } else {
+          AB.toast(`<b>${esc(M.name)}</b> charged ${fmt.usd(a)}`, "success");
+          AB.notify({ icon: "bi-credit-card-2-front", tone: "primary", title: "Card payment", body: `${M.name} charged ${fmt.usd(a)} on •••• ${c.number.slice(-4)}` });
+        }
+      }, 1600);
+    });
+  }
+
+  /* ---------- Statement ---------- */
+  function downloadStatement(c) {
+    const rows = [["Date", "Description", "Note", "Direction", "Amount (USD)", "Status"], ...(c.txns || []).map((t) => [new Date(t.date).toISOString(), t.title, t.note || "", t.direction, t.amount.toFixed(2), t.status])];
+    const csv = rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    a.download = `autobiz-card-${c.number.slice(-4)}-statement.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    AB.toast("Statement downloaded", "success");
+  }
+
+  /* ---------- Side info ---------- */
+  document.getElementById("addrBox").innerHTML = ADDRESS.map(([k, v]) => `<div class="addr-line"><div class="min-w-0"><div class="k">${k}</div><div class="v text-truncate">${esc(v)}</div></div><button class="btn btn-light-subtle btn-copy" data-copy="${esc(v.replace(/ \(DE\)/, ""))}" aria-label="Copy ${k}"><i class="bi bi-copy"></i></button></div>`).join("");
+  document.querySelectorAll("#addrBox [data-copy]").forEach((b) => b.addEventListener("click", () => AB.copy(b.dataset.copy, b.getAttribute("aria-label").replace("Copy ", "") + " copied")));
+  document.getElementById("copyAddr").addEventListener("click", () => AB.copy("8 The Green, Suite 7421, Dover, DE 19901, United States", "Billing address copied"));
+  document.getElementById("merchGrid").innerHTML = ["netflix", "spotify", "aws", "aliexpress", "apple", "google", "amazon", "meta", "youtube", "openai", "microsoft", "steam"]
+    .map((k) => `<div class="merchant">${merchIcon(k)}<span>${esc(MERCHANTS[k].short || MERCHANTS[k].name)}</span></div>`).join("");
+  document.getElementById("feeTable").innerHTML = [
+    ["Card creation", fmt.usd(CREATE_FEE)], ["Funding fee", "1%"], ["Funding rate", `${fmt.naira(RATE)}/$`], ["Withdrawal rate", `${fmt.naira(SELL_RATE)}/$`],
+    ["Monthly maintenance", "Free"], ["Min. initial funding", fmt.usd(MIN_CREATE)], ["Max. card balance", fmt.usd(MAX_BAL)], ["Monthly spend limit", "up to $5,000"], ["Cards per account", MAX_CARDS]
+  ].map(([k, v]) => `<tr><td class="text-muted">${k}</td><td class="tabular">${v}</td></tr>`).join("");
+  const FAQ = [
+    ["Where can I use my virtual card?", "Anywhere online that accepts Visa or Mastercard in USD — Netflix, Spotify, Apple, Google, AWS, AliExpress, Amazon, Meta Ads, and millions more."],
+    ["Why was my payment declined?", "Common reasons: the card is frozen, the balance is lower than the charge, your monthly limit has been reached, or the billing address entered doesn't match the one shown here."],
+    ["Can I get my money back to Naira?", `Yes. Use <b>Withdraw</b> to move USD back to your Naira wallet at ${fmt.naira(SELL_RATE)}/$. Terminating a card also refunds its full balance.`],
+    ["Is it safe to save my card on websites?", "Yes. Your card details are only shown after PIN verification and auto-hide after 30 seconds. You can freeze the card instantly if anything looks wrong."],
+    ["How many cards can I have?", `Up to ${MAX_CARDS} active cards — great for separating subscriptions, ads and shopping.`]
+  ];
+  document.getElementById("faq").innerHTML = FAQ.map(([q, a], i) => `
+    <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed fs-7 px-0" type="button" data-bs-toggle="collapse" data-bs-target="#faq${i}" aria-expanded="false" aria-controls="faq${i}">${q}</button></h2>
+    <div id="faq${i}" class="accordion-collapse collapse" data-bs-parent="#faq"><div class="accordion-body px-0 pt-0 fs-7 text-muted">${a}</div></div></div>`).join("");
+
+  document.getElementById("newCardBtn").addEventListener("click", openCreate);
+  store.on((k) => { if (k === "cards") render(); });
+  render();
+  if (AB.qs("create")) setTimeout(openCreate, 350);
+});
+</script>
+</body>
+</html>

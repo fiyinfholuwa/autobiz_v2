@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Brand &amp; theme · AutoBiz Admin</title>
+  <meta name="theme-color" content="#191919">
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/app.css" rel="stylesheet">
+  <script src="../assets/js/brand.js"></script>
+  <style>
+    body { background: var(--ab-bg); }
+    .adm-top { background: var(--ab-sidebar); color: #fff; }
+    .adm-top .inner { max-width: 1320px; margin: 0 auto; padding: .9rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    .adm-top a.link { color: rgba(255, 255, 255, .75); font-size: .875rem; font-weight: 500; }
+    .adm-top a.link:hover { color: #fff; }
+    .adm-brand { display: flex; align-items: center; gap: .6rem; color: #fff; font-weight: 800; font-size: 1.1rem; }
+    .adm-brand img { width: 32px; height: 32px; }
+    .adm-brand .tag { font-size: .66rem; font-weight: 700; padding: 2px 8px; border-radius: 6px; background: rgba(255, 255, 255, .14); }
+    .adm-wrap { max-width: 1320px; margin: 0 auto; padding: 1.75rem 1.5rem 3rem; }
+    @media (max-width: 575.98px) { .adm-wrap { padding: 1.1rem .85rem 2.5rem; } .adm-top .inner { padding: .8rem .85rem; } }
+
+    /* Presets */
+    .preset { border: 2px solid var(--ab-border); border-radius: 12px; padding: .6rem; background: var(--ab-surface); width: 100%; text-align: left; transition: all .15s; color: var(--ab-text); }
+    .preset:hover { border-color: rgba(var(--ab-primary-rgb), .5); }
+    .preset.active { border-color: var(--ab-primary); box-shadow: 0 0 0 3px rgba(var(--ab-primary-rgb), .15); }
+    .preset .sw { height: 46px; border-radius: 8px; display: flex; overflow: hidden; margin-bottom: .5rem; }
+    .preset .sw i { flex: 1; }
+    .preset .sw i:first-child { flex: 0 0 34%; }
+    .preset .nm { font-size: .8rem; font-weight: 700; }
+
+    /* Colour fields */
+    .cfield { display: flex; align-items: center; gap: .6rem; border: 1px solid var(--ab-border); border-radius: 10px; padding: .4rem .5rem; background: var(--ab-surface); }
+    .cfield input[type=color] { width: 42px; height: 42px; border: 0; padding: 0; background: none; border-radius: 8px; cursor: pointer; flex-shrink: 0; }
+    .cfield input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
+    .cfield input[type=color]::-webkit-color-swatch { border: 1px solid rgba(0, 0, 0, .1); border-radius: 8px; }
+    .cfield .form-control { border: 0; box-shadow: none !important; font-family: ui-monospace, Menlo, monospace; text-transform: uppercase; padding-left: .25rem; }
+    .shades { display: flex; gap: 4px; }
+    .shades span { flex: 1; height: 28px; border-radius: 6px; }
+
+    /* Live preview */
+    .pv { border: 1px solid var(--ab-border); border-radius: 14px; overflow: hidden; background: var(--ab-bg); font-size: .75rem; }
+    .pv-label { font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ab-muted); margin: 0 0 .5rem; }
+    .pv-ann { background: var(--ab-sidebar); color: rgba(255, 255, 255, .85); padding: .3rem .75rem; font-size: .65rem; text-align: right; }
+    .pv-hdr { background: var(--ab-surface); padding: .55rem .75rem; display: flex; align-items: center; gap: .6rem; border-bottom: 1px solid var(--ab-border); }
+    .pv-hdr .logo { width: 22px; height: 22px; }
+    .pv-hdr .search { flex: 1; height: 24px; border-radius: 6px; background: var(--ab-surface-2); border: 1px solid var(--ab-border); display: flex; justify-content: flex-end; overflow: hidden; }
+    .pv-hdr .search i { width: 28px; background: var(--ab-primary); }
+    .pv-btn { background: var(--ab-primary); color: var(--ab-on-primary); border-radius: 6px; padding: .25rem .6rem; font-weight: 700; font-size: .68rem; white-space: nowrap; }
+    .pv-nav { display: flex; gap: .4rem; padding: .45rem .75rem; background: var(--ab-surface); border-bottom: 1px solid var(--ab-border); }
+    .pv-nav span { padding: .15rem .5rem; border-radius: 6px; color: var(--ab-muted); font-weight: 600; font-size: .65rem; }
+    .pv-nav span.on { background: var(--ab-primary-soft); color: var(--ab-primary); }
+    .pv-hero { margin: .75rem; border-radius: 10px; padding: 1rem; color: #fff; background: linear-gradient(120deg, var(--ab-sidebar) 0%, var(--ab-primary-700) 65%, var(--ab-primary) 130%); }
+    .pv-hero b { display: block; font-size: .95rem; margin-bottom: .5rem; }
+    .pv-hero span { background: #fff; color: var(--ab-sidebar); border-radius: 6px; padding: .2rem .55rem; font-weight: 700; font-size: .65rem; }
+    .pv-dash { display: grid; grid-template-columns: 30% 1fr; min-height: 210px; }
+    .pv-side { background: var(--ab-sidebar); padding: .75rem .5rem; display: flex; flex-direction: column; gap: .3rem; }
+    .pv-side .wm { color: #fff; font-weight: 800; font-size: .7rem; text-align: center; margin-bottom: .5rem; letter-spacing: .05em; }
+    .pv-side span { color: rgba(255, 255, 255, .65); padding: .3rem .45rem; border-radius: 4px; font-size: .62rem; display: flex; gap: .35rem; align-items: center; }
+    .pv-side span.on { background: var(--ab-primary); color: var(--ab-on-primary); font-weight: 700; }
+    .pv-main { padding: .75rem; display: flex; flex-direction: column; gap: .5rem; }
+    .pv-card { background: var(--ab-surface); border-radius: 8px; padding: .6rem; box-shadow: var(--ab-shadow-sm); }
+    .pv-acct { background: var(--ab-primary); color: #fff; border-radius: 6px; padding: .5rem; font-weight: 700; }
+    .pv-bars { display: flex; align-items: flex-end; gap: 6px; height: 54px; }
+    .pv-bars i { flex: 1; border-radius: 2px 2px 0 0; background: var(--ab-primary); }
+    .pv-bars i:nth-child(odd) { background: var(--ab-border); }
+    .contrast { font-size: .75rem; font-weight: 600; display: inline-flex; align-items: center; gap: .35rem; padding: .25rem .6rem; border-radius: 999px; }
+    .contrast.ok { background: var(--ab-accent-soft); color: var(--ab-accent); }
+    .contrast.warn { background: var(--ab-warning-soft); color: #b07400; }
+    .savebar { position: sticky; bottom: 0; z-index: 10; background: var(--ab-surface); border-top: 1px solid var(--ab-border); box-shadow: 0 -10px 24px -16px rgba(0, 0, 0, .25); }
+    .savebar .inner { max-width: 1320px; margin: 0 auto; padding: .8rem 1.5rem calc(.8rem + env(safe-area-inset-bottom)); display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <header class="adm-top">
+    <div class="inner">
+      <a href="theme.html" class="adm-brand"><img src="../assets/img/logo.svg" alt="">AutoBiz <span class="tag">ADMIN</span></a>
+      <nav class="ms-auto d-flex align-items-center gap-3">
+        <a href="../index.html" class="link" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1"></i><span class="d-none d-sm-inline">View website</span></a>
+        <a href="../app/dashboard.html" class="link" target="_blank" rel="noopener"><i class="bi bi-grid-1x2 me-1"></i><span class="d-none d-sm-inline">Open dashboard</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="adm-wrap">
+    <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../app/dashboard.html">Admin</a></li><li class="breadcrumb-item active" aria-current="page">Brand &amp; theme</li></ol></nav>
+    <div class="ab-page-head">
+      <div><h1>Brand &amp; theme</h1><p>Choose the colours for the whole platform. Changes apply to the website, the shop and the member dashboard.</p></div>
+      <span class="ab-status neutral" id="lastSaved"></span>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-7">
+        <div class="card mb-4"><div class="card-body">
+          <h6 class="card-title mb-1">Presets</h6>
+          <p class="fs-7 text-muted mb-3">Start from a ready-made palette, then fine-tune below.</p>
+          <div class="row g-2" id="presets"></div>
+        </div></div>
+
+        <div class="card"><div class="card-body">
+          <h6 class="card-title mb-1">Custom colours</h6>
+          <p class="fs-7 text-muted mb-3">Every other shade — hover states, soft tints, dark mode — is generated from these two.</p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="pHex">Brand colour</label>
+              <div class="cfield"><input type="color" id="pPick" aria-label="Pick brand colour"><input class="form-control" id="pHex" maxlength="7" spellcheck="false"></div>
+              <div class="invalid-feedback" id="pErr" style="display:none">Use a 6-digit hex colour, e.g. #299D91</div>
+              <div class="form-text">Buttons, links, active menu items, highlights.</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="kHex">Panel colour</label>
+              <div class="cfield"><input type="color" id="kPick" aria-label="Pick panel colour"><input class="form-control" id="kHex" maxlength="7" spellcheck="false"></div>
+              <div class="invalid-feedback" id="kErr" style="display:none">Use a 6-digit hex colour, e.g. #191919</div>
+              <div class="form-text">Dashboard sidebar, top announcement bar, dark banners.</div>
+            </div>
+          </div>
+          <div class="small-label mt-4 mb-2">Generated shades</div>
+          <div class="shades" id="shades" aria-label="Generated brand shades"></div>
+          <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+            <span class="contrast" id="contrast"></span>
+            <span class="fs-8 text-muted">Checks button text against the brand colour (WCAG AA needs 4.5:1 for small text, 3:1 for bold/large).</span>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="ab-sticky">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">Live preview</h6>
+            <div class="ab-segment" id="pvMode"><button class="active" data-m="light">Light</button><button data-m="dark">Dark</button></div>
+          </div>
+          <div class="pv-label">Website</div>
+          <div class="pv mb-3" aria-hidden="true">
+            <div class="pv-ann">Sign up &amp; get ₦1,000 off →</div>
+            <div class="pv-hdr"><img class="logo" src="../assets/img/logo.svg" alt=""><b>AutoBiz</b><div class="search"><i></i></div><span class="pv-btn">Sign up</span></div>
+            <div class="pv-nav"><span>Home</span><span class="on">Shop</span><span>eSIM</span><span>Flights</span><span>Gift cards</span></div>
+            <div class="pv-hero"><b>Up to 30% off phones &amp; gadgets</b><span>Shop deals</span></div>
+          </div>
+          <div class="pv-label">Member dashboard</div>
+          <div class="pv pv-dash" aria-hidden="true">
+            <div class="pv-side"><div class="wm">AUTObiz.APP</div><span class="on"><i class="bi bi-grid-1x2"></i>Dashboard</span><span><i class="bi bi-wallet2"></i>Wallet</span><span><i class="bi bi-receipt"></i>Transactions</span><span><i class="bi bi-shop"></i>Marketplace</span><span><i class="bi bi-sim"></i>eSIM</span></div>
+            <div class="pv-main">
+              <div class="pv-card"><div class="text-muted mb-1">Total Balance</div><div class="pv-acct">₦285,750.50</div></div>
+              <div class="pv-card"><div class="d-flex justify-content-between mb-2"><b>Weekly Comparison</b><span class="pv-btn">View</span></div><div class="pv-bars"><i style="height:50%"></i><i style="height:80%"></i><i style="height:40%"></i><i style="height:65%"></i><i style="height:55%"></i><i style="height:95%"></i></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="savebar">
+    <div class="inner">
+      <span class="fs-7 text-muted me-auto" id="dirtyNote"><i class="bi bi-check-circle text-success me-1"></i>All changes saved</span>
+      <button class="btn btn-light-subtle" id="resetBtn"><i class="bi bi-arrow-counterclockwise me-1"></i>Reset to default</button>
+      <button class="btn btn-light-subtle" id="discardBtn" disabled>Discard</button>
+      <button class="btn btn-primary px-4" id="saveBtn" disabled>Save &amp; publish</button>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+(function () {
+  // Admin area: requires a signed-in session (role checks belong on the backend).
+  if (!AB.auth.isAuthed()) { location.replace(AB.auth.loginUrl("admin/theme.html")); return; }
+
+  const B = ABBrand, $ = (id) => document.getElementById(id);
+  let saved = B.get();
+  let draft = { ...saved };
+  const showErr = (k, on) => { $(k + "Err").style.display = on ? "block" : "none"; $(k + "Hex").closest(".cfield").style.borderColor = on ? "var(--ab-danger)" : ""; };
+  const same = (a, b) => a.primary.toLowerCase() === b.primary.toLowerCase() && a.panel.toLowerCase() === b.panel.toLowerCase();
+
+  function renderPresets() {
+    $("presets").innerHTML = B.PRESETS.map((p) => `
+      <div class="col-6 col-sm-3"><button class="preset ${same(p, draft) ? "active" : ""}" data-id="${p.id}" aria-pressed="${same(p, draft)}">
+        <div class="sw"><i style="background:${p.panel}"></i><i style="background:${p.primary}"></i></div>
+        <div class="nm">${AB.esc(p.name)}</div><div class="fs-8 text-muted text-uppercase">${p.primary}</div>
+      </button></div>`).join("");
+  }
+
+  function sync() {
+    // Fields
+    [["p", "primary"], ["k", "panel"]].forEach(([k, f]) => {
+      if (document.activeElement !== $(k + "Hex")) $(k + "Hex").value = draft[f].toUpperCase();
+      $(k + "Pick").value = draft[f];
+    });
+    // Shades + contrast
+    const d = B.derive(draft);
+    $("shades").innerHTML = [d.soft, d.p300, d.p, d.p600, d.p700, d.panel].map((c) => `<span style="background:${c}" title="${c.toUpperCase()}"></span>`).join("");
+    const ratio = B.contrast(draft.primary, d.onP);
+    const ok = ratio >= 4.5;
+    $("contrast").className = "contrast " + (ok ? "ok" : "warn");
+    $("contrast").innerHTML = `<i class="bi ${ok ? "bi-check-circle-fill" : "bi-exclamation-triangle-fill"}"></i>${ratio.toFixed(1)}:1 ${ok ? "readable" : ratio >= 3 ? "OK for bold text only" : "low contrast"}`;
+    // Live: the whole admin page (incl. preview) uses the draft
+    B.apply(draft);
+    renderPresets();
+    const dirty = !same(draft, saved);
+    $("saveBtn").disabled = !dirty;
+    $("discardBtn").disabled = !dirty;
+    $("dirtyNote").innerHTML = dirty ? `<i class="bi bi-circle-fill text-warning me-1" style="font-size:.5rem;vertical-align:middle"></i>Unsaved changes — preview only` : `<i class="bi bi-check-circle text-success me-1"></i>All changes saved`;
+    $("lastSaved").textContent = saved.updatedAt ? "Last published " + AB.fmt.datetime(saved.updatedAt) : "Using default theme";
+  }
+
+  $("presets").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-id]"); if (!b) return;
+    const p = B.PRESETS.find((x) => x.id === b.dataset.id);
+    draft = { primary: p.primary, panel: p.panel, preset: p.id };
+    ["p", "k"].forEach((k) => showErr(k, false));
+    sync();
+  });
+  [["p", "primary"], ["k", "panel"]].forEach(([k, f]) => {
+    $(k + "Pick").addEventListener("input", () => { draft = { ...draft, [f]: $(k + "Pick").value, preset: null }; $(k + "Hex").value = $(k + "Pick").value.toUpperCase(); showErr(k, false); sync(); });
+    $(k + "Hex").addEventListener("input", () => {
+      let v = $(k + "Hex").value.trim(); if (v && v[0] !== "#") v = "#" + v;
+      const valid = B.isHex(v);
+      showErr(k, !valid && v.length >= 7);
+      if (valid) { draft = { ...draft, [f]: v.toLowerCase(), preset: null }; sync(); }
+    });
+    $(k + "Hex").addEventListener("blur", () => { $(k + "Hex").value = draft[f].toUpperCase(); showErr(k, false); });
+  });
+
+  $("saveBtn").addEventListener("click", (e) => {
+    AB.loading(e.currentTarget, 500).then(() => {
+      saved = B.save(draft); draft = { ...saved };
+      sync();
+      AB.toast("Theme published. The website and dashboard now use the new colours.", "success");
+    });
+  });
+  $("discardBtn").addEventListener("click", () => { draft = { ...saved }; sync(); });
+  $("resetBtn").addEventListener("click", () => {
+    const m = AB.modal(`
+      <div class="modal-body text-center pt-4"><span class="ab-icon ab-icon-xl tone-warning mb-3"><i class="bi bi-arrow-counterclockwise"></i></span>
+        <h5>Reset to the default theme?</h5><p class="text-muted fs-7 mb-0">The platform goes back to Teal with a charcoal panel.</p></div>
+      <div class="modal-footer"><button class="btn btn-light-subtle flex-fill" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary flex-fill" id="doReset">Reset</button></div>`);
+    m.el.querySelector("#doReset").addEventListener("click", () => { saved = B.reset(); draft = { ...saved }; m.close(); sync(); AB.toast("Theme reset to default", "success"); });
+  });
+
+  // Preview light/dark (affects this page only, not the saved setting)
+  document.querySelectorAll("#pvMode button").forEach((b) => b.addEventListener("click", () => {
+    document.querySelectorAll("#pvMode button").forEach((x) => x.classList.toggle("active", x === b));
+    document.documentElement.setAttribute("data-bs-theme", b.dataset.m);
+  }));
+  const cur = document.documentElement.getAttribute("data-bs-theme");
+  document.querySelectorAll("#pvMode button").forEach((x) => x.classList.toggle("active", x.dataset.m === cur));
+
+  window.addEventListener("beforeunload", (e) => { if (!same(draft, saved)) { e.preventDefault(); e.returnValue = ""; } });
+  sync();
+})();
+</script>
+</body>
+</html>

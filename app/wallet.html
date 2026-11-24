@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Wallet · AutoBiz</title>
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/app.css" rel="stylesheet">
+  <script src="../assets/js/brand.js"></script>
+  <style>
+    .bal-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .bal-box { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.16); border-radius: 16px; padding: 1rem 1.1rem; }
+    .bal-box .cur { display: inline-flex; align-items: center; gap: .4rem; font-size: .78rem; font-weight: 600; color: rgba(255,255,255,.8); }
+    .bal-box .cur img { width: 18px; height: 13px; border-radius: 3px; object-fit: cover; }
+    .bal-box .val { font-size: clamp(1.35rem, 3.4vw, 2rem); font-weight: 800; letter-spacing: -.03em; }
+    .w-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem; }
+    .w-actions .btn { display: flex; flex-direction: column; align-items: center; gap: .25rem; padding: .7rem .3rem; font-size: .8rem; }
+    .w-actions .btn i { font-size: 1.15rem; }
+    .acct-tile { border: 1px solid var(--ab-border); border-radius: 14px; padding: .9rem 1rem; background: var(--ab-surface-2); }
+    .bank-logo { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: .75rem; flex-shrink: 0; }
+    .rate-pill { display: flex; justify-content: space-between; align-items: center; padding: .75rem 1rem; border-radius: 12px; background: var(--ab-surface-2); }
+    .resolve { min-height: 22px; font-size: .8125rem; }
+    .swap-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--ab-border); background: var(--ab-surface); display: grid; place-items: center; margin: -10px auto; position: relative; z-index: 2; color: var(--ab-primary); }
+    .conv-box { border: 1px solid var(--ab-border); border-radius: 14px; padding: .8rem 1rem; background: var(--ab-surface-2); }
+    .conv-box input { border: 0; background: transparent; font-size: 1.5rem; font-weight: 800; padding: 0; box-shadow: none !important; color: var(--ab-text); width: 100%; }
+    .conv-box input:focus { outline: none; }
+    @media (max-width: 575.98px) { .bal-split { grid-template-columns: 1fr; gap: .6rem; } .w-actions .btn { font-size: .72rem; } }
+  </style>
+</head>
+<body data-page="wallet" data-title="Wallet">
+<main class="ab-content">
+
+  <div class="ab-page-head fade-up">
+    <div><h1>Wallet</h1><p>Manage your Naira and Dollar balances, withdrawals and transfers.</p></div>
+    <div class="d-flex gap-2"><a href="transactions.html" class="btn btn-light-subtle"><i class="bi bi-file-earmark-text me-1"></i>Statement</a></div>
+  </div>
+
+  <div class="row g-3 g-lg-4 mb-4">
+    <div class="col-xl-8 fade-up">
+      <div class="ab-hero h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="label d-flex align-items-center gap-2">Available balances
+            <button class="btn btn-link p-0 text-white opacity-75" id="toggleBal" aria-label="Show or hide balance"><i class="bi bi-eye"></i></button>
+          </div>
+          <span class="badge rounded-pill px-3 py-2" style="background:rgba(255,255,255,.16)"><i class="bi bi-patch-check-fill me-1"></i><span id="tierBadge"></span></span>
+        </div>
+        <div class="bal-split mb-3">
+          <div class="bal-box"><div class="cur"><img src="https://flagcdn.com/w40/ng.png" alt="">Naira · NGN</div><div class="val tabular" data-balance></div><div class="fs-8 opacity-75" id="ngnEq"></div></div>
+          <div class="bal-box"><div class="cur"><img src="https://flagcdn.com/w40/us.png" alt="">Dollar · USD</div><div class="val tabular" data-usd-balance></div><div class="fs-8 opacity-75" id="usdEq"></div></div>
+        </div>
+        <div class="w-actions">
+          <button class="btn btn-white" data-open-fund><i class="bi bi-plus-circle"></i><span class="d-none d-sm-inline">Add money</span><span class="d-sm-none">Add</span></button>
+          <button class="btn btn-glass" data-act="withdraw"><i class="bi bi-bank"></i>Withdraw</button>
+          <button class="btn btn-glass" data-act="transfer"><i class="bi bi-send"></i>Transfer</button>
+          <button class="btn btn-glass" data-act="convert"><i class="bi bi-arrow-left-right"></i>Convert</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4 fade-up" style="animation-delay:.05s">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <div><h6 class="card-title">Account limits</h6><div class="fs-8 text-muted" id="limitTier"></div></div>
+          <a href="settings.html#upgrade" class="btn btn-sm btn-soft" id="upgradeBtn">Upgrade</a>
+        </div>
+        <div class="card-body" id="limits"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 g-lg-4">
+    <div class="col-lg-7 order-2 order-lg-1">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <h6 class="card-title">Wallet activity</h6>
+          <div class="ab-segment" id="actSeg"><button class="active" data-k="all">All</button><button data-k="in">Money in</button><button data-k="out">Money out</button></div>
+        </div>
+        <div class="card-body pt-1"><ul class="ab-list" id="activity"></ul>
+          <a href="transactions.html" class="btn btn-light-subtle w-100 mt-2">View full history</a></div>
+      </div>
+    </div>
+    <div class="col-lg-5 order-1 order-lg-2 d-flex flex-column gap-3">
+      <div class="card">
+        <div class="card-header"><h6 class="card-title">Your dedicated accounts</h6><div class="fs-8 text-muted">Transfer to these accounts to fund your wallet instantly</div></div>
+        <div class="card-body d-flex flex-column gap-2" id="dva"></div>
+      </div>
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center"><h6 class="card-title">Saved bank accounts</h6><button class="btn btn-sm btn-soft" data-act="withdraw"><i class="bi bi-plus-lg me-1"></i>Add</button></div>
+        <div class="card-body pt-2"><ul class="ab-list" id="banks"></ul></div>
+      </div>
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center"><h6 class="card-title">Exchange rates</h6><span class="fs-8 text-muted"><i class="bi bi-arrow-repeat me-1"></i>Updated just now</span></div>
+        <div class="card-body d-flex flex-column gap-2">
+          <div class="rate-pill"><span class="fs-7 text-muted">Buy $1</span><b class="tabular" id="buyRate"></b></div>
+          <div class="rate-pill"><span class="fs-7 text-muted">Sell $1</span><b class="tabular" id="sellRate"></b></div>
+          <button class="btn btn-primary mt-1" data-act="convert"><i class="bi bi-arrow-left-right me-1"></i>Convert now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { store, fmt, esc } = AB;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const BUY = AB_DATA.usdRate, SELL = AB_DATA.usdRate - 30;
+  const BANKS = [
+    ["Access Bank", "#f47b20"], ["Ecobank", "#004c97"], ["Fidelity Bank", "#1b3c87"], ["First Bank", "#003b65"], ["FCMB", "#5c2d91"], ["GTBank", "#e04f1a"],
+    ["Jaiz Bank", "#0a6b3a"], ["Keystone Bank", "#004b8d"], ["Kuda MFB", "#40196d"], ["Moniepoint MFB", "#0357ee"], ["OPay", "#1dcf9f"], ["PalmPay", "#6c2bd9"],
+    ["Polaris Bank", "#7b2481"], ["Providus Bank", "#e5a823"], ["Stanbic IBTC", "#0033a1"], ["Sterling Bank", "#d81f26"], ["UBA", "#d42e12"], ["Union Bank", "#00a3e0"],
+    ["Wema Bank", "#7b1c6d"], ["Zenith Bank", "#e30613"]
+  ];
+  const bankColor = (n) => (BANKS.find(b => b[0] === n) || [0, "#2348ff"])[1];
+  const bankAbbr = (n) => n.replace(/ (Bank|MFB)$/, "").split(/\s+/).map(w => w[0]).join("").slice(0, 3).toUpperCase();
+  const NAMES = ["CHINEDU OKEKE", "AISHA BELLO", "TUNDE ADEYEMI", "NGOZI EZE", "IBRAHIM MUSA", "FUNKE ADEBAYO", "EMEKA OBI", "BLESSING UDO", "YUSUF LAWAL", "KEMI BALOGUN"];
+  const USERS = { chinedu: "Chinedu Okeke", aisha: "Aisha Bello", tunde: "Tunde Adeyemi", ngozi: "Ngozi Eze", emeka: "Emeka Obi", kemi: "Kemi Balogun" };
+  const hash = (s) => [...String(s)].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
+  const TIERS = {
+    "Tier 1": { daily: 50000, single: 20000, maxBal: 300000, next: "Tier 2" },
+    "Tier 2": { daily: 200000, single: 100000, maxBal: 500000, next: "Tier 3" },
+    "Tier 3": { daily: 5000000, single: 2000000, maxBal: Infinity, next: null }
+  };
+  const tier = () => TIERS[store.get("user").tier] || TIERS["Tier 1"];
+  const usedToday = () => { const s = new Date(); s.setHours(0, 0, 0, 0); return store.get("transactions").filter(t => t.direction === "out" && t.status !== "failed" && t.date >= s.getTime()).reduce((a, t) => a + t.amount, 0); };
+  if (store.get("bankAccounts") === undefined) { const u = store.get("user"); store.set("bankAccounts", [{ id: "BA1", bank: "GTBank", number: "0123456789", name: (u.firstName + " " + u.lastName).toUpperCase() }]); }
+  const setErr = (input, errEl, msg) => { input.classList.toggle("is-invalid", !!msg); if (errEl) errEl.textContent = msg || ""; return !msg; };
+  const clearHash = () => { if (location.hash) history.replaceState(null, "", location.pathname + location.search); };
+  const mkReceipt = (title, message, rows, t) => AB.success({ title, message, rows: [...rows, ["Reference", `<span class="tabular">${t.ref}</span>`], ["Date", fmt.datetime(t.date)]],
+    actions: [{ label: `<i class="bi bi-copy me-1"></i>Copy receipt`, id: "cp", onClick: () => AB.copy(`AutoBiz Receipt\n${title}\n` + rows.map(([k, v]) => `${k}: ${String(v).replace(/<[^>]+>/g, "")}`).join("\n") + `\nReference: ${t.ref}`, "Receipt copied") }] });
+
+  // ---------- Hero ----------
+  const tBtn = $("#toggleBal");
+  const syncEye = () => tBtn.innerHTML = `<i class="bi ${store.get("settings").hideBalance ? "bi-eye-slash" : "bi-eye"}"></i>`;
+  tBtn.addEventListener("click", () => { store.update("settings", s => ({ ...s, hideBalance: !s.hideBalance })); syncEye(); renderHero(); });
+  function renderHero() {
+    const w = store.get("wallet"), hide = store.get("settings").hideBalance;
+    $("#tierBadge").textContent = store.get("user").tier;
+    $("#ngnEq").textContent = hide ? "≈ $ ••••" : `≈ ${fmt.usd(w.balance / BUY)}`;
+    $("#usdEq").textContent = hide ? "≈ ₦ ••••" : `≈ ${fmt.naira(w.usd * SELL)} at sell rate`;
+    $("#buyRate").textContent = fmt.naira(BUY); $("#sellRate").textContent = fmt.naira(SELL);
+  }
+  syncEye();
+
+  // ---------- Limits ----------
+  function renderLimits() {
+    const u = store.get("user"), t = tier(), used = usedToday(), bal = store.get("wallet").balance;
+    $("#limitTier").textContent = `${u.tier} · ${t.next ? "Upgrade for higher limits" : "Maximum tier"}`;
+    $("#upgradeBtn").hidden = !t.next;
+    const bar = (label, val, max, tone) => {
+      const pct = max === Infinity ? 4 : Math.min(100, (val / max) * 100);
+      return `<div class="mb-3"><div class="d-flex justify-content-between fs-7 mb-1"><span class="text-muted">${label}</span><span class="fw-semibold tabular">${fmt.naira(Math.round(val))} <span class="text-muted fw-normal">/ ${max === Infinity ? "Unlimited" : fmt.naira(max)}</span></span></div>
+        <div class="progress" style="height:8px" role="progressbar" aria-label="${label}" aria-valuenow="${Math.round(pct)}" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar" style="width:${pct}%;background:${pct > 85 ? "var(--ab-danger)" : tone}"></div></div></div>`;
+    };
+    $("#limits").innerHTML = bar("Daily transaction limit", used, t.daily, "var(--ab-primary)") + bar("Maximum balance", bal, t.maxBal, "var(--ab-accent)") +
+      `<div class="d-flex justify-content-between fs-7 p-2 rounded-3 bg-surface-2"><span class="text-muted">Single transfer limit</span><b class="tabular">${fmt.naira(t.single)}</b></div>`;
+  }
+  function checkLimit(amount) {
+    const t = tier(), used = usedToday();
+    if (amount > t.single) return `Single transaction limit for ${store.get("user").tier} is ${fmt.naira(t.single)}`;
+    if (used + amount > t.daily) return `This exceeds your daily limit (${fmt.naira(Math.max(0, t.daily - used))} left today)`;
+    return "";
+  }
+
+  // ---------- Activity ----------
+  const WALLET_TYPES = ["funding", "withdrawal", "transfer", "convert", "refund", "giftcard"];
+  let actK = "all";
+  $$("#actSeg button").forEach(b => b.addEventListener("click", () => { actK = b.dataset.k; $$("#actSeg button").forEach(x => x.classList.toggle("active", x === b)); renderActivity(); }));
+  function renderActivity() {
+    const list = store.get("transactions").filter(t => WALLET_TYPES.includes(t.type) && (actK === "all" || t.direction === actK)).slice(0, 8);
+    $("#activity").innerHTML = list.length ? list.map(t => `<a class="d-block text-body" href="transactions.html?id=${encodeURIComponent(t.id)}">${AB.txRow(t)}</a>`).join("") :
+      `<div class="ab-empty"><span class="ab-icon ab-icon-lg tone-primary"><i class="bi bi-wallet2"></i></span><h6 class="mb-1">No wallet activity</h6><div class="fs-7">Fund, withdraw or transfer to see it here.</div></div>`;
+  }
+
+  // ---------- DVA ----------
+  const u0 = store.get("user");
+  $("#dva").innerHTML = [["Wema Bank", "7821443609"], ["Moniepoint MFB", "5093227184"]].map(([b, n]) => `
+    <div class="acct-tile d-flex align-items-center gap-3">
+      <span class="bank-logo" style="background:${bankColor(b)}">${bankAbbr(b)}</span>
+      <div class="flex-grow-1 min-w-0"><div class="fs-8 text-muted">${b}</div><div class="fw-800 fs-5 tabular">${n.replace(/(\d{4})(\d{4})(\d{2})/, "$1 $2 $3")}</div><div class="fs-8 text-muted text-truncate">AutoBiz – ${esc(u0.firstName + " " + u0.lastName)}</div></div>
+      <button class="btn btn-sm btn-soft" data-copy="${n}" aria-label="Copy ${b} account number"><i class="bi bi-copy"></i></button>
+    </div>`).join("") + `<button class="btn btn-light-subtle btn-sm mt-1" id="shareDva"><i class="bi bi-share me-1"></i>Share account details</button>`;
+  $$("#dva [data-copy]").forEach(b => b.addEventListener("click", () => AB.copy(b.dataset.copy, "Account number copied")));
+  $("#shareDva").addEventListener("click", () => AB.copy(`Send money to my AutoBiz wallet:\nWema Bank – 7821443609\nMoniepoint MFB – 5093227184\nName: AutoBiz – ${u0.firstName} ${u0.lastName}`, "Account details copied"));
+
+  // ---------- Saved banks ----------
+  function renderBanks() {
+    const list = store.get("bankAccounts") || [];
+    $("#banks").innerHTML = list.length ? list.map(b => `<li class="ab-list-item">
+      <span class="bank-logo" style="background:${bankColor(b.bank)}">${bankAbbr(b.bank)}</span>
+      <div class="flex-grow-1 min-w-0"><div class="title text-truncate">${esc(b.name)}</div><div class="meta">${esc(b.bank)} · <span class="tabular">${esc(b.number)}</span></div></div>
+      <button class="btn btn-sm btn-soft" data-wd="${b.id}">Withdraw</button>
+      <button class="btn btn-sm btn-icon btn-light-subtle" data-rm="${b.id}" aria-label="Remove ${esc(b.bank)} account"><i class="bi bi-trash3"></i></button></li>`).join("") :
+      `<div class="ab-empty py-3"><span class="ab-icon tone-primary"><i class="bi bi-bank"></i></span><h6 class="mb-1">No saved accounts</h6><div class="fs-7">Save an account when you withdraw.</div></div>`;
+    $$("#banks [data-wd]").forEach(b => b.addEventListener("click", () => openWithdraw(list.find(x => x.id === b.dataset.wd))));
+    $$("#banks [data-rm]").forEach(b => b.addEventListener("click", () => { store.set("bankAccounts", list.filter(x => x.id !== b.dataset.rm)); AB.toast("Bank account removed", "info"); renderBanks(); }));
+  }
+
+  // ---------- Withdraw ----------
+  function openWithdraw(pre) {
+    const saved = store.get("bankAccounts") || [];
+    const m = AB.modal(`
+      <div class="modal-header"><h5 class="modal-title">Withdraw to bank</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body pt-1">
+        ${saved.length ? `<div class="small-label mb-2">Saved accounts</div><div class="ab-chips mb-3">${saved.map(s => `<button type="button" class="ab-chip" data-saved="${s.id}"><span class="bank-logo" style="width:20px;height:20px;border-radius:6px;font-size:.5rem;background:${bankColor(s.bank)}">${bankAbbr(s.bank)}</span>${esc(s.bank)} ··${s.number.slice(-4)}</button>`).join("")}</div>` : ""}
+        <label class="form-label" for="wBank">Bank</label>
+        <select class="form-select mb-1" id="wBank"><option value="">Select bank</option>${BANKS.map(([b]) => `<option>${b}</option>`).join("")}</select>
+        <div class="invalid-feedback" id="wBankErr"></div>
+        <label class="form-label mt-2" for="wAcct">Account number</label>
+        <input class="form-control tabular" id="wAcct" inputmode="numeric" maxlength="10" placeholder="10-digit NUBAN">
+        <div class="invalid-feedback" id="wAcctErr"></div>
+        <div class="resolve mt-1" id="wName"></div>
+        <label class="form-label mt-2" for="wAmt">Amount</label>
+        <div class="input-group"><span class="input-group-text">₦</span><input type="number" class="form-control tabular" id="wAmt" min="100" placeholder="0.00"></div>
+        <div class="invalid-feedback d-block" id="wAmtErr"></div>
+        <div class="d-flex gap-2 flex-wrap my-2">${[5000, 10000, 50000, 100000].map(v => `<button type="button" class="ab-chip" data-amt="${v}">${fmt.naira(v)}</button>`).join("")}</div>
+        <input class="form-control form-control-sm mb-3" id="wNote" maxlength="60" placeholder="Narration (optional)">
+        <div class="ab-summary mb-3" id="wSum"></div>
+        <div class="form-check"><input class="form-check-input" type="checkbox" id="wSave"><label class="form-check-label fs-7" for="wSave">Save this account</label></div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-primary btn-lg w-100" id="wGo">Continue</button></div>`);
+    const el = m.el; let resolved = null, seq = 0;
+    const bank = $("#wBank", el), acct = $("#wAcct", el), amt = $("#wAmt", el), nameEl = $("#wName", el);
+    const fee = (a) => (a > 50000 ? 50 : 25);
+    const upd = () => { const a = Number(amt.value) || 0; $("#wSum", el).innerHTML = `<div class="row-item"><span>Amount</span><span>${fmt.naira(a, 2)}</span></div><div class="row-item"><span>Transfer fee</span><span>${fmt.naira(a ? fee(a) : 0)}</span></div><div class="row-item total"><span>Total debit</span><span class="tabular">${fmt.naira(a ? a + fee(a) : 0, 2)}</span></div>`; };
+    const resolve = () => {
+      resolved = null; nameEl.innerHTML = "";
+      if (!bank.value || acct.value.length !== 10) return;
+      const my = ++seq;
+      nameEl.innerHTML = `<span class="text-muted"><span class="spinner-border spinner-border-sm me-2"></span>Verifying account…</span>`;
+      setTimeout(() => {
+        if (my !== seq) return;
+        if (/^0{3}/.test(acct.value)) { nameEl.innerHTML = ""; setErr(acct, $("#wAcctErr", el), "Account not found at " + bank.value); return; }
+        resolved = (saved.find(s => s.number === acct.value && s.bank === bank.value) || {}).name || NAMES[hash(bank.value + acct.value) % NAMES.length];
+        nameEl.innerHTML = `<span class="text-success fw-bold"><i class="bi bi-patch-check-fill me-1"></i>${esc(resolved)}</span>`;
+      }, 900);
+    };
+    bank.addEventListener("change", () => { setErr(bank, $("#wBankErr", el), ""); resolve(); });
+    acct.addEventListener("input", () => { acct.value = acct.value.replace(/\D/g, ""); setErr(acct, $("#wAcctErr", el), ""); resolve(); });
+    amt.addEventListener("input", () => { setErr(amt, $("#wAmtErr", el), ""); upd(); });
+    $$("[data-amt]", el).forEach(b => b.addEventListener("click", () => { amt.value = b.dataset.amt; setErr(amt, $("#wAmtErr", el), ""); upd(); }));
+    const usePre = (s) => { bank.value = s.bank; acct.value = s.number; setErr(acct, $("#wAcctErr", el), ""); $$("[data-saved]", el).forEach(x => x.classList.toggle("active", x.dataset.saved === s.id)); resolve(); };
+    $$("[data-saved]", el).forEach(b => b.addEventListener("click", () => usePre(saved.find(s => s.id === b.dataset.saved))));
+    if (pre) usePre(pre);
+    upd();
+    $("#wGo", el).addEventListener("click", async () => {
+      const a = Number(amt.value);
+      let ok = setErr(bank, $("#wBankErr", el), bank.value ? "" : "Select a bank");
+      ok = setErr(acct, $("#wAcctErr", el), /^\d{10}$/.test(acct.value) ? "" : "Enter a valid 10-digit account number") && ok;
+      ok = setErr(amt, $("#wAmtErr", el), !a ? "Enter an amount" : a < 100 ? "Minimum withdrawal is ₦100" : a + fee(a) > AB.wallet.balance() ? "Insufficient balance (incl. fee)" : checkLimit(a + fee(a))) && ok;
+      if (!ok) return;
+      if (!resolved) { AB.toast("Please wait — verifying account name", "warning"); return; }
+      const f = fee(a), total = a + f, b = bank.value, n = acct.value, name = resolved, note = $("#wNote", el).value.trim(), save = $("#wSave", el).checked;
+      m.close();
+      const paid = await AB.confirmPay({ title: "Confirm withdrawal", amount: total, rows: [["Bank", esc(b)], ["Account", n], ["Name", esc(name)], ["Amount", fmt.naira(a, 2)], ["Fee", fmt.naira(f)]], cta: "Withdraw" });
+      if (!paid) return;
+      const ref = fmt.ref("WD");
+      const t = AB.wallet.debit(total, { type: "withdrawal", title: `Withdrawal to ${b}`, subtitle: `${n} · ${name}`, icon: "bi-bank", tone: "orange", ref, meta: { Bank: b, "Account number": n, "Account name": name, Amount: fmt.naira(a, 2), Fee: fmt.naira(f), Narration: note || "—", "Session ID": "1000" + Date.now() } });
+      if (!t) return AB.toast("Insufficient balance", "error");
+      if (save && !(store.get("bankAccounts") || []).some(s => s.number === n && s.bank === b)) store.update("bankAccounts", l => [...(l || []), { id: "BA" + Date.now(), bank: b, number: n, name }]);
+      AB.notify({ icon: "bi-bank", tone: "orange", title: "Withdrawal successful", body: `${fmt.naira(a)} sent to ${name} (${b}).` });
+      mkReceipt("Withdrawal successful", `${fmt.naira(a, 2)} is on its way to <b>${esc(name)}</b>.`, [["Bank", esc(b)], ["Account", n], ["Amount", fmt.naira(a, 2)], ["Fee", fmt.naira(f)]], t);
+    });
+    el.addEventListener("hidden.bs.modal", clearHash);
+  }
+
+  // ---------- Transfer ----------
+  function openTransfer() {
+    const me = store.get("user");
+    const m = AB.modal(`
+      <div class="modal-header"><h5 class="modal-title">Send to AutoBiz user</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body pt-1">
+        <p class="fs-7 text-muted">Instant and free transfers to any AutoBiz wallet.</p>
+        <div class="small-label mb-2">Frequent</div>
+        <div class="ab-chips mb-3">${Object.entries(USERS).slice(0, 4).map(([k, v]) => `<button type="button" class="ab-chip" data-user="${k}"><span class="ab-avatar sm" style="width:22px;height:22px;font-size:.6rem;border-radius:7px">${v.split(" ").map(w => w[0]).join("")}</span>@${k}</button>`).join("")}</div>
+        <label class="form-label" for="tTo">Username or phone number</label>
+        <div class="input-group"><span class="input-group-text">@</span><input class="form-control" id="tTo" placeholder="username or 080…" autocomplete="off"></div>
+        <div class="invalid-feedback d-block" id="tToErr"></div>
+        <div class="resolve mt-1" id="tName"></div>
+        <label class="form-label mt-2" for="tAmt">Amount</label>
+        <div class="input-group"><span class="input-group-text">₦</span><input type="number" class="form-control tabular" id="tAmt" min="50" placeholder="0.00"></div>
+        <div class="invalid-feedback d-block" id="tAmtErr"></div>
+        <input class="form-control form-control-sm mt-3" id="tNote" maxlength="60" placeholder="What's it for? (optional)">
+      </div>
+      <div class="modal-footer"><button class="btn btn-primary btn-lg w-100" id="tGo">Continue</button></div>`);
+    const el = m.el, to = $("#tTo", el), amt = $("#tAmt", el), nameEl = $("#tName", el);
+    let found = null, seq = 0;
+    const lookup = AB.debounce(() => {
+      found = null; const v = to.value.trim().replace(/^@/, "").toLowerCase();
+      if (!v) { nameEl.innerHTML = ""; return; }
+      const isPhone = /^0\d{10}$/.test(v);
+      if (!isPhone && !/^[a-z0-9_.]{3,20}$/.test(v)) { nameEl.innerHTML = ""; return; }
+      if (v === me.username || v === me.phone) { setErr(to, $("#tToErr", el), "You can't send money to yourself"); nameEl.innerHTML = ""; return; }
+      const my = ++seq;
+      nameEl.innerHTML = `<span class="text-muted"><span class="spinner-border spinner-border-sm me-2"></span>Looking up user…</span>`;
+      setTimeout(() => {
+        if (my !== seq) return;
+        if (v.startsWith("x") || v.startsWith("000")) { nameEl.innerHTML = ""; setErr(to, $("#tToErr", el), "No AutoBiz user found with that username/phone"); return; }
+        found = { handle: isPhone ? v : "@" + v, name: USERS[v] || NAMES[hash(v) % NAMES.length].replace(/\b(\w)(\w*)/g, (_, a, b) => a + b.toLowerCase()) };
+        nameEl.innerHTML = `<span class="text-success fw-bold"><i class="bi bi-patch-check-fill me-1"></i>${esc(found.name)}</span> <span class="text-muted">· ${esc(found.handle)}</span>`;
+      }, 700);
+    }, 350);
+    to.addEventListener("input", () => { setErr(to, $("#tToErr", el), ""); nameEl.innerHTML = ""; found = null; lookup(); });
+    $$("[data-user]", el).forEach(b => b.addEventListener("click", () => { to.value = b.dataset.user; to.dispatchEvent(new Event("input")); amt.focus(); }));
+    amt.addEventListener("input", () => setErr(amt, $("#tAmtErr", el), ""));
+    $("#tGo", el).addEventListener("click", async () => {
+      const a = Number(amt.value);
+      let ok = setErr(to, $("#tToErr", el), to.value.trim() ? $("#tToErr", el).textContent : "Enter a username or phone number");
+      ok = setErr(amt, $("#tAmtErr", el), !a ? "Enter an amount" : a < 50 ? "Minimum is ₦50" : a > AB.wallet.balance() ? "Insufficient balance" : checkLimit(a)) && ok;
+      if (!ok) return;
+      if (!found) { AB.toast("Please wait — confirming recipient", "warning"); return; }
+      const r = found, note = $("#tNote", el).value.trim();
+      m.close();
+      const paid = await AB.confirmPay({ title: "Confirm transfer", amount: a, rows: [["To", `${esc(r.name)}`], ["Username/phone", esc(r.handle)], ["Fee", `<span class="text-success">Free</span>`], ...(note ? [["Note", esc(note)]] : [])], cta: "Send money" });
+      if (!paid) return;
+      const t = AB.wallet.debit(a, { type: "transfer", title: `Transfer to ${r.name}`, subtitle: `AutoBiz · ${r.handle}`, icon: "bi-send", tone: "primary", ref: fmt.ref("TR"), meta: { Recipient: r.name, "Username/phone": r.handle, Amount: fmt.naira(a, 2), Fee: "₦0", Note: note || "—" } });
+      if (!t) return AB.toast("Insufficient balance", "error");
+      AB.notify({ icon: "bi-send", tone: "primary", title: "Transfer sent", body: `${fmt.naira(a)} sent to ${r.name}.` });
+      mkReceipt("Money sent", `${fmt.naira(a, 2)} sent to <b>${esc(r.name)}</b> instantly.`, [["Recipient", esc(r.name)], ["Username/phone", esc(r.handle)], ["Amount", fmt.naira(a, 2)]], t);
+    });
+    el.addEventListener("hidden.bs.modal", clearHash);
+  }
+
+  // ---------- Convert ----------
+  function openConvert() {
+    let dir = "buy"; // buy USD with NGN | sell USD for NGN
+    const m = AB.modal(`
+      <div class="modal-header"><h5 class="modal-title">Convert currency</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body pt-1">
+        <div class="ab-segment w-100 d-flex mb-3"><button class="active" data-dir="buy">NGN → USD</button><button data-dir="sell">USD → NGN</button></div>
+        <div class="conv-box"><div class="d-flex justify-content-between fs-8 text-muted mb-1"><span>You pay</span><span id="cFromBal"></span></div>
+          <div class="d-flex align-items-center gap-2"><input type="number" inputmode="decimal" id="cAmt" placeholder="0.00" aria-label="Amount to convert"><span class="badge text-bg-light fs-7" id="cFromCur"></span></div></div>
+        <button type="button" class="swap-btn" id="cSwap" aria-label="Swap direction"><i class="bi bi-arrow-down-up"></i></button>
+        <div class="conv-box"><div class="fs-8 text-muted mb-1">You receive</div><div class="d-flex align-items-center gap-2"><div class="fs-4 fw-800 tabular flex-grow-1" id="cOut">0.00</div><span class="badge text-bg-light fs-7" id="cToCur"></span></div></div>
+        <div class="invalid-feedback d-block" id="cErr"></div>
+        <div class="d-flex gap-2 flex-wrap mt-3" id="cPresets"></div>
+        <div class="ab-summary mt-3"><div class="row-item"><span>Rate</span><span id="cRate"></span></div><div class="row-item"><span>Fee</span><span class="text-success">Free</span></div></div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-primary btn-lg w-100" id="cGo">Convert</button></div>`);
+    const el = m.el, amt = $("#cAmt", el);
+    const out = () => { const a = Number(amt.value) || 0; return dir === "buy" ? Math.floor((a / BUY) * 100) / 100 : Math.round(a * SELL * 100) / 100; };
+    const render = () => {
+      const w = store.get("wallet");
+      $$("[data-dir]", el).forEach(b => b.classList.toggle("active", b.dataset.dir === dir));
+      $("#cFromCur", el).textContent = dir === "buy" ? "NGN" : "USD"; $("#cToCur", el).textContent = dir === "buy" ? "USD" : "NGN";
+      $("#cFromBal", el).textContent = "Balance: " + (dir === "buy" ? fmt.naira(w.balance, 2) : fmt.usd(w.usd));
+      $("#cRate", el).textContent = dir === "buy" ? `$1 = ${fmt.naira(BUY)}` : `$1 = ${fmt.naira(SELL)}`;
+      $("#cOut", el).textContent = dir === "buy" ? fmt.usd(out()) : fmt.naira(out(), 2);
+      $("#cPresets", el).innerHTML = (dir === "buy" ? [15800, 79000, 158000] : [10, 50, 100]).map(v => `<button type="button" class="ab-chip" data-p="${v}">${dir === "buy" ? fmt.naira(v) : fmt.usd(v)}</button>`).join("") + `<button type="button" class="ab-chip" data-p="max">Max</button>`;
+      $$("[data-p]", el).forEach(b => b.addEventListener("click", () => { amt.value = b.dataset.p === "max" ? (dir === "buy" ? Math.floor(w.balance) : w.usd) : b.dataset.p; $("#cErr", el).textContent = ""; render(); }));
+    };
+    amt.addEventListener("input", () => { $("#cErr", el).textContent = ""; amt.classList.remove("is-invalid"); render(); });
+    $$("[data-dir]", el).forEach(b => b.addEventListener("click", () => { dir = b.dataset.dir; amt.value = ""; render(); }));
+    $("#cSwap", el).addEventListener("click", () => { dir = dir === "buy" ? "sell" : "buy"; amt.value = ""; render(); });
+    render();
+    $("#cGo", el).addEventListener("click", async () => {
+      const a = Number(amt.value), w = store.get("wallet"), o = out();
+      const err = !a ? "Enter an amount" : dir === "buy" ? (o < 1 ? `Minimum is $1 (${fmt.naira(BUY)})` : a > w.balance ? "Insufficient Naira balance" : "") : (a < 1 ? "Minimum is $1" : a > w.usd ? "Insufficient USD balance" : "");
+      if (err) { $("#cErr", el).textContent = err; amt.classList.add("is-invalid"); return; }
+      const d = dir;
+      m.close();
+      const rows = [["You receive", d === "buy" ? fmt.usd(o) : fmt.naira(o, 2)], ["Rate", d === "buy" ? `$1 = ${fmt.naira(BUY)}` : `$1 = ${fmt.naira(SELL)}`]];
+      const paid = await AB.confirmPay(d === "buy" ? { title: "Buy USD", amount: a, rows, cta: "Convert" } : { title: "Sell USD", amount: a, currency: "usd", skipBalanceCheck: true, rows, cta: "Convert" });
+      if (!paid) return;
+      let t;
+      if (d === "buy") {
+        t = AB.wallet.debit(a, { type: "convert", title: "Converted NGN → USD", subtitle: `${fmt.usd(o)} at ${fmt.naira(BUY)}/$`, icon: "bi-arrow-left-right", tone: "violet", ref: fmt.ref("FX"), meta: { "You paid": fmt.naira(a, 2), "You received": fmt.usd(o), Rate: `$1 = ${fmt.naira(BUY)}` } });
+        if (!t) return AB.toast("Insufficient balance", "error");
+        store.update("wallet", x => ({ ...x, usd: Math.round((x.usd + o) * 100) / 100 }));
+      } else {
+        if (store.get("wallet").usd < a) return AB.toast("Insufficient USD balance", "error");
+        store.update("wallet", x => ({ ...x, usd: Math.round((x.usd - a) * 100) / 100 }));
+        t = AB.wallet.credit(o, { type: "convert", title: "Converted USD → NGN", subtitle: `${fmt.usd(a)} at ${fmt.naira(SELL)}/$`, icon: "bi-arrow-left-right", tone: "violet", ref: fmt.ref("FX"), meta: { "You paid": fmt.usd(a), "You received": fmt.naira(o, 2), Rate: `$1 = ${fmt.naira(SELL)}` } });
+      }
+      AB.notify({ icon: "bi-arrow-left-right", tone: "violet", title: "Conversion successful", body: d === "buy" ? `${fmt.usd(o)} added to your USD wallet.` : `${fmt.naira(o)} added to your Naira wallet.` });
+      mkReceipt("Conversion successful", d === "buy" ? `${fmt.usd(o)} added to your USD wallet.` : `${fmt.naira(o, 2)} added to your Naira wallet.`, [["You paid", d === "buy" ? fmt.naira(a, 2) : fmt.usd(a)], ["You received", d === "buy" ? fmt.usd(o) : fmt.naira(o, 2)], ["New USD balance", fmt.usd(store.get("wallet").usd)]], t);
+    });
+    el.addEventListener("hidden.bs.modal", clearHash);
+  }
+
+  const OPEN = { withdraw: () => openWithdraw(), transfer: openTransfer, convert: openConvert };
+  $$("[data-act]").forEach(b => b.addEventListener("click", () => OPEN[b.dataset.act]()));
+  const fromHash = () => { const h = location.hash.slice(1); if (OPEN[h] && !document.querySelector(".modal.show")) OPEN[h](); };
+  window.addEventListener("hashchange", fromHash);
+
+  const renderAll = () => { renderHero(); renderLimits(); renderActivity(); renderBanks(); };
+  renderAll();
+  store.on((k) => { if (["wallet", "transactions", "user", "bankAccounts", "settings"].includes(k)) renderAll(); });
+  setTimeout(fromHash, 150);
+});
+</script>
+</body>
+</html>

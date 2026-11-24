@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Settings · AutoBiz</title>
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/app.css" rel="stylesheet">
+  <script src="../assets/js/brand.js"></script>
+  <style>
+    .set-nav .list-group-item { border: 0; border-radius: 12px !important; display: flex; align-items: center; gap: .7rem; font-weight: 600; font-size: .9rem; color: var(--ab-muted); padding: .7rem .9rem; background: transparent; }
+    .set-nav .list-group-item i { font-size: 1.05rem; }
+    .set-nav .list-group-item:hover { color: var(--ab-text); background: var(--ab-surface-2); }
+    .set-nav .list-group-item.active { background: var(--ab-primary-soft); color: var(--ab-primary); }
+    .set-section { scroll-margin-top: calc(var(--ab-topbar-h) + 16px); }
+    .avatar-xl { width: 76px; height: 76px; border-radius: 22px; font-size: 1.6rem; }
+    .strength { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+    .strength span { height: 5px; border-radius: 4px; background: var(--ab-border); transition: background .2s; }
+    .tier-card { border: 1.5px solid var(--ab-border); border-radius: 16px; padding: 1rem; height: 100%; position: relative; background: var(--ab-surface); }
+    .tier-card.current { border-color: var(--ab-primary); background: var(--ab-primary-soft); }
+    .tier-card.done { opacity: .85; }
+    .tier-card ul { list-style: none; padding: 0; margin: 0; font-size: .8125rem; }
+    .tier-card li { display: flex; gap: .45rem; padding: .2rem 0; color: var(--ab-muted); }
+    .tier-card li i { color: var(--ab-accent); }
+    .theme-opt { text-align: center; }
+    .theme-prev { height: 70px; border-radius: 10px; margin-bottom: .55rem; border: 1px solid var(--ab-border); overflow: hidden; display: grid; grid-template-columns: 28% 1fr; }
+    .theme-prev .sb { background: #0b1230; }
+    .theme-prev .ct { padding: 8px; display: flex; flex-direction: column; gap: 5px; }
+    .theme-prev .ct i { display: block; height: 8px; border-radius: 4px; }
+    .theme-prev.light .ct { background: #f5f7fb; } .theme-prev.light .ct i { background: #dfe4f2; }
+    .theme-prev.dark .ct { background: #0a0f20; } .theme-prev.dark .ct i { background: #222c4f; }
+    .theme-prev.system .ct { background: linear-gradient(90deg, #f5f7fb 50%, #0a0f20 50%); } .theme-prev.system .ct i { background: linear-gradient(90deg, #dfe4f2 50%, #222c4f 50%); }
+    .ref-card { border-radius: 20px; padding: 1.4rem; color: #fff; background: radial-gradient(120% 140% at 100% 0%, #b197fc 0%, #7048e8 45%, #4c2bd1 100%); position: relative; overflow: hidden; }
+    .ref-card .bg-ic { position: absolute; right: -12px; bottom: -28px; font-size: 7.5rem; opacity: .14; transform: rotate(-12deg); }
+    .ref-card > *:not(.bg-ic) { position: relative; z-index: 1; }
+    .ref-link { background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.22); border-radius: 12px; padding: .5rem .5rem .5rem .9rem; display: flex; align-items: center; gap: .5rem; }
+    .ref-link code { color: #fff; font-size: .8rem; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .85rem 0; border-bottom: 1px dashed var(--ab-border); }
+    .toggle-row:last-child { border-bottom: 0; }
+    .toggle-row .form-switch .form-check-input { width: 2.6em; height: 1.4em; cursor: pointer; }
+    .mob-nav { position: sticky; top: 64px; z-index: 5; background: var(--ab-bg); margin: 0 -1rem .75rem; padding: .5rem 1rem; }
+    @media (max-width: 575.98px) { .mob-nav { margin: 0 -.85rem .75rem; padding: .5rem .85rem; } }
+  </style>
+</head>
+<body data-page="settings" data-title="Settings">
+<main class="ab-content">
+
+  <div class="ab-page-head fade-up">
+    <div><h1>Settings</h1><p>Manage your profile, security, verification and preferences.</p></div>
+  </div>
+
+  <div class="mob-nav d-lg-none"><div class="ab-chips" id="mobNav"></div></div>
+
+  <div class="row g-4">
+    <div class="col-lg-3 d-none d-lg-block">
+      <div class="card ab-sticky"><div class="card-body p-2"><div class="list-group set-nav" id="setNav"></div></div></div>
+    </div>
+
+    <div class="col-lg-9 d-flex flex-column gap-3 gap-lg-4">
+
+      <!-- PROFILE -->
+      <section class="card set-section" id="profile">
+        <div class="card-header"><h6 class="card-title">Profile</h6><div class="fs-8 text-muted">Your personal information</div></div>
+        <div class="card-body">
+          <div class="d-flex align-items-center gap-3 mb-4">
+            <span class="ab-avatar avatar-xl" id="bigAvatar"></span>
+            <div class="min-w-0"><div class="fw-bold fs-5 text-truncate" id="pName"></div><div class="fs-7 text-muted text-truncate" id="pHandle"></div><span class="ab-status info mt-1" id="pTier"></span></div>
+          </div>
+          <form id="profileForm" novalidate>
+            <div class="row g-3">
+              <div class="col-sm-6"><label class="form-label" for="fFirst">First name</label><input class="form-control" id="fFirst" maxlength="40" autocomplete="given-name"><div class="invalid-feedback">Enter your first name</div></div>
+              <div class="col-sm-6"><label class="form-label" for="fLast">Last name</label><input class="form-control" id="fLast" maxlength="40" autocomplete="family-name"><div class="invalid-feedback">Enter your last name</div></div>
+              <div class="col-sm-6"><label class="form-label" for="fEmail">Email address</label><input class="form-control" id="fEmail" type="email" autocomplete="email"><div class="invalid-feedback">Enter a valid email address</div></div>
+              <div class="col-sm-6"><label class="form-label" for="fPhone">Phone number</label><input class="form-control tabular" id="fPhone" inputmode="numeric" maxlength="11" autocomplete="tel"><div class="invalid-feedback">Enter a valid 11-digit phone number</div></div>
+              <div class="col-sm-6"><label class="form-label" for="fUser">Username</label><div class="input-group has-validation"><span class="input-group-text">@</span><input class="form-control" id="fUser" maxlength="20"><div class="invalid-feedback">3–20 letters, numbers, _ or .</div></div></div>
+              <div class="col-12 d-flex gap-2 justify-content-end"><button type="button" class="btn btn-light-subtle" id="profileReset">Cancel</button><button class="btn btn-primary" id="profileSave">Save changes</button></div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- SECURITY -->
+      <section class="card set-section" id="security">
+        <div class="card-header"><h6 class="card-title">Security</h6><div class="fs-8 text-muted">Password, transaction PIN, two-factor and sessions</div></div>
+        <div class="card-body">
+          <div class="row g-4">
+            <div class="col-md-6">
+              <h6 class="fs-6 mb-3"><i class="bi bi-key me-2 text-primary"></i>Change password</h6>
+              <form id="pwForm" novalidate>
+                <label class="form-label" for="pwCur">Current password</label>
+                <div class="input-group has-validation mb-2"><input type="password" class="form-control" id="pwCur" autocomplete="current-password"><button type="button" class="btn btn-light-subtle" data-eye="pwCur" aria-label="Show password"><i class="bi bi-eye"></i></button><div class="invalid-feedback">Enter your current password</div></div>
+                <label class="form-label" for="pwNew">New password</label>
+                <div class="input-group has-validation mb-2"><input type="password" class="form-control" id="pwNew" autocomplete="new-password"><button type="button" class="btn btn-light-subtle" data-eye="pwNew" aria-label="Show password"><i class="bi bi-eye"></i></button><div class="invalid-feedback">Use at least 8 characters with a number and an uppercase letter</div></div>
+                <div class="strength mb-1" id="pwBars"><span></span><span></span><span></span><span></span></div>
+                <div class="fs-8 text-muted mb-2" id="pwLabel">Use 8+ characters with upper case, numbers & symbols</div>
+                <label class="form-label" for="pwConf">Confirm new password</label>
+                <input type="password" class="form-control mb-1" id="pwConf" autocomplete="new-password"><div class="invalid-feedback">Passwords don't match</div>
+                <button class="btn btn-primary w-100 mt-2" id="pwSave">Update password</button>
+              </form>
+            </div>
+            <div class="col-md-6">
+              <h6 class="fs-6 mb-3"><i class="bi bi-grid-3x3-gap me-2 text-primary"></i>Change transaction PIN</h6>
+              <form id="pinForm" novalidate>
+                <label class="form-label" for="pinCur">Current PIN</label>
+                <input type="password" class="form-control tabular mb-1" id="pinCur" inputmode="numeric" maxlength="4" placeholder="••••"><div class="invalid-feedback">Enter your current 4-digit PIN</div>
+                <label class="form-label mt-2" for="pinNew">New PIN</label>
+                <input type="password" class="form-control tabular mb-1" id="pinNew" inputmode="numeric" maxlength="4" placeholder="••••"><div class="invalid-feedback" id="pinNewErr">PIN must be 4 digits</div>
+                <label class="form-label mt-2" for="pinConf">Confirm new PIN</label>
+                <input type="password" class="form-control tabular mb-1" id="pinConf" inputmode="numeric" maxlength="4" placeholder="••••"><div class="invalid-feedback">PINs don't match</div>
+                <button class="btn btn-soft w-100 mt-2" id="pinSave">Change PIN</button>
+              </form>
+              <div class="toggle-row mt-3 p-3 rounded-3 bg-surface-2">
+                <div class="d-flex gap-3 align-items-center"><span class="ab-icon ab-icon-sm tone-success"><i class="bi bi-shield-lock"></i></span><div><div class="fw-semibold">Two-factor authentication</div><div class="fs-8 text-muted" id="tfaTxt"></div></div></div>
+                <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" role="switch" id="tfa" aria-label="Two-factor authentication"></div>
+              </div>
+            </div>
+          </div>
+          <hr class="my-4">
+          <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2"><h6 class="fs-6 mb-0"><i class="bi bi-laptop me-2 text-primary"></i>Active sessions</h6><button class="btn btn-sm btn-light-subtle text-danger" id="signOutAll">Sign out all other devices</button></div>
+          <ul class="ab-list" id="sessions"></ul>
+        </div>
+      </section>
+
+      <!-- KYC -->
+      <section class="card set-section" id="upgrade">
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div><h6 class="card-title">Verification &amp; account tier</h6><div class="fs-8 text-muted">Verify your identity to unlock higher limits</div></div>
+          <span class="ab-status info" id="kycTier"></span>
+        </div>
+        <div class="card-body">
+          <div class="mb-3"><div class="d-flex justify-content-between fs-7 mb-1"><span class="text-muted">Verification progress</span><b id="kycPct"></b></div><div class="progress" style="height:8px"><div class="progress-bar" id="kycBar"></div></div></div>
+          <div class="row g-3" id="tiers"></div>
+        </div>
+      </section>
+
+      <!-- NOTIFICATIONS -->
+      <section class="card set-section" id="notifications">
+        <div class="card-header"><h6 class="card-title">Notifications</h6><div class="fs-8 text-muted">Choose what we notify you about</div></div>
+        <div class="card-body py-1" id="notifPrefs"></div>
+      </section>
+
+      <!-- APPEARANCE -->
+      <section class="card set-section" id="appearance">
+        <div class="card-header"><h6 class="card-title">Appearance</h6><div class="fs-8 text-muted">Customise how AutoBiz looks on this device</div></div>
+        <div class="card-body">
+          <div class="row g-2 g-sm-3 mb-3" id="themeOpts" role="radiogroup" aria-label="Theme"></div>
+          <div class="toggle-row border-0 pb-0">
+            <div><div class="fw-semibold">Hide balances</div><div class="fs-8 text-muted">Mask wallet amounts across the app</div></div>
+            <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" role="switch" id="hideBal" aria-label="Hide balances"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- REFERRAL -->
+      <section class="set-section" id="referral">
+        <div class="ref-card">
+          <i class="bi bi-people bg-ic"></i>
+          <div class="row g-3 align-items-center">
+            <div class="col-md-7">
+              <span class="badge bg-white text-dark mb-2">Refer &amp; earn</span>
+              <h4 class="text-white mb-1">Earn ₦500 for every friend</h4>
+              <p class="small opacity-75 mb-3">Your friend gets ₦200 bonus after their first ₦2,000 transaction.</p>
+              <div class="ref-link mb-2"><code id="refLink"></code><button class="btn btn-sm btn-light fw-bold" id="copyRef"><i class="bi bi-copy me-1"></i>Copy</button></div>
+              <div class="d-flex gap-2 flex-wrap"><span class="fs-8 opacity-75 align-self-center">Code: <b id="refCode"></b></span><a class="btn btn-sm btn-glass text-white ms-auto" style="background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22)" id="waShare" target="_blank" rel="noopener"><i class="bi bi-whatsapp me-1"></i>Share on WhatsApp</a></div>
+            </div>
+            <div class="col-md-5">
+              <div class="row g-2 text-center">
+                <div class="col-4"><div class="p-2 rounded-3" style="background:rgba(255,255,255,.12)"><div class="fs-4 fw-800">12</div><div class="fs-8 opacity-75">Invited</div></div></div>
+                <div class="col-4"><div class="p-2 rounded-3" style="background:rgba(255,255,255,.12)"><div class="fs-4 fw-800">8</div><div class="fs-8 opacity-75">Joined</div></div></div>
+                <div class="col-4"><div class="p-2 rounded-3" style="background:rgba(255,255,255,.12)"><div class="fs-4 fw-800">₦4k</div><div class="fs-8 opacity-75">Earned</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- HELP -->
+      <section class="card set-section" id="help">
+        <div class="card-header"><h6 class="card-title">Help &amp; support</h6><div class="fs-8 text-muted">We're available 24/7</div></div>
+        <div class="card-body">
+          <div class="row g-2 mb-3">
+            <div class="col-6 col-md-3"><a href="https://wa.me/2348000000000" target="_blank" rel="noopener" class="ab-option d-block text-center h-100"><span class="ab-icon tone-success mb-2"><i class="bi bi-whatsapp"></i></span><div class="fw-semibold fs-7">WhatsApp</div><div class="fs-8 text-muted">Chat with us</div></a></div>
+            <div class="col-6 col-md-3"><a href="mailto:support@autobiz.ng" class="ab-option d-block text-center h-100"><span class="ab-icon tone-primary mb-2"><i class="bi bi-envelope"></i></span><div class="fw-semibold fs-7">Email</div><div class="fs-8 text-muted">support@autobiz.ng</div></a></div>
+            <div class="col-6 col-md-3"><a href="tel:+2348000000000" class="ab-option d-block text-center h-100"><span class="ab-icon tone-orange mb-2"><i class="bi bi-telephone"></i></span><div class="fw-semibold fs-7">Call us</div><div class="fs-8 text-muted">0800 000 0000</div></a></div>
+            <div class="col-6 col-md-3"><a href="transactions.html" class="ab-option d-block text-center h-100"><span class="ab-icon tone-violet mb-2"><i class="bi bi-flag"></i></span><div class="fw-semibold fs-7">Report a payment</div><div class="fs-8 text-muted">From any receipt</div></a></div>
+          </div>
+          <div class="accordion" id="faq"></div>
+        </div>
+      </section>
+
+      <!-- ACCOUNT -->
+      <section class="card set-section border-danger-subtle" id="account">
+        <div class="card-header"><h6 class="card-title">Account</h6></div>
+        <div class="card-body">
+          <div class="toggle-row">
+            <div><div class="fw-semibold">Reset demo data</div><div class="fs-8 text-muted">Restore the wallet, transactions, cart and settings to defaults</div></div>
+            <button class="btn btn-sm btn-light-subtle text-danger flex-shrink-0" id="resetBtn"><i class="bi bi-arrow-counterclockwise me-1"></i>Reset</button>
+          </div>
+          <div class="toggle-row">
+            <div><div class="fw-semibold">Log out</div><div class="fs-8 text-muted">Sign out of AutoBiz on this device</div></div>
+            <button class="btn btn-sm btn-danger flex-shrink-0" id="logoutBtn"><i class="bi bi-box-arrow-right me-1"></i>Log out</button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { store, fmt, esc } = AB;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const inv = (el, bad) => { el.classList.toggle("is-invalid", !!bad); return !bad; };
+
+  // ---------- Nav ----------
+  const SECTIONS = [["profile", "Profile", "bi-person"], ["security", "Security", "bi-shield-lock"], ["upgrade", "Verification", "bi-patch-check"], ["notifications", "Notifications", "bi-bell"], ["appearance", "Appearance", "bi-palette"], ["referral", "Refer & earn", "bi-people"], ["help", "Help & support", "bi-question-circle"], ["account", "Account", "bi-box-arrow-right"]];
+  $("#setNav").innerHTML = SECTIONS.map(([id, l, i]) => `<a href="#${id}" class="list-group-item list-group-item-action" data-sec="${id}"><i class="bi ${i}"></i>${l}</a>`).join("");
+  $("#mobNav").innerHTML = SECTIONS.map(([id, l, i]) => `<a href="#${id}" class="ab-chip" data-sec="${id}"><i class="bi ${i}"></i>${l}</a>`).join("");
+  const setActive = (id) => $$("[data-sec]").forEach(a => { const on = a.dataset.sec === id; a.classList.toggle("active", on); if (on && a.closest("#mobNav")) { const c = $("#mobNav"); c.scrollTo({ left: a.offsetLeft - c.offsetLeft - 16, behavior: "smooth" }); } });
+  const io = new IntersectionObserver((ents) => { ents.filter(e => e.isIntersecting).forEach(e => setActive(e.target.id)); }, { rootMargin: "-30% 0px -60% 0px" });
+  $$(".set-section").forEach(s => io.observe(s));
+  setActive("profile");
+
+  // ---------- Profile ----------
+  const initials = (u) => ((u.firstName || "?")[0] + (u.lastName || "")[0]).toUpperCase();
+  function fillProfile() {
+    const u = store.get("user");
+    $("#bigAvatar").textContent = initials(u);
+    $("#pName").textContent = `${u.firstName} ${u.lastName}`;
+    $("#pHandle").textContent = `@${u.username || "user"} · ${u.email}`;
+    $("#pTier").textContent = u.tier;
+    $("#fFirst").value = u.firstName; $("#fLast").value = u.lastName; $("#fEmail").value = u.email; $("#fPhone").value = u.phone; $("#fUser").value = u.username || "";
+    $$("#profileForm .is-invalid").forEach(e => e.classList.remove("is-invalid"));
+    // Sync shell (rendered once by app.js)
+    $$(".ab-topbar .ab-avatar").forEach(a => (a.textContent = initials(u)));
+    const dd = $(".ab-topbar .dropdown-menu li.px-3"); if (dd) dd.innerHTML = `<div class="fw-bold">${esc(u.firstName + " " + u.lastName)}</div><div class="fs-8 text-muted">${esc(u.email)}</div>`;
+  }
+  $("#fPhone").addEventListener("input", (e) => (e.target.value = e.target.value.replace(/\D/g, "")));
+  $("#profileReset").addEventListener("click", fillProfile);
+  $("#profileForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const f = { firstName: $("#fFirst").value.trim(), lastName: $("#fLast").value.trim(), email: $("#fEmail").value.trim(), phone: $("#fPhone").value.trim(), username: $("#fUser").value.trim().replace(/^@/, "").toLowerCase() };
+    let ok = inv($("#fFirst"), f.firstName.length < 2);
+    ok = inv($("#fLast"), f.lastName.length < 2) && ok;
+    ok = inv($("#fEmail"), !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email)) && ok;
+    ok = inv($("#fPhone"), !/^0[789][01]\d{8}$/.test(f.phone)) && ok;
+    ok = inv($("#fUser"), !/^[a-z0-9_.]{3,20}$/.test(f.username)) && ok;
+    if (!ok) return;
+    await AB.loading($("#profileSave"), 700);
+    store.update("user", u => ({ ...u, ...f }));
+    fillProfile(); renderRef();
+    AB.toast("Profile updated", "success");
+  });
+
+  // ---------- Password ----------
+  $$("[data-eye]").forEach(b => b.addEventListener("click", () => { const i = $("#" + b.dataset.eye); i.type = i.type === "password" ? "text" : "password"; b.innerHTML = `<i class="bi ${i.type === "password" ? "bi-eye" : "bi-eye-slash"}"></i>`; }));
+  const score = (p) => [p.length >= 8, /[A-Z]/.test(p) && /[a-z]/.test(p), /\d/.test(p), /[^A-Za-z0-9]/.test(p)].filter(Boolean).length;
+  $("#pwNew").addEventListener("input", () => {
+    const p = $("#pwNew").value, s = p ? Math.max(1, score(p)) : 0;
+    const colors = ["var(--ab-border)", "var(--ab-danger)", "var(--ab-orange)", "var(--ab-warning)", "var(--ab-accent)"];
+    $$("#pwBars span").forEach((b, i) => (b.style.background = i < s ? colors[s] : "var(--ab-border)"));
+    $("#pwLabel").innerHTML = p ? `Strength: <b style="color:${colors[s]}">${["", "Weak", "Fair", "Good", "Strong"][s]}</b>` : "Use 8+ characters with upper case, numbers & symbols";
+    $("#pwNew").classList.remove("is-invalid");
+  });
+  $("#pwForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const cur = $("#pwCur").value, nw = $("#pwNew").value, cf = $("#pwConf").value;
+    let ok = inv($("#pwCur"), cur.length < 6);
+    ok = inv($("#pwNew"), nw.length < 8 || !/\d/.test(nw) || !/[A-Z]/.test(nw)) && ok;
+    ok = inv($("#pwConf"), !cf || cf !== nw) && ok;
+    if (!ok) return;
+    if (cur === nw) { inv($("#pwNew"), true); return AB.toast("New password must be different from current", "warning"); }
+    await AB.loading($("#pwSave"), 900);
+    $("#pwForm").reset(); $("#pwNew").dispatchEvent(new Event("input"));
+    AB.notify({ icon: "bi-key", tone: "success", title: "Password changed", body: "Your password was updated. If this wasn't you, contact support." });
+    AB.toast("Password updated successfully", "success");
+  });
+
+  // ---------- PIN ----------
+  ["pinCur", "pinNew", "pinConf"].forEach(id => $("#" + id).addEventListener("input", (e) => { e.target.value = e.target.value.replace(/\D/g, "").slice(0, 4); e.target.classList.remove("is-invalid"); }));
+  $("#pinForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const c = $("#pinCur").value, n = $("#pinNew").value, f = $("#pinConf").value;
+    let ok = inv($("#pinCur"), c.length !== 4 || c === "0000");
+    let nErr = n.length !== 4 ? "PIN must be 4 digits" : /^(\d)\1{3}$/.test(n) || "0123456789".includes(n) || "9876543210".includes(n) ? "Avoid repeated or sequential digits" : n === c ? "New PIN must differ from current PIN" : "";
+    $("#pinNewErr").textContent = nErr;
+    ok = inv($("#pinNew"), nErr) && ok;
+    ok = inv($("#pinConf"), f !== n || !f) && ok;
+    if (!ok) return;
+    await AB.loading($("#pinSave"), 900);
+    $("#pinForm").reset();
+    store.update("settings", s => ({ ...s, pinSet: true, pinChangedAt: Date.now() }));
+    AB.notify({ icon: "bi-grid-3x3-gap", tone: "primary", title: "Transaction PIN changed", body: "Use your new PIN for your next payment." });
+    AB.toast("Transaction PIN changed", "success");
+  });
+
+  // ---------- 2FA ----------
+  const tfa = $("#tfa");
+  const syncTfa = () => { const on = !!store.get("settings").twoFA; tfa.checked = on; $("#tfaTxt").textContent = on ? "On · Authenticator app" : "Off · Add an extra layer of security"; };
+  tfa.addEventListener("change", () => {
+    if (!tfa.checked) { store.update("settings", s => ({ ...s, twoFA: false })); syncTfa(); AB.toast("Two-factor authentication turned off", "warning"); return; }
+    tfa.checked = false;
+    const secret = Array.from({ length: 16 }, () => "ABCDEFGHJKLMNPQRSTUVWXYZ234567"[Math.floor(Math.random() * 30)]).join("").match(/.{4}/g).join(" ");
+    const m = AB.modal(`
+      <div class="modal-header"><h5 class="modal-title">Enable two-factor authentication</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body pt-1">
+        <ol class="fs-7 text-muted ps-3"><li>Open Google Authenticator or Authy.</li><li>Add an account using this setup key.</li><li>Enter the 6-digit code it shows.</li></ol>
+        <div class="d-flex align-items-center justify-content-between p-3 rounded-3 bg-surface-2 mb-3"><code class="fs-6 fw-bold tabular">${secret}</code><button class="btn btn-sm btn-soft" data-c><i class="bi bi-copy"></i></button></div>
+        <label class="form-label" for="otp">6-digit code</label>
+        <input class="form-control form-control-lg tabular text-center" id="otp" inputmode="numeric" maxlength="6" placeholder="000000" style="letter-spacing:.4em">
+        <div class="invalid-feedback">Enter the 6-digit code from your app</div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-primary btn-lg w-100" data-go>Verify &amp; enable</button></div>`);
+    $("[data-c]", m.el).addEventListener("click", () => AB.copy(secret.replace(/\s/g, ""), "Setup key copied"));
+    $("#otp", m.el).addEventListener("input", (e) => (e.target.value = e.target.value.replace(/\D/g, "")));
+    $("[data-go]", m.el).addEventListener("click", async (e) => {
+      if (!inv($("#otp", m.el), $("#otp", m.el).value.length !== 6)) return;
+      await AB.loading(e.currentTarget, 900);
+      store.update("settings", s => ({ ...s, twoFA: true })); syncTfa(); m.close();
+      AB.notify({ icon: "bi-shield-lock", tone: "success", title: "2FA enabled", body: "Your account is now protected with two-factor authentication." });
+      AB.toast("Two-factor authentication enabled", "success");
+    });
+  });
+
+  // ---------- Sessions ----------
+  if (store.get("sessions") === undefined) store.set("sessions", [
+    { id: "s1", device: "MacBook Pro · Chrome", loc: "Lagos, Nigeria", ip: "102.89.34.12", last: Date.now(), icon: "bi-laptop", current: true },
+    { id: "s2", device: "iPhone 15 · AutoBiz app", loc: "Lagos, Nigeria", ip: "102.89.40.7", last: Date.now() - 2 * 36e5, icon: "bi-phone" },
+    { id: "s3", device: "Windows PC · Edge", loc: "Abuja, Nigeria", ip: "197.210.55.81", last: Date.now() - 3 * 864e5, icon: "bi-pc-display" }
+  ]);
+  function renderSessions() {
+    const list = store.get("sessions") || [];
+    $("#signOutAll").hidden = list.filter(s => !s.current).length === 0;
+    $("#sessions").innerHTML = list.map(s => `<li class="ab-list-item">
+      <span class="ab-icon ab-icon-sm tone-${s.current ? "success" : "primary"}"><i class="bi ${s.icon}"></i></span>
+      <div class="flex-grow-1 min-w-0"><div class="title text-truncate">${esc(s.device)} ${s.current ? `<span class="ab-status success ms-1">This device</span>` : ""}</div><div class="meta text-truncate">${esc(s.loc)} · ${esc(s.ip)} · ${s.current ? "Active now" : fmt.ago(s.last)}</div></div>
+      ${s.current ? "" : `<button class="btn btn-sm btn-light-subtle text-nowrap" data-so="${s.id}">Sign out</button>`}</li>`).join("");
+    $$("[data-so]").forEach(b => b.addEventListener("click", async () => { await AB.loading(b, 600); store.set("sessions", (store.get("sessions") || []).filter(s => s.id !== b.dataset.so)); renderSessions(); AB.toast("Device signed out", "success"); }));
+  }
+  $("#signOutAll").addEventListener("click", async (e) => { await AB.loading(e.currentTarget, 800); store.set("sessions", (store.get("sessions") || []).filter(s => s.current)); renderSessions(); AB.toast("Signed out of all other devices", "success"); });
+
+  // ---------- KYC ----------
+  const TIERS = [
+    { id: "Tier 1", title: "Tier 1 · Basic", req: ["Phone number verified", "Email verified"], limits: ["₦50,000 daily", "₦300,000 max balance"] },
+    { id: "Tier 2", title: "Tier 2 · Verified", req: ["BVN verification", "Date of birth"], limits: ["₦200,000 daily", "₦500,000 max balance", "USD virtual cards"] },
+    { id: "Tier 3", title: "Tier 3 · Premium", req: ["NIN verification", "Proof of address"], limits: ["₦5,000,000 daily", "Unlimited balance", "Reseller pricing"] }
+  ];
+  const tierIdx = () => Math.max(0, TIERS.findIndex(t => t.id === store.get("user").tier));
+  function renderKyc() {
+    const idx = tierIdx();
+    $("#kycTier").textContent = "Current: " + TIERS[idx].id;
+    const pct = Math.round(((idx + 1) / 3) * 100);
+    $("#kycPct").textContent = pct + "%"; $("#kycBar").style.width = pct + "%";
+    $("#tiers").innerHTML = TIERS.map((t, i) => `<div class="col-md-4"><div class="tier-card ${i === idx ? "current" : i < idx ? "done" : ""}">
+      <div class="d-flex justify-content-between align-items-start mb-2"><div class="fw-bold">${t.title}</div>${i === idx ? `<span class="ab-status info">Current</span>` : i < idx ? `<span class="ab-status success">Done</span>` : ""}</div>
+      <div class="small-label mb-1">Requirements</div><ul class="mb-2">${t.req.map(r => `<li><i class="bi ${i <= idx ? "bi-check-circle-fill" : "bi-circle"}" style="${i <= idx ? "" : "color:var(--ab-muted)"}"></i>${r}</li>`).join("")}</ul>
+      <div class="small-label mb-1">Limits</div><ul>${t.limits.map(r => `<li><i class="bi bi-dot"></i>${r}</li>`).join("")}</ul>
+      ${i === idx + 1 ? `<button class="btn btn-primary btn-sm w-100 mt-3" data-up="${i}">Upgrade to ${t.id}</button>` : ""}</div></div>`).join("");
+    $$("[data-up]").forEach(b => b.addEventListener("click", () => openUpgrade(Number(b.dataset.up))));
+    $("#pTier").textContent = store.get("user").tier;
+  }
+  function openUpgrade(i) {
+    const t = TIERS[i]; if (!t) return;
+    const isBvn = i === 1;
+    const m = AB.modal(`
+      <div class="modal-header"><h5 class="modal-title">Upgrade to ${t.id}</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body pt-1">
+        <p class="fs-7 text-muted">${isBvn ? "We use your BVN only to confirm your identity. It never gives access to your bank account." : "Verify your National Identification Number (NIN) and address to unlock premium limits."}</p>
+        <label class="form-label" for="kId">${isBvn ? "Bank Verification Number (BVN)" : "National Identification Number (NIN)"}</label>
+        <input class="form-control form-control-lg tabular" id="kId" inputmode="numeric" maxlength="11" placeholder="11 digits">
+        <div class="invalid-feedback">Enter a valid 11-digit ${isBvn ? "BVN" : "NIN"}</div>
+        ${isBvn ? `<label class="form-label mt-3" for="kDob">Date of birth</label><input type="date" class="form-control" id="kDob" max="${new Date(Date.now() - 18 * 365.25 * 864e5).toISOString().slice(0, 10)}"><div class="invalid-feedback">You must be at least 18 years old</div>`
+          : `<label class="form-label mt-3" for="kAddr">Residential address</label><input class="form-control" id="kAddr" placeholder="House number, street, city"><div class="invalid-feedback">Enter your address</div>
+             <label class="form-label mt-3" for="kDoc">Proof of address</label><input type="file" class="form-control" id="kDoc" accept="image/*,.pdf"><div class="form-text fs-8">Utility bill or bank statement from the last 3 months</div><div class="invalid-feedback">Upload a document</div>`}
+        <div class="form-check mt-3"><input class="form-check-input" type="checkbox" id="kOk"><label class="form-check-label fs-7" for="kOk">I consent to AutoBiz verifying my identity with NIBSS/NIMC</label><div class="invalid-feedback">Consent is required</div></div>
+        <div id="kStatus" class="mt-3"></div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-primary btn-lg w-100" data-go>Verify &amp; upgrade</button></div>`);
+    const el = m.el;
+    $("#kId", el).addEventListener("input", (e) => { e.target.value = e.target.value.replace(/\D/g, ""); e.target.classList.remove("is-invalid"); });
+    $("[data-go]", el).addEventListener("click", async (e) => {
+      let ok = inv($("#kId", el), !/^\d{11}$/.test($("#kId", el).value));
+      if (isBvn) { const d = $("#kDob", el).value; ok = inv($("#kDob", el), !d || new Date(d) > new Date(Date.now() - 18 * 365.25 * 864e5)) && ok; }
+      else { ok = inv($("#kAddr", el), $("#kAddr", el).value.trim().length < 8) && ok; ok = inv($("#kDoc", el), !$("#kDoc", el).files.length) && ok; }
+      ok = inv($("#kOk", el), !$("#kOk", el).checked) && ok;
+      if (!ok) return;
+      $("#kStatus", el).innerHTML = `<div class="d-flex align-items-center gap-2 fs-7 text-muted"><span class="spinner-border spinner-border-sm"></span>Verifying with ${isBvn ? "NIBSS" : "NIMC"}…</div>`;
+      await AB.loading(e.currentTarget, 1500);
+      store.update("user", u => ({ ...u, tier: t.id, [isBvn ? "bvnVerified" : "ninVerified"]: true }));
+      m.close();
+      renderKyc();
+      AB.notify({ icon: "bi-patch-check", tone: "success", title: `Upgraded to ${t.id}`, body: `Your new limits: ${t.limits.join(", ")}.` });
+      setTimeout(() => AB.success({ title: `You're now ${t.id}`, message: "Your identity has been verified and your limits increased.", rows: t.limits.map((l, j) => [j === 0 ? "Daily limit" : "Benefit", l]) }), 300);
+    });
+  }
+
+  // ---------- Notifications ----------
+  const NPREFS = [["txPush", "Transaction alerts", "Push notification for every debit and credit", true], ["txEmail", "Email receipts", "Get a receipt by email for each payment", true], ["security", "Security alerts", "New logins, password and PIN changes", true], ["priceAlerts", "Rate alerts", "Gift card and USD rate changes", false], ["promo", "Offers & promotions", "Cashback deals, flight and eSIM promos", false], ["newsletter", "Monthly statement", "A summary of your spending each month", true]];
+  function renderNotif() {
+    const p = store.get("settings").notif || {};
+    $("#notifPrefs").innerHTML = NPREFS.map(([k, l, d, def]) => `<div class="toggle-row"><div><label class="fw-semibold" for="n_${k}">${l}</label><div class="fs-8 text-muted">${d}</div></div><div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" role="switch" id="n_${k}" data-n="${k}" ${(p[k] ?? def) ? "checked" : ""} ${k === "security" ? "disabled title='Security alerts are always on'" : ""}></div></div>`).join("");
+    $$("[data-n]").forEach(c => c.addEventListener("change", () => { store.update("settings", s => ({ ...s, notif: { ...(s.notif || {}), [c.dataset.n]: c.checked } })); AB.toast("Notification preferences saved", "success"); }));
+  }
+
+  // ---------- Appearance ----------
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  const resolve = (mode) => (mode === "system" ? (mq.matches ? "dark" : "light") : mode);
+  function setTheme(mode) {
+    const theme = resolve(mode);
+    store.update("settings", s => ({ ...s, themeMode: mode, theme }));
+    document.documentElement.setAttribute("data-bs-theme", theme);
+    AB.refreshShell(); renderTheme();
+  }
+  function renderTheme() {
+    const s = store.get("settings"), mode = s.themeMode || s.theme || "light";
+    $("#themeOpts").innerHTML = [["light", "Light", "bi-sun"], ["dark", "Dark", "bi-moon-stars"], ["system", "System", "bi-circle-half"]].map(([v, l, i]) => `<div class="col-4"><button type="button" class="ab-option theme-opt ${mode === v ? "active" : ""}" role="radio" aria-checked="${mode === v}" data-theme-v="${v}"><div class="theme-prev ${v}"><div class="sb"></div><div class="ct"><i style="width:70%"></i><i></i><i style="width:50%"></i></div></div><span class="fw-semibold fs-7"><i class="bi ${i} me-1"></i>${l}</span></button></div>`).join("");
+    $$("[data-theme-v]").forEach(b => b.addEventListener("click", () => setTheme(b.dataset.themeV)));
+    $("#hideBal").checked = !!s.hideBalance;
+  }
+  mq.addEventListener("change", () => { if (store.get("settings").themeMode === "system") setTheme("system"); });
+  // keep in sync if the topbar toggle is used
+  document.addEventListener("click", (e) => { if (e.target.closest("[data-theme-toggle]")) setTimeout(() => { store.update("settings", s => ({ ...s, themeMode: s.theme })); renderTheme(); }, 0); });
+  $("#hideBal").addEventListener("change", () => { store.update("settings", s => ({ ...s, hideBalance: $("#hideBal").checked })); AB.toast($("#hideBal").checked ? "Balances hidden" : "Balances visible", "info"); });
+
+  // ---------- Referral ----------
+  function renderRef() {
+    const u = store.get("user"), code = (u.username || "autobiz").toUpperCase().slice(0, 10) + "26";
+    const link = new URL("../register.html?ref=" + code, location.href).href;
+    $("#refCode").textContent = code; $("#refLink").textContent = link;
+    $("#waShare").href = "https://wa.me/?text=" + encodeURIComponent(`Join me on AutoBiz — pay bills, shop, buy eSIMs & more. Get ₦200 bonus with my code ${code}: ${link}`);
+    $("#copyRef").onclick = () => AB.copy(link, "Referral link copied");
+  }
+
+  // ---------- FAQ ----------
+  const FAQ = [["How long does wallet funding take?", "Bank transfers to your dedicated account reflect within 1 minute. Card payments are instant."], ["My airtime/data didn't arrive. What do I do?", "Most purchases deliver in seconds. If it's been more than 10 minutes, open the transaction and tap “Report issue” — failed purchases are refunded automatically."], ["How do I increase my limits?", "Verify your BVN to reach Tier 2 and your NIN with proof of address for Tier 3. Go to Verification above."], ["Is my money safe?", "Wallet funds are held with CBN-licensed partner banks. Every payment requires your transaction PIN, and you can enable 2FA for logins."]];
+  $("#faq").innerHTML = FAQ.map(([q, a], i) => `<div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq${i}" aria-expanded="false">${q}</button></h2><div id="faq${i}" class="accordion-collapse collapse" data-bs-parent="#faq"><div class="accordion-body fs-7 text-muted">${a}</div></div></div>`).join("");
+
+  // ---------- Danger zone ----------
+  $("#resetBtn").addEventListener("click", () => {
+    const m = AB.modal(`<div class="modal-body text-center pt-4"><span class="ab-icon ab-icon-xl tone-danger mb-3"><i class="bi bi-arrow-counterclockwise"></i></span><h5>Reset demo data?</h5><p class="fs-7 text-muted mb-0">Your wallet balance, transactions, cart, orders and settings will be restored to the defaults. This can't be undone.</p></div>
+      <div class="modal-footer flex-row gap-2"><button class="btn btn-light-subtle flex-fill m-0" data-bs-dismiss="modal">Cancel</button><button class="btn btn-danger flex-fill m-0" data-go>Yes, reset</button></div>`);
+    $("[data-go]", m.el).addEventListener("click", () => { try { localStorage.removeItem("autobiz_v2"); } catch (e) {} AB.store.reset(); });
+  });
+  $("#logoutBtn").addEventListener("click", () => {
+    const m = AB.modal(`<div class="modal-body text-center pt-4"><span class="ab-icon ab-icon-xl tone-primary mb-3"><i class="bi bi-box-arrow-right"></i></span><h5>Log out of AutoBiz?</h5><p class="fs-7 text-muted mb-0">You'll need your password to sign in again.</p></div>
+      <div class="modal-footer flex-row gap-2"><button class="btn btn-light-subtle flex-fill m-0" data-bs-dismiss="modal">Cancel</button><a href="../login.html" class="btn btn-danger flex-fill m-0" data-go>Log out</a></div>`);
+    $("[data-go]", m.el).addEventListener("click", () => { sessionStorage.removeItem("ab_session"); try { localStorage.removeItem("ab_remember"); } catch (e) {} });
+  });
+
+  // ---------- Init ----------
+  fillProfile(); syncTfa(); renderSessions(); renderKyc(); renderNotif(); renderTheme(); renderRef();
+  if (location.hash === "#upgrade") setTimeout(() => { $("#upgrade").scrollIntoView({ behavior: "smooth" }); const i = tierIdx(); if (i < 2) setTimeout(() => openUpgrade(i + 1), 500); }, 250);
+});
+</script>
+</body>
+</html>

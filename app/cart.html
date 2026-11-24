@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Cart · AutoBiz</title>
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/app.css" rel="stylesheet">
+  <script src="../assets/js/brand.js"></script>
+  <style>
+    .cart-line { display: grid; grid-template-columns: 76px 1fr auto auto; gap: 1rem; align-items: center; padding: 1rem 0; border-bottom: 1px dashed var(--ab-border); }
+    .cart-line:last-child { border-bottom: 0; }
+    .cart-line .ab-product-art.sm { width: 76px; height: 76px; }
+    .cart-line .name { font-weight: 600; color: var(--ab-text); line-height: 1.3; }
+    .cart-line .name:hover { color: var(--ab-primary); }
+    .cart-line .line-total { min-width: 110px; text-align: right; }
+    .cart-line .acts .btn { padding: .2rem .45rem; font-size: .75rem; font-weight: 600; color: var(--ab-muted); }
+    .cart-line .acts .btn:hover { color: var(--ab-primary); }
+    .cart-line .acts .btn.rm:hover { color: var(--ab-danger); }
+    .cdot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; border: 1px solid var(--ab-border); vertical-align: -1px; }
+    @media (max-width: 767.98px) {
+      .cart-line { grid-template-columns: 64px 1fr; gap: .4rem .85rem; align-items: start; }
+      .cart-line .ab-product-art.sm { width: 64px; height: 64px; grid-row: span 2; }
+      .cart-line .qty-cell { grid-column: 2; display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+      .cart-line .line-total { display: none; }
+      .ab-qty button { width: 32px; height: 32px; } .ab-qty input { width: 34px; }
+    }
+    @media (min-width: 768px) { .cart-line .qty-cell .mob-total { display: none; } }
+    .steps { display: flex; gap: .5rem; counter-reset: s; }
+    .steps .st { flex: 1; display: flex; align-items: center; gap: .6rem; padding: .7rem .8rem; border-radius: 14px; background: var(--ab-surface-2); border: 1px solid var(--ab-border); font-weight: 600; font-size: .8125rem; color: var(--ab-muted); min-width: 0; }
+    .steps .st .n { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--ab-surface); border: 1.5px solid var(--ab-border); font-size: .75rem; flex-shrink: 0; }
+    .steps .st.active { background: var(--ab-primary-soft); border-color: rgba(var(--ab-primary-rgb), .35); color: var(--ab-primary); }
+    .steps .st.active .n { background: var(--ab-primary); color: #fff; border-color: var(--ab-primary); }
+    .steps .st.done { color: var(--ab-accent); cursor: pointer; }
+    .steps .st.done .n { background: var(--ab-accent); color: #fff; border-color: var(--ab-accent); }
+    @media (max-width: 575.98px) { .steps .st { flex-direction: column; text-align: center; gap: .3rem; padding: .55rem .3rem; font-size: .72rem; } }
+    .ab-option .opt-price { font-weight: 800; }
+    .ab-option.disabled { opacity: .5; cursor: not-allowed; }
+    .sum-items { max-height: 260px; overflow-y: auto; }
+    .sum-item { display: flex; gap: .7rem; align-items: center; padding: .45rem 0; font-size: .8125rem; }
+    .sum-item .ab-product-art.sm { width: 44px; height: 44px; font-size: 1.1rem; border-radius: 10px; }
+    .coupon-ok { display: flex; justify-content: space-between; align-items: center; padding: .55rem .8rem; border-radius: 12px; background: var(--ab-accent-soft); color: var(--ab-accent); font-weight: 700; font-size: .8125rem; }
+    .review-block { border: 1px solid var(--ab-border); border-radius: 14px; padding: .85rem 1rem; }
+  </style>
+</head>
+<body data-page="cart" data-title="Cart" data-public="true">
+<main class="ab-content">
+
+  <div class="ab-page-head fade-up">
+    <div>
+      <nav aria-label="breadcrumb"><ol class="breadcrumb mb-1"><li class="breadcrumb-item"><a href="marketplace.html">Marketplace</a></li><li class="breadcrumb-item active" aria-current="page" id="crumb">Cart</li></ol></nav>
+      <h1 id="pageTitle">My cart</h1>
+      <p id="pageSub">Review your items before checkout.</p>
+    </div>
+    <a href="marketplace.html" class="btn btn-light-subtle"><i class="bi bi-arrow-left me-1"></i>Continue shopping</a>
+  </div>
+
+  <div id="app"></div>
+
+  <section class="mt-4" id="savedSec" hidden>
+    <div class="d-flex justify-content-between align-items-center mb-3"><h6 class="card-title">Saved for later <span class="text-muted fw-semibold" id="savedCount"></span></h6><a href="orders.html?tab=wishlist" class="fs-7 fw-semibold">View wishlist</a></div>
+    <div class="row g-2 g-sm-3 row-cols-1 row-cols-md-2 row-cols-xl-3" id="saved"></div>
+  </section>
+
+  <section class="mt-4" id="suggestSec" hidden>
+    <div class="d-flex justify-content-between align-items-center mb-3"><h6 class="card-title">You might like</h6><a href="marketplace.html" class="fs-7 fw-semibold">Browse all</a></div>
+    <div class="row g-2 g-sm-3 row-cols-2 row-cols-md-4" id="suggest"></div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/shop.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { fmt, esc, store } = AB;
+  const $ = (id) => document.getElementById(id);
+  const app = $("app");
+  const COUPONS = { AUTOBIZ10: { pct: 10, label: "10% off your order" } };
+  const lastAddr = (store.get("orders").find(o => o.address && o.address.state) || {}).address;
+  const u = store.get("user");
+
+  const S = {
+    view: "cart", step: 1,
+    coupon: (() => { try { return sessionStorage.getItem("ab_coupon") || ""; } catch (e) { return ""; } })(),
+    addr: Object.assign({ name: u.firstName + " " + u.lastName, phone: u.phone, email: u.email, state: "Lagos", city: "", street: "", landmark: "" }, lastAddr || {}),
+    method: "standard", hub: "", pay: "wallet"
+  };
+  if (!COUPONS[S.coupon]) S.coupon = "";
+
+  const items = () => AB.cart.items();
+  const digitalOnly = () => SHOP.allDigital(items());
+  const hasDigital = () => items().some(l => l.digital);
+  function totals() {
+    const sub = AB.cart.subtotal();
+    const discount = S.coupon ? Math.round(sub * COUPONS[S.coupon].pct / 100) : 0;
+    const method = digitalOnly() ? "digital" : S.method;
+    const delivery = SHOP.deliveryFee(items(), method, S.addr.state);
+    return { sub, discount, delivery, method, total: Math.max(0, sub - discount + delivery) };
+  }
+  const setCoupon = (c) => { S.coupon = c; try { c ? sessionStorage.setItem("ab_coupon", c) : sessionStorage.removeItem("ab_coupon"); } catch (e) {} };
+
+  /* ================= Rendering ================= */
+  function render() {
+    const n = AB.cart.count();
+    if (!items().length) { S.view = "cart"; }
+    const co = S.view === "checkout";
+    $("pageTitle").textContent = co ? "Checkout" : `My cart${n ? ` (${n})` : ""}`;
+    $("pageSub").textContent = co ? "Secure checkout — just 3 quick steps." : n ? "Review your items before checkout." : "Your cart is waiting to be filled.";
+    $("crumb").textContent = co ? "Checkout" : "Cart";
+    document.title = (co ? "Checkout" : "Cart") + " · AutoBiz";
+
+    if (!items().length) return renderEmpty();
+    app.innerHTML = `<div class="row g-3 g-lg-4">
+      <div class="col-lg-8" id="mainCol"></div>
+      <div class="col-lg-4"><div class="ab-sticky" id="sumCol"></div></div>
+    </div>`;
+    co ? renderCheckout() : renderLines();
+    renderSummary();
+    renderSaved();
+    $("suggestSec").hidden = true;
+  }
+
+  function renderEmpty() {
+    app.innerHTML = `<div class="card fade-up"><div class="ab-empty py-5">
+      <span class="ab-icon ab-icon-xl tone-primary"><i class="bi bi-bag"></i></span>
+      <h5 class="mb-1">Your cart is empty</h5>
+      <p class="fs-7 mb-3 mx-auto" style="max-width:380px">Browse thousands of genuine products and instant digital goods — pay from your wallet or on delivery.</p>
+      <div class="d-flex gap-2 justify-content-center flex-wrap">
+        <a href="marketplace.html" class="btn btn-primary"><i class="bi bi-shop me-1"></i>Start shopping</a>
+        <a href="orders.html" class="btn btn-light-subtle"><i class="bi bi-box-seam me-1"></i>My orders</a>
+      </div>
+    </div></div>`;
+    const picks = [...AB_DATA.products].filter(p => !AB.wishlist.has(p.id)).sort((a, b) => SHOP.disc(b) - SHOP.disc(a)).slice(0, 4);
+    $("suggest").innerHTML = picks.map(p => `<div class="col">${SHOP.card(p)}</div>`).join("");
+    $("suggestSec").hidden = false;
+    renderSaved();
+  }
+
+  function maxFor(i) { const l = items()[i]; const p = SHOP.product(l.id); return p.stock - (SHOP.inCartQty(l.id) - l.qty); }
+
+  function renderLines() {
+    const list = items();
+    $("mainCol").innerHTML = `<div class="card fade-up">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="card-title">${list.length} ${list.length === 1 ? "item" : "items"} <span class="text-muted fw-semibold fs-7">· ${AB.cart.count()} units</span></h6>
+        <button class="btn btn-link btn-sm text-danger p-0" id="clearCart"><i class="bi bi-trash3 me-1"></i>Clear cart</button>
+      </div>
+      <div class="card-body py-0">${list.map((l, i) => {
+        const m = maxFor(i);
+        return `<div class="cart-line">
+          <a href="product.html?id=${l.id}" aria-label="${esc(l.name)}">${AB.productArt(l, "sm")}</a>
+          <div class="min-w-0">
+            <a href="product.html?id=${l.id}" class="name d-block">${esc(l.name)}</a>
+            <div class="fs-8 text-muted mt-1 d-flex flex-wrap gap-2 align-items-center">
+              ${l.color ? `<span><i class="cdot" style="background:${l.color}"></i> ${esc(SHOP.colorName(l.color))}</span>` : ""}
+              <span>${esc(l.seller)}</span>
+              ${l.digital ? `<span class="tag tag-warning"><i class="bi bi-lightning-charge-fill"></i>Instant</span>` : (SHOP.product(l.id).freeShipping ? `<span class="tag tag-success"><i class="bi bi-truck"></i>Free delivery</span>` : "")}
+            </div>
+            <div class="fs-7 mt-1"><span class="fw-bold tabular">${fmt.naira(l.price)}</span> <span class="text-muted fs-8">each</span>${m <= 5 && !l.digital ? ` <span class="text-danger fs-8 fw-semibold">· ${m} max</span>` : ""}</div>
+            <div class="acts mt-1 d-flex gap-1">
+              <button class="btn btn-link" data-save="${i}"><i class="bi bi-heart me-1"></i>Save for later</button>
+              <button class="btn btn-link rm" data-rm="${i}"><i class="bi bi-trash3 me-1"></i>Remove</button>
+            </div>
+          </div>
+          <div class="qty-cell">
+            <div class="ab-qty"><button data-dec="${i}" aria-label="Decrease quantity of ${esc(l.name)}"><i class="bi ${l.qty === 1 ? "bi-trash3" : "bi-dash-lg"}"></i></button><input type="number" value="${l.qty}" min="1" max="${m}" data-qty="${i}" aria-label="Quantity of ${esc(l.name)}"><button data-inc="${i}" ${l.qty >= m ? "disabled" : ""} aria-label="Increase quantity of ${esc(l.name)}"><i class="bi bi-plus-lg"></i></button></div>
+            <span class="mob-total fw-800 tabular">${fmt.naira(l.price * l.qty)}</span>
+          </div>
+          <div class="line-total fw-800 tabular">${fmt.naira(l.price * l.qty)}</div>
+        </div>`;
+      }).join("")}</div>
+    </div>
+    <div class="d-flex flex-wrap gap-3 mt-3 fs-8 text-muted">
+      <span><i class="bi bi-shield-check text-success me-1"></i>Buyer protection on every order</span>
+      <span><i class="bi bi-arrow-repeat text-primary me-1"></i>7-day easy returns</span>
+      <span><i class="bi bi-lock text-primary me-1"></i>Secure wallet checkout</span>
+    </div>`;
+    const mc = $("mainCol");
+    mc.querySelectorAll("[data-dec]").forEach(b => b.addEventListener("click", () => { const i = +b.dataset.dec; const l = items()[i]; if (l.qty === 1) return removeLine(i); AB.cart.setQty(i, l.qty - 1); }));
+    mc.querySelectorAll("[data-inc]").forEach(b => b.addEventListener("click", () => { const i = +b.dataset.inc; const l = items()[i]; if (l.qty < maxFor(i)) AB.cart.setQty(i, l.qty + 1); }));
+    mc.querySelectorAll("[data-qty]").forEach(inp => inp.addEventListener("change", () => {
+      const i = +inp.dataset.qty, m = maxFor(i); let v = parseInt(inp.value, 10);
+      if (isNaN(v) || v < 1) v = 1;
+      if (v > m) { v = m; AB.toast(`Only ${m} available for this item`, "warning"); }
+      AB.cart.setQty(i, v);
+    }));
+    mc.querySelectorAll("[data-rm]").forEach(b => b.addEventListener("click", () => removeLine(+b.dataset.rm)));
+    mc.querySelectorAll("[data-save]").forEach(b => b.addEventListener("click", () => {
+      const i = +b.dataset.save, l = items()[i];
+      if (!AB.wishlist.has(l.id)) AB.wishlist.toggle(l.id);
+      AB.cart.remove(i);
+      AB.toast(`<b>${esc(l.name)}</b> saved for later`, "success");
+    }));
+    $("clearCart").addEventListener("click", () => {
+      const m = AB.modal(`<div class="modal-body text-center pt-4">
+        <span class="ab-icon ab-icon-lg tone-danger mb-3"><i class="bi bi-trash3"></i></span>
+        <h5>Clear your cart?</h5><p class="text-muted fs-7 mb-0">All ${AB.cart.count()} items will be removed.</p></div>
+        <div class="modal-footer"><button class="btn btn-light-subtle flex-fill" data-bs-dismiss="modal">Keep items</button><button class="btn btn-danger flex-fill" data-yes>Clear cart</button></div>`, { size: "modal-sm" });
+      m.el.querySelector("[data-yes]").addEventListener("click", () => { m.close(); setCoupon(""); AB.cart.clear(); AB.toast("Cart cleared", "info"); });
+    });
+  }
+  let lastRemoved = null;
+  function removeLine(i) {
+    const l = items()[i];
+    lastRemoved = { ...l };
+    AB.cart.remove(i);
+    AB.toast(`Removed <b>${esc(l.name)}</b> <button class="btn btn-link btn-sm p-0 ms-1 fw-bold" data-undo>Undo</button>`, "info");
+    const u = document.querySelector(".ab-toast:last-child [data-undo]");
+    if (u) u.addEventListener("click", () => { if (!lastRemoved) return; store.update("cart", c => [...c, lastRemoved]); lastRemoved = null; u.closest(".ab-toast").remove(); });
+  }
+
+  /* ---------- Summary ---------- */
+  function renderSummary() {
+    const t = totals();
+    const co = S.view === "checkout";
+    const dl = digitalOnly() ? `<span class="text-success">Instant · Free</span>`
+      : t.delivery === 0 ? `<span class="text-success">Free</span>`
+      : `${fmt.naira(t.delivery)}`;
+    $("sumCol").innerHTML = `<div class="card fade-up">
+      <div class="card-header d-flex justify-content-between align-items-center"><h6 class="card-title">Order summary</h6>${co ? `<button class="btn btn-link btn-sm p-0" id="editCart">Edit cart</button>` : ""}</div>
+      <div class="card-body">
+        ${co ? `<div class="sum-items mb-3">${items().map(l => `<div class="sum-item">${AB.productArt(l, "sm")}<div class="flex-grow-1 min-w-0"><div class="text-truncate fw-semibold">${esc(l.name)}</div><div class="fs-8 text-muted">Qty ${l.qty}${l.color ? " · " + esc(SHOP.colorName(l.color)) : ""}</div></div><span class="fw-bold tabular">${fmt.naira(l.price * l.qty)}</span></div>`).join("")}</div>` : ""}
+        <div class="mb-3">
+          ${S.coupon ? `<div class="coupon-ok"><span><i class="bi bi-ticket-perforated me-1"></i>${S.coupon} · ${COUPONS[S.coupon].label}</span><button class="btn btn-link btn-sm p-0 text-danger" id="rmCoupon" aria-label="Remove coupon"><i class="bi bi-x-lg"></i></button></div>` : `
+          <form class="d-flex gap-2 align-items-start" id="couponForm" novalidate>
+            <div class="flex-grow-1"><input class="form-control text-uppercase" id="couponIn" placeholder="Coupon code" aria-label="Coupon code" autocomplete="off"><div class="invalid-feedback" id="couponErr"></div></div>
+            <button class="btn btn-soft" type="submit">Apply</button>
+          </form>
+          <div class="fs-8 text-muted mt-1">Try <b>AUTOBIZ10</b> for 10% off</div>`}
+        </div>
+        <div class="ab-summary mb-3">
+          <div class="row-item"><span>Subtotal (${AB.cart.count()} items)</span><span class="tabular" id="sumSub">${fmt.naira(t.sub)}</span></div>
+          ${t.discount ? `<div class="row-item"><span>Coupon (${S.coupon})</span><span class="text-success tabular">−${fmt.naira(t.discount)}</span></div>` : ""}
+          <div class="row-item"><span>Delivery${!digitalOnly() && !co ? ` <span class="fs-8">(${esc(S.addr.state)}, standard)</span>` : !digitalOnly() ? ` <span class="fs-8">(${t.method})</span>` : ""}</span><span class="tabular" id="sumDel">${dl}</span></div>
+          <div class="row-item total"><span>Total</span><span class="tabular" id="sumTotal">${fmt.naira(t.total)}</span></div>
+        </div>
+        ${SHOP.allFree(items()) && !digitalOnly() ? `<div class="alert alert-success py-2 fs-8 mb-3"><i class="bi bi-truck me-1"></i>All items qualify for free standard delivery.</div>` : ""}
+        ${co ? "" : `<button class="btn btn-primary btn-lg w-100" id="toCheckout">Proceed to checkout <i class="bi bi-arrow-right ms-1"></i></button>`}
+        <div class="d-flex align-items-center justify-content-center gap-2 fs-8 text-muted mt-3"><i class="bi bi-lock-fill"></i>Payments secured with 256-bit encryption</div>
+      </div>
+    </div>`;
+    const cf = $("couponForm");
+    if (cf) cf.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const inp = $("couponIn"), code = inp.value.trim().toUpperCase();
+      const err = (m) => { inp.classList.add("is-invalid"); $("couponErr").textContent = m; };
+      if (!code) return err("Enter a coupon code.");
+      const btn = cf.querySelector("button");
+      AB.loading(btn, 600).then(() => {
+        if (!COUPONS[code]) return err(`“${code}” is invalid or has expired.`);
+        setCoupon(code); AB.toast(`Coupon <b>${code}</b> applied — ${COUPONS[code].label}`, "success"); render();
+      });
+    });
+    const ci = $("couponIn"); if (ci) ci.addEventListener("input", () => ci.classList.remove("is-invalid"));
+    const rc = $("rmCoupon"); if (rc) rc.addEventListener("click", () => { setCoupon(""); AB.toast("Coupon removed", "info"); render(); });
+    const tc = $("toCheckout"); if (tc) tc.addEventListener("click", () => goCheckout(1));
+    const ec = $("editCart"); if (ec) ec.addEventListener("click", () => { S.view = "cart"; render(); window.scrollTo({ top: 0, behavior: "smooth" }); });
+  }
+
+  function renderSaved() {
+    const w = store.get("wishlist").map(SHOP.product).filter(Boolean);
+    $("savedSec").hidden = !w.length;
+    $("savedCount").textContent = w.length ? `(${w.length})` : "";
+    $("saved").innerHTML = w.slice(0, 6).map(p => `<div class="col"><div class="card h-100"><div class="card-body d-flex gap-3 align-items-center p-3">
+      <a href="product.html?id=${p.id}">${AB.productArt(p, "sm")}</a>
+      <div class="flex-grow-1 min-w-0"><a href="product.html?id=${p.id}" class="fw-semibold fs-7 text-body d-block text-truncate">${esc(p.name)}</a><div class="fw-800 tabular">${fmt.naira(p.price)}</div>
+        <div class="d-flex gap-2 mt-1"><button class="btn btn-sm btn-soft py-1" data-move="${p.id}"><i class="bi bi-cart-plus me-1"></i>Move to cart</button><button class="btn btn-sm btn-link text-muted py-1 px-1" data-unsave="${p.id}" aria-label="Remove ${esc(p.name)} from saved"><i class="bi bi-x-lg"></i></button></div>
+      </div></div></div></div>`).join("");
+    $("saved").querySelectorAll("[data-move]").forEach(b => b.addEventListener("click", () => { if (SHOP.addToCart(b.dataset.move, 1)) AB.wishlist.toggle(b.dataset.move); }));
+    $("saved").querySelectorAll("[data-unsave]").forEach(b => b.addEventListener("click", () => AB.wishlist.toggle(b.dataset.unsave)));
+  }
+
+  /* ================= Checkout ================= */
+  function goCheckout(step) {
+    // Guests can browse and fill the cart; checkout needs an account.
+    if (!AB.auth.requireLogin({ next: "app/cart.html?checkout=1", title: "Log in to check out", message: "Sign in or create a free account to place your order. It only takes a minute." })) return;
+    S.view = "checkout"; S.step = step;
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function stepsBar() {
+    const names = ["Address", "Delivery", "Payment"];
+    return `<div class="steps mb-3" role="list">${names.map((n, i) => {
+      const k = i + 1, cls = k === S.step ? "active" : k < S.step ? "done" : "";
+      return `<div class="st ${cls}" role="listitem" ${k < S.step ? `data-step="${k}" tabindex="0" aria-label="Back to ${n}"` : ""} ${k === S.step ? 'aria-current="step"' : ""}><span class="n">${k < S.step ? '<i class="bi bi-check-lg"></i>' : k}</span><span class="text-truncate">${n}</span></div>`;
+    }).join("")}</div>`;
+  }
+
+  function renderCheckout() {
+    const mc = $("mainCol");
+    const body = S.step === 1 ? stepAddress() : S.step === 2 ? stepDelivery() : stepPayment();
+    mc.innerHTML = stepsBar() + `<div class="card fade-up"><div class="card-body">${body}</div></div>`;
+    mc.querySelectorAll("[data-step]").forEach(b => { const go = () => { S.step = +b.dataset.step; render(); }; b.addEventListener("click", go); b.addEventListener("keydown", e => { if (e.key === "Enter") go(); }); });
+    ({ 1: bindAddress, 2: bindDelivery, 3: bindPayment })[S.step]();
+  }
+
+  // ---- Step 1
+  function stepAddress() {
+    const a = S.addr, dOnly = digitalOnly();
+    const f = (id, label, val, attrs = "", col = "col-md-6", help = "") => `<div class="${col}"><label class="form-label" for="${id}">${label}</label><input class="form-control" id="${id}" value="${esc(val)}" ${attrs}><div class="invalid-feedback"></div>${help}</div>`;
+    return `<h5 class="mb-1">${dOnly ? "Contact details" : "Delivery address"}</h5>
+      <p class="fs-7 text-muted mb-3">${dOnly ? "Your codes will be shown in My Orders and sent to this email." : "Where should we deliver your order?"}</p>
+      <form id="addrForm" novalidate><div class="row g-3">
+        ${f("aName", "Full name", a.name, 'autocomplete="name"')}
+        ${f("aPhone", "Phone number", a.phone, 'inputmode="tel" autocomplete="tel" maxlength="11" placeholder="08012345678"')}
+        ${f("aEmail", "Email", a.email, 'type="email" autocomplete="email"', dOnly ? "col-12" : "col-md-6")}
+        ${dOnly ? "" : `
+        <div class="col-md-6"><label class="form-label" for="aState">State</label><select class="form-select" id="aState">${SHOP.STATES.map(s => `<option ${s === a.state ? "selected" : ""}>${s}</option>`).join("")}</select><div class="invalid-feedback"></div></div>
+        ${f("aCity", "City / LGA", a.city, 'autocomplete="address-level2" placeholder="e.g. Ikeja"')}
+        ${f("aLandmark", 'Nearest landmark <span class="text-muted fw-normal">(optional)</span>', a.landmark, 'placeholder="e.g. Opposite Shoprite"')}
+        ${f("aStreet", "Street address", a.street, 'autocomplete="street-address" placeholder="House number, street name"', "col-12")}`}
+      </div>
+      <div class="d-flex justify-content-between gap-2 mt-4">
+        <button type="button" class="btn btn-light-subtle" id="backCart"><i class="bi bi-arrow-left me-1"></i>Cart</button>
+        <button type="submit" class="btn btn-primary px-4">Continue <i class="bi bi-arrow-right ms-1"></i></button>
+      </div></form>`;
+  }
+  function bindAddress() {
+    $("backCart").addEventListener("click", () => { S.view = "cart"; render(); });
+    const form = $("addrForm");
+    form.querySelectorAll("input,select").forEach(el => el.addEventListener("input", () => el.classList.remove("is-invalid")));
+    if ($("aState")) $("aState").addEventListener("change", () => { S.addr.state = $("aState").value; renderSummary(); });
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const dOnly = digitalOnly();
+      const v = (id) => ($(id) ? $(id).value.trim() : "");
+      const checks = [
+        ["aName", v("aName").length >= 3 && /\s/.test(v("aName")), "Enter your first and last name."],
+        ["aPhone", /^0[789][01]\d{8}$/.test(v("aPhone").replace(/\s/g, "")), "Enter a valid 11-digit Nigerian number (e.g. 08031234567)."],
+        ["aEmail", /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v("aEmail")), "Enter a valid email address."]
+      ];
+      if (!dOnly) checks.push(
+        ["aCity", v("aCity").length >= 2, "Enter your city or LGA."],
+        ["aStreet", v("aStreet").length >= 6, "Enter your full street address."]
+      );
+      let first = null;
+      checks.forEach(([id, ok, msg]) => { const el = $(id); el.classList.toggle("is-invalid", !ok); el.nextElementSibling.textContent = ok ? "" : msg; if (!ok && !first) first = el; });
+      if (first) { first.focus(); return; }
+      Object.assign(S.addr, { name: v("aName"), phone: v("aPhone").replace(/\s/g, ""), email: v("aEmail") });
+      if (!dOnly) Object.assign(S.addr, { state: $("aState").value, city: v("aCity"), street: v("aStreet"), landmark: v("aLandmark") });
+      if (dOnly) S.method = "digital";
+      else if (S.method === "digital") S.method = "standard";
+      goCheckout(2);
+    });
+  }
+
+  // ---- Step 2
+  function stepDelivery() {
+    if (digitalOnly()) return `<h5 class="mb-1">Delivery method</h5><p class="fs-7 text-muted mb-3">Digital items are delivered instantly.</p>
+      <button class="ab-option active mb-2" disabled><div class="d-flex gap-3 align-items-center"><span class="ab-icon tone-warning"><i class="bi bi-lightning-charge"></i></span><div class="flex-grow-1"><div class="fw-bold">Instant digital delivery</div><div class="fs-8 text-muted">Codes appear in My Orders & are emailed to ${esc(S.addr.email)}</div></div><span class="opt-price text-success me-4">Free</span></div></button>
+      ${navBtns("Continue to payment")}`;
+    const st = S.addr.state, zone = SHOP.zoneOf(st), hubs = SHOP.PICKUP_HUBS[zone];
+    if (!hubs.includes(S.hub)) S.hub = hubs[0];
+    const opt = (m, title, ic, tone, desc) => {
+      const fee = SHOP.deliveryFee(items(), m, st);
+      return `<button type="button" class="ab-option mb-2 ${S.method === m ? "active" : ""}" data-method="${m}" aria-pressed="${S.method === m}"><div class="d-flex gap-3 align-items-center pe-4"><span class="ab-icon ${tone}"><i class="bi ${ic}"></i></span><div class="flex-grow-1 min-w-0"><div class="fw-bold">${title}</div><div class="fs-8 text-muted">${desc} · <b>${SHOP.eta(st, m)}</b></div></div><span class="opt-price tabular ${fee ? "" : "text-success"}">${fee ? fmt.naira(fee) : "Free"}</span></div></button>`;
+    };
+    return `<h5 class="mb-1">Delivery method</h5><p class="fs-7 text-muted mb-3">Delivering to <b>${esc(S.addr.city)}, ${esc(st)}</b> · <a href="#" data-goto="1">Change</a></p>
+      ${opt("standard", "Standard door delivery", "bi-truck", "tone-primary", "Delivered to your address")}
+      ${opt("express", "Express delivery", "bi-lightning", "tone-violet", "Priority dispatch, fastest route")}
+      ${opt("pickup", "Pickup station", "bi-shop-window", "tone-success", "Collect at a hub near you")}
+      <div class="mt-2 ${S.method === "pickup" ? "" : "d-none"}" id="hubWrap"><label class="form-label" for="hub">Choose pickup station</label><select class="form-select" id="hub">${hubs.map(h => `<option ${h === S.hub ? "selected" : ""}>${esc(h)}</option>`).join("")}</select></div>
+      ${hasDigital() ? `<div class="alert alert-warning fs-8 py-2 mt-3 mb-0"><i class="bi bi-lightning-charge me-1"></i>Digital items in your cart are delivered instantly after payment.</div>` : ""}
+      ${navBtns("Continue to payment")}`;
+  }
+  const navBtns = (next) => `<div class="d-flex justify-content-between gap-2 mt-4"><button class="btn btn-light-subtle" data-back><i class="bi bi-arrow-left me-1"></i>Back</button><button class="btn btn-primary px-4" data-next>${next} <i class="bi bi-arrow-right ms-1"></i></button></div>`;
+  function bindDelivery() {
+    const mc = $("mainCol");
+    mc.querySelectorAll("[data-method]").forEach(b => b.addEventListener("click", () => {
+      S.method = b.dataset.method;
+      mc.querySelectorAll("[data-method]").forEach(x => { x.classList.toggle("active", x === b); x.setAttribute("aria-pressed", x === b); });
+      $("hubWrap").classList.toggle("d-none", S.method !== "pickup");
+      renderSummary();
+    }));
+    if ($("hub")) $("hub").addEventListener("change", () => (S.hub = $("hub").value));
+    mc.querySelector("[data-goto]")?.addEventListener("click", (e) => { e.preventDefault(); goCheckout(1); });
+    mc.querySelector("[data-back]").addEventListener("click", () => goCheckout(1));
+    mc.querySelector("[data-next]").addEventListener("click", () => goCheckout(3));
+  }
+
+  // ---- Step 3
+  function stepPayment() {
+    const t = totals(), bal = AB.wallet.balance(), enough = bal >= t.total, podOk = !hasDigital();
+    if (!podOk && S.pay === "pod") S.pay = "wallet";
+    const a = S.addr;
+    const methodLabel = { standard: "Standard delivery", express: "Express delivery", pickup: "Pickup station", digital: "Instant digital delivery" }[t.method];
+    return `<h5 class="mb-1">Payment</h5><p class="fs-7 text-muted mb-3">Choose how you'd like to pay.</p>
+      <button type="button" class="ab-option mb-2 ${S.pay === "wallet" ? "active" : ""}" data-pay="wallet" aria-pressed="${S.pay === "wallet"}">
+        <div class="d-flex gap-3 align-items-center pe-4"><span class="ab-icon tone-primary"><i class="bi bi-wallet2"></i></span>
+        <div class="flex-grow-1 min-w-0"><div class="fw-bold">AutoBiz wallet</div><div class="fs-8 ${enough ? "text-muted" : "text-danger fw-semibold"}">Balance: ${fmt.naira(bal, 2)}${enough ? " · Instant confirmation" : " · Insufficient for this order"}</div></div>
+        ${enough ? "" : `<span class="btn btn-sm btn-soft" data-open-fund-btn>Top up</span>`}</div>
+      </button>
+      <button type="button" class="ab-option mb-2 ${S.pay === "pod" ? "active" : ""} ${podOk ? "" : "disabled"}" data-pay="pod" aria-pressed="${S.pay === "pod"}" ${podOk ? "" : 'aria-disabled="true"'}>
+        <div class="d-flex gap-3 align-items-center pe-4"><span class="ab-icon tone-success"><i class="bi bi-cash-coin"></i></span>
+        <div class="flex-grow-1 min-w-0"><div class="fw-bold">Pay on delivery</div><div class="fs-8 text-muted">${podOk ? "Cash, transfer or POS when your order arrives" : "Not available for orders with digital items"}</div></div></div>
+      </button>
+      <div class="row g-2 mt-3">
+        <div class="col-md-6"><div class="review-block h-100"><div class="d-flex justify-content-between mb-1"><span class="small-label">${digitalOnly() ? "Contact" : "Ship to"}</span><a href="#" class="fs-8 fw-semibold" data-goto="1">Edit</a></div>
+          <div class="fw-semibold fs-7">${esc(a.name)} · ${esc(a.phone)}</div>
+          <div class="fs-8 text-muted">${digitalOnly() ? esc(a.email) : `${esc(a.street)}, ${esc(a.city)}, ${esc(a.state)}${a.landmark ? " · " + esc(a.landmark) : ""}`}</div></div></div>
+        <div class="col-md-6"><div class="review-block h-100"><div class="d-flex justify-content-between mb-1"><span class="small-label">Delivery</span>${digitalOnly() ? "" : `<a href="#" class="fs-8 fw-semibold" data-goto="2">Edit</a>`}</div>
+          <div class="fw-semibold fs-7">${methodLabel}${t.method === "pickup" ? ` · ${esc(S.hub)}` : ""}</div>
+          <div class="fs-8 text-muted">${t.method === "digital" ? "Instant" : "Est. " + SHOP.eta(a.state, t.method)} · ${t.delivery ? fmt.naira(t.delivery) : "Free"}</div></div></div>
+      </div>
+      <div class="d-flex justify-content-between gap-2 mt-4 flex-wrap">
+        <button class="btn btn-light-subtle" data-back><i class="bi bi-arrow-left me-1"></i>Back</button>
+        <button class="btn btn-primary btn-lg px-4 flex-grow-1 flex-sm-grow-0" id="placeOrder"><i class="bi bi-lock-fill me-1"></i>${S.pay === "wallet" ? "Pay" : "Place order"} · ${fmt.naira(t.total)}</button>
+      </div>
+      <div class="fs-8 text-muted mt-3">By placing this order you agree to AutoBiz's Terms of Sale. ${S.pay === "pod" ? "Please have the exact amount ready on delivery." : ""}</div>`;
+  }
+  function bindPayment() {
+    const mc = $("mainCol");
+    mc.querySelectorAll("[data-pay]").forEach(b => b.addEventListener("click", (e) => {
+      if (e.target.closest("[data-open-fund-btn]")) { AB.openFundModal(); return; }
+      if (b.classList.contains("disabled")) { AB.toast("Pay on delivery isn't available for digital items", "warning"); return; }
+      S.pay = b.dataset.pay; renderCheckout();
+    }));
+    mc.querySelectorAll("[data-goto]").forEach(a => a.addEventListener("click", (e) => { e.preventDefault(); goCheckout(+a.dataset.goto); }));
+    mc.querySelector("[data-back]").addEventListener("click", () => goCheckout(digitalOnly() ? 1 : 2));
+    $("placeOrder").addEventListener("click", placeOrder);
+  }
+
+  let placing = false;
+  async function placeOrder() {
+    if (placing) return;
+    const t = totals();
+    const list = items().map(l => ({ ...l }));
+    const id = "ORD-" + Date.now().toString(36).toUpperCase().slice(-5) + Math.random().toString(36).slice(2, 5).toUpperCase();
+    const count = list.reduce((a, l) => a + l.qty, 0);
+    let tx = null;
+    if (S.pay === "wallet") {
+      const ok = await AB.confirmPay({
+        title: "Confirm order payment", amount: t.total, cta: "Pay " + fmt.naira(t.total),
+        rows: [["Order", id], ["Items", `${count} item${count > 1 ? "s" : ""}`], ["Delivery", t.delivery ? fmt.naira(t.delivery) : "Free"], ...(t.discount ? [["Coupon", `−${fmt.naira(t.discount)}`]] : [])]
+      });
+      if (!ok) return;
+      tx = AB.wallet.debit(t.total, { type: "shop", title: "Marketplace Order", subtitle: `${list.length === 1 ? list[0].name : list.length + " items"} · ${id}`, icon: "bi-bag", tone: "violet" });
+      if (!tx) { AB.toast("Insufficient wallet balance. Please fund your wallet.", "error"); renderCheckout(); return; }
+    } else {
+      placing = true;
+      await AB.loading($("placeOrder"), 1000);
+      placing = false;
+    }
+    const order = {
+      id, date: Date.now(), status: "processing",
+      items: list.map(l => ({ ...l, codes: l.digital ? Array.from({ length: l.qty }, (_, n) => SHOP.voucherCode(id, l.id, n)) : undefined })),
+      subtotal: t.sub, discount: t.discount, coupon: S.coupon || null, deliveryFee: t.delivery, total: t.total,
+      address: { ...S.addr }, method: t.method, pickupHub: t.method === "pickup" ? S.hub : null,
+      payment: S.pay, paid: S.pay === "wallet", txId: tx ? tx.id : null,
+      eta: t.method === "digital" ? "Instant" : SHOP.eta(S.addr.state, t.method),
+      timeline: SHOP.buildTimeline(t.method)
+    };
+    store.update("orders", o => [order, ...(o || [])]);
+    AB.cart.clear(); setCoupon(""); S.view = "cart"; S.step = 1;
+    AB.notify({ icon: "bi-bag-check", tone: "success", title: "Order placed · " + id, body: `${count} item${count > 1 ? "s" : ""} · ${fmt.naira(t.total)} · ${S.pay === "wallet" ? "Paid from wallet" : "Pay on delivery"}` });
+    render();
+    window.scrollTo({ top: 0 });
+    AB.success({
+      title: "Order placed!",
+      message: hasDigitalIn(order) ? "Your digital codes are ready in My Orders." : `We'll notify you as your order moves. Estimated delivery: <b>${esc(order.eta)}</b>.`,
+      rows: [["Order ID", `<span class="tabular">${id}</span>`], ["Amount", fmt.naira(t.total, 2)], ["Payment", S.pay === "wallet" ? "Wallet (paid)" : "Pay on delivery"], ...(S.pay === "wallet" ? [["New balance", fmt.naira(AB.wallet.balance(), 2)]] : [])],
+      actions: [{ label: `<i class="bi bi-box-seam me-1"></i>View order`, href: "orders.html?id=" + id, class: "btn-soft" }]
+    });
+  }
+  const hasDigitalIn = (o) => o.items.some(i => i.digital);
+
+  /* ---------- Init ---------- */
+  store.on((k) => {
+    if (k === "cart" || k === "wishlist") render();
+    if (k === "wallet" || k === "transactions") { if (S.view === "checkout" && S.step === 3) renderCheckout(); }
+  });
+  const wantsCheckout = AB.qs("checkout") && items().length;
+  if (wantsCheckout) history.replaceState(null, "", location.pathname);
+  if (wantsCheckout && AB.auth.isAuthed()) { S.view = "checkout"; S.step = 1; }
+  render();
+  if (wantsCheckout && !AB.auth.isAuthed()) goCheckout(1); // shows the log-in prompt over the cart
+});
+</script>
+</body>
+</html>

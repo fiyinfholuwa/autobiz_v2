@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Airtime, Data & Bills · AutoBiz</title>
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/app.css" rel="stylesheet">
+  <script src="../assets/js/brand.js"></script>
+  <style>
+    .bill-tabs { display: flex; gap: .6rem; overflow-x: auto; scrollbar-width: none; padding: 2px 2px 6px; }
+    .bill-tabs::-webkit-scrollbar { display: none; }
+    .bill-tab { flex: 1 0 auto; min-width: 112px; display: flex; align-items: center; gap: .6rem; border: 1.5px solid var(--ab-border); background: var(--ab-surface); color: var(--ab-text); border-radius: 16px; padding: .65rem .85rem; font-weight: 600; font-size: .875rem; transition: all .15s ease; white-space: nowrap; }
+    .bill-tab:hover { border-color: rgba(var(--ab-primary-rgb), .5); }
+    .bill-tab.active { border-color: var(--ab-primary); background: var(--ab-primary-soft); color: var(--ab-primary); box-shadow: 0 0 0 3px rgba(var(--ab-primary-rgb), .1); }
+    .bill-tab .ab-icon { width: 34px; height: 34px; border-radius: 10px; font-size: 1rem; }
+    .net-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem; }
+    .net-opt { display: flex; flex-direction: column; align-items: center; gap: .4rem; padding: .75rem .4rem; font-size: .8rem; font-weight: 600; text-align: center; }
+    .net-opt img { width: 42px; height: 42px; border-radius: 12px; object-fit: cover; background: #fff; }
+    .net-opt.active::after { top: 4px; right: 6px; font-size: .85rem; }
+    .benef { display: flex; flex-direction: column; align-items: center; gap: .3rem; width: 76px; font-size: .72rem; font-weight: 600; color: var(--ab-text); background: none; border: 0; padding: 0; }
+    .benef .av { width: 48px; height: 48px; border-radius: 15px; display: grid; place-items: center; position: relative; background: var(--ab-surface-2); border: 1.5px solid var(--ab-border); font-weight: 800; transition: border-color .15s; }
+    .benef .av img { width: 20px; height: 20px; border-radius: 6px; position: absolute; right: -4px; bottom: -4px; border: 2px solid var(--ab-surface); object-fit: cover; background: #fff; }
+    .benef:hover .av, .benef.active .av { border-color: var(--ab-primary); }
+    .benef .del { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 50%; background: var(--ab-danger); color: #fff; font-size: .6rem; display: none; place-items: center; }
+    .benef:hover .del, .benef:focus-within .del { display: grid; }
+    .plan-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: .6rem; }
+    .plan-opt .size { font-size: 1.15rem; font-weight: 800; letter-spacing: -.02em; }
+    .plan-opt .price { font-weight: 700; color: var(--ab-primary); }
+    .provider-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: .6rem; }
+    .prov-opt { display: flex; flex-direction: column; align-items: center; gap: .45rem; text-align: center; font-weight: 600; font-size: .82rem; }
+    .prov-logo { width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: .8rem; letter-spacing: -.02em; }
+    .verify-box { border: 1px dashed rgba(var(--ab-primary-rgb), .45); background: var(--ab-primary-soft); border-radius: 14px; padding: .85rem 1rem; }
+    .promo-tile { border-radius: 20px; padding: 1.25rem; color: #fff; position: relative; overflow: hidden; }
+    .promo-tile .bg-ic { position: absolute; right: -14px; bottom: -26px; font-size: 7rem; opacity: .16; transform: rotate(-12deg); }
+    .promo-tile > *:not(.bg-ic) { position: relative; z-index: 1; }
+    .token-box { border-radius: 14px; padding: .9rem; background: var(--ab-surface-2); border: 1px dashed var(--ab-border); }
+    .token-box .tok { font-size: 1.15rem; font-weight: 800; letter-spacing: .04em; word-break: break-all; }
+    .detect-badge { font-size: .72rem; }
+    @media (max-width: 575.98px) {
+      .net-grid { gap: .45rem; }
+      .net-opt { padding: .6rem .2rem; }
+      .net-opt img { width: 36px; height: 36px; }
+      .plan-grid { grid-template-columns: repeat(2, 1fr); }
+      .provider-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media print {
+      body > *:not(.modal) { display: none !important; }
+      .modal { position: static !important; display: block !important; }
+      .modal-backdrop, .modal-footer, .btn { display: none !important; }
+      .modal-dialog { transform: none !important; max-width: 100% !important; }
+    }
+  </style>
+</head>
+<body data-page="bills" data-title="Airtime, Data & Bills" data-public="true">
+<main class="ab-content">
+
+  <div class="ab-page-head fade-up">
+    <div>
+      <h1>Airtime, Data &amp; Bills</h1>
+      <p>Instant top-ups and bill payments, 24/7 — with up to 3% discount.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="transactions.html" class="btn btn-light-subtle"><i class="bi bi-clock-history me-1"></i>History</a>
+      <button class="btn btn-primary" data-open-fund><i class="bi bi-plus-circle me-1"></i>Fund wallet</button>
+    </div>
+  </div>
+
+  <div class="bill-tabs mb-3 fade-up" role="tablist" id="tabs" aria-label="Bill categories"></div>
+
+  <div class="row g-3 g-lg-4">
+    <div class="col-lg-7 col-xl-8">
+      <div class="card fade-up">
+        <div class="card-body p-3 p-md-4" id="paneWrap">
+
+          <!-- MOBILE (airtime + data share network/phone) -->
+          <section data-pane="mobile">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <label class="form-label mb-0">Select network</label>
+              <span class="badge text-bg-light detect-badge d-none" id="detectBadge"></span>
+            </div>
+            <div class="net-grid mb-3" id="netGrid" role="radiogroup" aria-label="Network"></div>
+
+            <label class="form-label" for="phone">Phone number</label>
+            <div class="input-group mb-1">
+              <span class="input-group-text"><img id="phoneNetImg" src="" alt="" width="22" height="22" style="border-radius:6px;object-fit:cover;background:#fff" hidden><i class="bi bi-phone" id="phoneNetIc"></i></span>
+              <input id="phone" class="form-control form-control-lg tabular" inputmode="numeric" maxlength="11" placeholder="080 0000 0000" autocomplete="tel">
+              <button class="btn btn-light-subtle" type="button" id="useMine" title="Use my number"><i class="bi bi-person"></i><span class="d-none d-sm-inline ms-1">Me</span></button>
+            </div>
+            <div class="invalid-feedback d-block" id="phoneErr"></div>
+
+            <div class="mt-3 mb-3" id="benefWrap"></div>
+
+            <!-- Airtime -->
+            <div data-sub="airtime">
+              <label class="form-label" for="airAmt">Amount</label>
+              <div class="input-group input-group-lg mb-2"><span class="input-group-text">₦</span><input id="airAmt" type="number" inputmode="numeric" class="form-control tabular" placeholder="50 – 50,000" min="50" max="50000"></div>
+              <div class="invalid-feedback d-block mb-1" id="airAmtErr"></div>
+              <div class="ab-chips mb-3" id="airChips"></div>
+              <div class="ab-summary mb-3" id="airSummary"></div>
+            </div>
+
+            <!-- Data -->
+            <div data-sub="data" hidden>
+              <div class="d-flex justify-content-between align-items-center mb-2"><label class="form-label mb-0">Choose a plan</label><span class="fs-8 text-muted" id="planCount"></span></div>
+              <div class="ab-chips mb-3" id="planTypes"></div>
+              <div class="plan-grid mb-2" id="planGrid" role="radiogroup" aria-label="Data plans"></div>
+              <div class="invalid-feedback d-block mb-2" id="planErr"></div>
+            </div>
+
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" id="saveMobile">
+              <label class="form-check-label fs-7" for="saveMobile">Save as beneficiary</label>
+            </div>
+            <button class="btn btn-primary btn-lg w-100" id="buyMobile">Buy airtime</button>
+          </section>
+
+          <!-- ELECTRICITY -->
+          <section data-pane="electricity" hidden>
+            <div class="row g-3">
+              <div class="col-sm-7">
+                <label class="form-label" for="disco">Distribution company</label>
+                <select id="disco" class="form-select form-select-lg"></select>
+              </div>
+              <div class="col-sm-5">
+                <label class="form-label">Meter type</label>
+                <div class="ab-segment w-100 d-flex" id="meterType"><button class="active" data-v="Prepaid" type="button">Prepaid</button><button data-v="Postpaid" type="button">Postpaid</button></div>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="meter">Meter number</label>
+                <div class="input-group">
+                  <input id="meter" class="form-control form-control-lg tabular" inputmode="numeric" maxlength="13" placeholder="11 – 13 digit meter number">
+                  <button class="btn btn-soft px-3" type="button" id="verifyMeter">Verify</button>
+                </div>
+                <div class="invalid-feedback d-block" id="meterErr"></div>
+                <div class="mt-2" id="meterBenef"></div>
+                <div id="meterInfo" class="mt-2"></div>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="elecAmt">Amount</label>
+                <div class="input-group input-group-lg mb-2"><span class="input-group-text">₦</span><input id="elecAmt" type="number" class="form-control tabular" placeholder="Min ₦1,000" min="1000"></div>
+                <div class="invalid-feedback d-block mb-1" id="elecAmtErr"></div>
+                <div class="ab-chips" id="elecChips"></div>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="elecPhone">Phone for token SMS <span class="text-muted fw-normal">(optional)</span></label>
+                <input id="elecPhone" class="form-control tabular" inputmode="numeric" maxlength="11" placeholder="080 0000 0000">
+              </div>
+              <div class="col-12"><div class="ab-summary" id="elecSummary"></div></div>
+              <div class="col-12">
+                <div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="saveMeter"><label class="form-check-label fs-7" for="saveMeter">Save meter as beneficiary</label></div>
+                <button class="btn btn-primary btn-lg w-100" id="buyElec">Pay electricity bill</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- CABLE -->
+          <section data-pane="cable" hidden>
+            <label class="form-label">Provider</label>
+            <div class="provider-grid mb-3" id="cableProv" role="radiogroup" aria-label="Cable provider"></div>
+            <label class="form-label" for="iuc">Smartcard / IUC number</label>
+            <div class="input-group">
+              <input id="iuc" class="form-control form-control-lg tabular" inputmode="numeric" maxlength="12" placeholder="10 – 12 digit number">
+              <button class="btn btn-soft px-3" type="button" id="verifyIuc">Verify</button>
+            </div>
+            <div class="invalid-feedback d-block" id="iucErr"></div>
+            <div class="mt-2" id="iucBenef"></div>
+            <div id="iucInfo" class="mt-2"></div>
+            <div id="cablePlanWrap" class="mt-3" hidden>
+              <div class="ab-segment w-100 d-flex mb-3" id="cableMode"><button type="button" class="active" data-v="renew">Renew current plan</button><button type="button" data-v="change">Change plan</button></div>
+              <div id="cablePlans" class="plan-grid mb-3"></div>
+              <div class="row g-2 mb-3">
+                <div class="col-6"><label class="form-label" for="cableMonths">Duration</label><select id="cableMonths" class="form-select"><option value="1">1 month</option><option value="2">2 months</option><option value="3">3 months</option><option value="6">6 months</option></select></div>
+                <div class="col-6 d-flex align-items-end"><div class="fs-8 text-muted pb-2">Convenience fee: <b>₦0</b></div></div>
+              </div>
+              <div class="ab-summary mb-3" id="cableSummary"></div>
+              <div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="saveIuc"><label class="form-check-label fs-7" for="saveIuc">Save smartcard as beneficiary</label></div>
+              <button class="btn btn-primary btn-lg w-100" id="buyCable">Pay subscription</button>
+            </div>
+          </section>
+
+          <!-- BETTING -->
+          <section data-pane="betting" hidden>
+            <label class="form-label">Betting platform</label>
+            <div class="provider-grid mb-3" id="betProv" role="radiogroup" aria-label="Betting platform"></div>
+            <label class="form-label" for="betId">Customer / User ID</label>
+            <div class="input-group">
+              <input id="betId" class="form-control form-control-lg tabular" maxlength="16" placeholder="Your account ID on the platform">
+              <button class="btn btn-soft px-3" type="button" id="verifyBet">Verify</button>
+            </div>
+            <div class="invalid-feedback d-block" id="betIdErr"></div>
+            <div id="betInfo" class="mt-2"></div>
+            <label class="form-label mt-3" for="betAmt">Amount</label>
+            <div class="input-group input-group-lg mb-2"><span class="input-group-text">₦</span><input id="betAmt" type="number" class="form-control tabular" placeholder="Min ₦100" min="100"></div>
+            <div class="invalid-feedback d-block mb-1" id="betAmtErr"></div>
+            <div class="ab-chips mb-3" id="betChips"></div>
+            <div class="ab-summary mb-3" id="betSummary"></div>
+            <div class="alert alert-warning fs-8 py-2"><i class="bi bi-shield-exclamation me-1"></i>18+ only. Please bet responsibly.</div>
+            <button class="btn btn-primary btn-lg w-100" id="buyBet">Fund betting wallet</button>
+          </section>
+
+          <!-- EDUCATION -->
+          <section data-pane="education" hidden>
+            <label class="form-label">Select exam PIN</label>
+            <div class="provider-grid mb-3" id="eduProv" role="radiogroup" aria-label="Exam type"></div>
+            <div id="jambWrap" hidden>
+              <label class="form-label" for="jambId">JAMB profile code</label>
+              <div class="input-group">
+                <input id="jambId" class="form-control form-control-lg tabular" inputmode="numeric" maxlength="10" placeholder="10-digit profile code">
+                <button class="btn btn-soft px-3" type="button" id="verifyJamb">Verify</button>
+              </div>
+              <div class="invalid-feedback d-block" id="jambErr"></div>
+              <div id="jambInfo" class="mt-2 mb-3"></div>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-6"><label class="form-label" for="eduQty">Quantity</label><select id="eduQty" class="form-select form-select-lg"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+              <div class="col-6"><label class="form-label" for="eduPhone">Phone</label><input id="eduPhone" class="form-control form-control-lg tabular" inputmode="numeric" maxlength="11" placeholder="080…"></div>
+            </div>
+            <div class="invalid-feedback d-block mb-2" id="eduPhoneErr"></div>
+            <div class="ab-summary mb-3" id="eduSummary"></div>
+            <button class="btn btn-primary btn-lg w-100" id="buyEdu">Buy PIN</button>
+          </section>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5 col-xl-4">
+      <div class="ab-sticky d-flex flex-column gap-3">
+        <div class="card fade-up">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="card-title" id="recentTitle">Recent purchases</h6>
+            <a href="transactions.html" class="fs-7 fw-semibold" id="recentAll">See all</a>
+          </div>
+          <div class="card-body pt-1"><ul class="ab-list" id="recentList"></ul></div>
+        </div>
+        <div id="promo" class="fade-up"></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { store, fmt, esc } = AB;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const D = AB_DATA;
+  const netById = Object.fromEntries(D.networks.map(n => [n.id, n]));
+  const logo = (id) => `../assets/img/networks/${netById[id].logo}`;
+
+  const TABS = [
+    { id: "airtime", label: "Airtime", icon: "bi-phone", tone: "warning" },
+    { id: "data", label: "Data", icon: "bi-wifi", tone: "primary" },
+    { id: "electricity", label: "Electricity", icon: "bi-lightning-charge", tone: "orange" },
+    { id: "cable", label: "Cable TV", icon: "bi-tv", tone: "cyan" },
+    { id: "betting", label: "Betting", icon: "bi-trophy", tone: "success" },
+    { id: "education", label: "Education", icon: "bi-mortarboard", tone: "violet" }
+  ];
+  const PROMOS = {
+    airtime: { bg: "linear-gradient(135deg,#f59f00,#e8590c)", icon: "bi-phone-vibrate", title: "2% back on every top-up", body: "Airtime purchases earn instant cashback into your wallet.", cta: "Upgrade to reseller", href: "settings.html#upgrade" },
+    data: { bg: "linear-gradient(135deg,var(--ab-primary),var(--ab-primary-700))", icon: "bi-wifi", title: "Travelling soon?", body: "Skip roaming. Get an eSIM with data in 120+ countries.", cta: "Browse eSIMs", href: "esim.html" },
+    electricity: { bg: "linear-gradient(135deg,#fd7e14,#d6336c)", icon: "bi-lightning-charge", title: "Never run out of units", body: "Save your meter and recharge in 2 taps — token arrives instantly.", cta: "View history", href: "transactions.html?type=electricity" },
+    cable: { bg: "linear-gradient(135deg,#1098ad,#0b6b8a)", icon: "bi-tv", title: "Stream on Netflix & Showmax", body: "Pay for global subscriptions with a USD virtual card.", cta: "Get a USD card", href: "virtual-cards.html" },
+    betting: { bg: "linear-gradient(135deg,#12b886,#087f5b)", icon: "bi-trophy", title: "Instant wallet funding", body: "Zero fees on all betting platforms. Funds reflect in seconds.", cta: "Fund wallet", href: "#", fund: true },
+    education: { bg: "linear-gradient(135deg,#7048e8,#4c2bd1)", icon: "bi-mortarboard", title: "Bulk PINs for schools", body: "Buy up to 5 PINs per order. Resellers get extra discounts.", cta: "Upgrade account", href: "settings.html#upgrade" }
+  };
+  const PREFIX = {
+    mtn: ["0803","0806","0703","0706","0813","0816","0810","0814","0903","0906","0913","0916"],
+    airtel: ["0802","0808","0708","0812","0701","0902","0901","0904","0907","0912"],
+    glo: ["0805","0807","0705","0815","0811","0905","0915"],
+    "9mobile": ["0809","0817","0818","0909","0908"]
+  };
+  const detect = (p) => Object.keys(PREFIX).find(k => PREFIX[k].includes(p.slice(0, 4))) || null;
+  const BET = [
+    { id: "bet9ja", name: "Bet9ja", bg: "#0f7a3a", abbr: "B9" },
+    { id: "sportybet", name: "SportyBet", bg: "#e41827", abbr: "SB" },
+    { id: "1xbet", name: "1xBet", bg: "#1a5c9e", abbr: "1x" },
+    { id: "betking", name: "BetKing", bg: "#1b1464", abbr: "BK" },
+    { id: "nairabet", name: "NairaBet", bg: "#00843d", abbr: "NB" },
+    { id: "msport", name: "MSport", bg: "#f0a30a", abbr: "MS" }
+  ];
+  const EDU = [
+    { id: "waec", name: "WAEC Result Checker", short: "WAEC", price: 3900, bg: "#1c7ed6", abbr: "WA" },
+    { id: "waecreg", name: "WAEC Registration PIN", short: "WAEC Reg", price: 18500, bg: "#1864ab", abbr: "WR" },
+    { id: "neco", name: "NECO Result Token", short: "NECO", price: 1300, bg: "#2b8a3e", abbr: "NE" },
+    { id: "nabteb", name: "NABTEB Result PIN", short: "NABTEB", price: 1000, bg: "#c2255c", abbr: "NA" },
+    { id: "jamb", name: "JAMB UTME ePIN", short: "JAMB UTME", price: 7700, bg: "#2f9e44", abbr: "JB", needsId: true },
+    { id: "jambde", name: "JAMB Direct Entry ePIN", short: "JAMB DE", price: 7700, bg: "#5c940d", abbr: "DE", needsId: true }
+  ];
+  const CABLE_STYLE = { dstv: { abbr: "DStv" }, gotv: { abbr: "GOtv" }, startimes: { abbr: "ST" } };
+  const NAMES = ["Chinedu Okeke", "Aisha Bello", "Tunde Adeyemi", "Ngozi Eze", "Ibrahim Musa", "Funke Akindele", "Emeka Obi", "Blessing Udo", "Yusuf Lawal", "Kemi Balogun"];
+  const STREETS = ["14 Adeola Odeku St, Victoria Island", "7 Allen Avenue, Ikeja", "22 Wuse Zone 4, Abuja", "3 Ring Road, Ibadan", "18 Ogui Road, Enugu", "9 Aba Road, Port Harcourt", "41 Zoo Road, Kano"];
+  const hash = (s) => [...String(s)].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
+  const pick = (arr, s) => arr[hash(s) % arr.length];
+  const digits = (el) => el.value.replace(/\D/g, "");
+  const setErr = (input, errEl, msg) => { if (input) input.classList.toggle("is-invalid", !!msg); if (errEl) errEl.textContent = msg || ""; return !msg; };
+  const chips = (el, values, onPick, fmtFn = (v) => fmt.naira(v)) => {
+    el.innerHTML = values.map(v => `<button type="button" class="ab-chip" data-v="${v}">${fmtFn(v)}</button>`).join("");
+    el.addEventListener("click", (e) => { const b = e.target.closest("[data-v]"); if (!b) return; $$(".ab-chip", el).forEach(x => x.classList.toggle("active", x === b)); onPick(Number(b.dataset.v)); });
+  };
+  const clearChips = (el) => $$(".ab-chip", el).forEach(x => x.classList.remove("active"));
+
+  // ---------- beneficiaries ----------
+  const benefs = () => store.get("beneficiaries") || [];
+  function saveBenef(b) {
+    const list = benefs().filter(x => !(x.kind === b.kind && x.value === b.value));
+    list.unshift({ id: "BN" + Date.now(), ...b });
+    store.set("beneficiaries", list.slice(0, 20));
+  }
+  function removeBenef(id) { store.set("beneficiaries", benefs().filter(b => b.id !== id)); AB.toast("Beneficiary removed", "info"); renderAllBenefs(); }
+  function benefStrip(kind, el, onPick, emptyTxt) {
+    const list = benefs().filter(b => b.kind === kind);
+    if (!list.length) { el.innerHTML = emptyTxt ? `<div class="fs-8 text-muted"><i class="bi bi-bookmark me-1"></i>${emptyTxt}</div>` : ""; return; }
+    el.innerHTML = `<div class="small-label mb-2">Saved beneficiaries</div><div class="hscroll gap-2" style="gap:.5rem">${list.map(b => `
+      <div class="position-relative">
+        <button type="button" class="benef" data-id="${b.id}" aria-label="Use ${esc(b.label)}">
+          <span class="av">${esc(initials(b.label))}${b.network ? `<img src="${logo(b.network)}" alt="">` : ""}</span>
+          <span class="text-truncate w-100 text-center">${esc(b.label)}</span>
+          <span class="fs-8 text-muted tabular text-truncate w-100 text-center" style="font-weight:500">${esc(b.value.slice(-4).padStart(b.value.length > 6 ? 7 : 4, "•"))}</span>
+        </button>
+        <span class="del" role="button" tabindex="0" data-del="${b.id}" aria-label="Remove ${esc(b.label)}"><i class="bi bi-x"></i></span>
+      </div>`).join("")}</div>`;
+    $$("[data-id]", el).forEach(btn => btn.addEventListener("click", () => { const b = list.find(x => x.id === btn.dataset.id); $$(".benef", el).forEach(x => x.classList.toggle("active", x === btn)); onPick(b); }));
+    $$("[data-del]", el).forEach(d => { const fn = (e) => { e.stopPropagation(); removeBenef(d.dataset.del); }; d.addEventListener("click", fn); d.addEventListener("keydown", (e) => { if (e.key === "Enter") fn(e); }); });
+  }
+  const initials = (s) => (String(s).match(/[A-Za-z0-9]+/g) || ["?"]).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+
+  // ---------- tabs ----------
+  let tab = TABS.some(t => t.id === AB.qs("tab")) ? AB.qs("tab") : "airtime";
+  $("#tabs").innerHTML = TABS.map(t => `<button type="button" role="tab" class="bill-tab" data-tab="${t.id}" aria-selected="false"><span class="ab-icon tone-${t.tone}"><i class="bi ${t.icon}"></i></span>${t.label}</button>`).join("");
+  $$("#tabs [data-tab]").forEach(b => b.addEventListener("click", () => setTab(b.dataset.tab, true)));
+  function setTab(id, push) {
+    tab = id;
+    $$("#tabs [data-tab]").forEach(b => { const on = b.dataset.tab === id; b.classList.toggle("active", on); b.setAttribute("aria-selected", on); if (on) { const c = $("#tabs"); c.scrollTo({ left: Math.max(0, b.offsetLeft - c.offsetLeft - 16), behavior: push ? "smooth" : "auto" }); } });
+    const pane = id === "airtime" || id === "data" ? "mobile" : id;
+    $$("[data-pane]").forEach(p => (p.hidden = p.dataset.pane !== pane));
+    $$("[data-sub]").forEach(p => (p.hidden = p.dataset.sub !== id));
+    $("#buyMobile").textContent = id === "data" ? "Buy data" : "Buy airtime";
+    if (push) history.replaceState(null, "", "?tab=" + id);
+    renderRecent(); renderPromo();
+    if (id === "data") renderPlans();
+  }
+
+  // ---------- recent + promo ----------
+  function renderRecent() {
+    const t = TABS.find(x => x.id === tab);
+    $("#recentTitle").textContent = `Recent ${t.label.toLowerCase()} purchases`;
+    $("#recentAll").href = "transactions.html?type=" + tab;
+    const list = store.get("transactions").filter(x => x.type === tab).slice(0, 5);
+    $("#recentList").innerHTML = list.length ? list.map(x => `<a href="transactions.html?id=${encodeURIComponent(x.id)}" class="d-block text-body">${AB.txRow(x)}</a>`).join("") :
+      `<div class="ab-empty py-4"><span class="ab-icon ab-icon-lg tone-${t.tone}"><i class="bi ${t.icon}"></i></span><h6 class="mb-1">No ${t.label.toLowerCase()} purchases yet</h6><div class="fs-7">Your recent purchases will show up here.</div></div>`;
+  }
+  function renderPromo() {
+    const p = PROMOS[tab];
+    $("#promo").innerHTML = `<div class="promo-tile" style="background:${p.bg}"><i class="bi ${p.icon} bg-ic"></i>
+      <span class="badge bg-white text-dark mb-2">Offer</span><h5 class="text-white mb-1">${p.title}</h5><p class="small opacity-75 mb-3">${p.body}</p>
+      <a href="${p.href}" class="btn btn-sm btn-light fw-bold" ${p.fund ? "data-promo-fund" : ""}>${p.cta} <i class="bi bi-arrow-right"></i></a></div>`;
+    const f = $("[data-promo-fund]"); if (f) f.addEventListener("click", (e) => { e.preventDefault(); AB.openFundModal(); });
+  }
+
+  // ---------- receipts ----------
+  function receiptText(title, rows) { return `AutoBiz Receipt\n${title}\n` + rows.map(([k, v]) => `${k}: ${String(v).replace(/<[^>]+>/g, "")}`).join("\n"); }
+  function showReceipt({ title, message, rows, extra = "", tx }) {
+    const full = [...rows, ["Reference", `<span class="tabular">${tx.ref}</span>`], ["Date", fmt.datetime(tx.date)], ["Status", `<span class="ab-status success">Successful</span>`]];
+    AB.success({
+      title, message, rows: full, extra,
+      actions: [
+        { label: `<i class="bi bi-share me-1"></i>Share`, id: "share", onClick: () => {
+          const text = receiptText(title, full);
+          if (navigator.share) navigator.share({ title: "AutoBiz receipt", text }).catch(() => {}); else AB.copy(text, "Receipt copied to clipboard");
+        } },
+        { label: `<i class="bi bi-download me-1"></i>Download`, id: "print", onClick: () => window.print() }
+      ]
+    });
+    setTimeout(() => $$("[data-copy-token]").forEach(b => b.addEventListener("click", () => AB.copy(b.dataset.copyToken, "Copied"))), 50);
+  }
+  function record(amount, tx, meta) {
+    const ref = fmt.ref("AB");
+    const t = AB.wallet.debit(amount, { ...tx, ref, meta });
+    if (!t) { AB.toast("Insufficient balance", "error"); return null; }
+    AB.notify({ icon: tx.icon, tone: tx.tone, title: tx.title + " successful", body: `${fmt.naira(amount)} · ${tx.subtitle}` });
+    return t;
+  }
+
+  // ---------- MOBILE (airtime/data) ----------
+  let net = null, manualNet = false, plan = null, planType = "All";
+  $("#netGrid").innerHTML = D.networks.map(n => `<button type="button" class="ab-option net-opt" role="radio" aria-checked="false" data-net="${n.id}"><img src="${logo(n.id)}" alt="">${n.name}</button>`).join("");
+  $$("#netGrid [data-net]").forEach(b => b.addEventListener("click", () => { manualNet = true; setNet(b.dataset.net); }));
+  function setNet(id, auto) {
+    net = id;
+    $$("#netGrid [data-net]").forEach(b => { const on = b.dataset.net === id; b.classList.toggle("active", on); b.setAttribute("aria-checked", on); });
+    const img = $("#phoneNetImg");
+    if (id) { img.src = logo(id); img.hidden = false; $("#phoneNetIc").hidden = true; } else { img.hidden = true; $("#phoneNetIc").hidden = false; }
+    const badge = $("#detectBadge");
+    badge.classList.toggle("d-none", !auto);
+    if (auto) badge.innerHTML = `<i class="bi bi-magic me-1"></i>Auto-detected ${netById[id].name}`;
+    plan = null; planType = "All";
+    renderPlans(); updateAirSummary();
+  }
+  const phone = $("#phone");
+  phone.addEventListener("input", () => {
+    phone.value = digits(phone); setErr(phone, $("#phoneErr"), "");
+    if (phone.value.length >= 4) {
+      const d = detect(phone.value);
+      if (d && (d !== net || !manualNet)) { if (d !== net) { manualNet = false; setNet(d, true); } }
+    }
+    updateAirSummary();
+  });
+  $("#useMine").addEventListener("click", () => { phone.value = store.get("user").phone || ""; phone.dispatchEvent(new Event("input")); });
+
+  function renderAllBenefs() {
+    benefStrip("phone", $("#benefWrap"), (b) => { phone.value = b.value; manualNet = true; setNet(b.network || detect(b.value)); setErr(phone, $("#phoneErr"), ""); updateAirSummary(); }, "Tick “Save as beneficiary” to add numbers you top up often.");
+    benefStrip("meter", $("#meterBenef"), (b) => { $("#disco").value = b.provider; setMeterType(b.meterType || "Prepaid"); $("#meter").value = b.value; verifyMeter(); });
+    benefStrip("smartcard", $("#iucBenef"), (b) => { setCable(b.provider); $("#iuc").value = b.value; verifyIuc(); });
+  }
+
+  // Airtime
+  const airAmt = $("#airAmt");
+  chips($("#airChips"), [100, 200, 500, 1000, 2000, 5000], (v) => { airAmt.value = v; setErr(airAmt, $("#airAmtErr"), ""); updateAirSummary(); });
+  airAmt.addEventListener("input", () => { clearChips($("#airChips")); setErr(airAmt, $("#airAmtErr"), ""); updateAirSummary(); });
+  function updateAirSummary() {
+    const a = Number(airAmt.value) || 0, cb = Math.round(a * 0.02 * 100) / 100;
+    $("#airSummary").innerHTML = `<div class="row-item"><span>Network</span><span>${net ? netById[net].name : "—"}</span></div><div class="row-item"><span>Recipient</span><span class="tabular">${phone.value || "—"}</span></div><div class="row-item"><span>Cashback (2%)</span><span class="text-success">+${fmt.naira(cb, 2)}</span></div><div class="row-item total"><span>You pay</span><span class="tabular">${fmt.naira(a, 2)}</span></div>`;
+  }
+
+  // Data
+  function renderPlans() {
+    if (!net) { $("#planTypes").innerHTML = ""; $("#planGrid").innerHTML = `<div class="ab-empty py-4" style="grid-column:1/-1"><span class="ab-icon ab-icon-lg tone-primary"><i class="bi bi-wifi"></i></span><h6 class="mb-1">Select a network</h6><div class="fs-7">Enter a phone number or pick a network to see plans.</div></div>`; $("#planCount").textContent = ""; return; }
+    const plans = D.dataPlans[net] || [];
+    const types = ["All", ...new Set(plans.map(p => p.type))];
+    $("#planTypes").innerHTML = types.map(t => `<button type="button" class="ab-chip ${t === planType ? "active" : ""}" data-t="${t}">${t}</button>`).join("");
+    $$("#planTypes [data-t]").forEach(b => b.addEventListener("click", () => { planType = b.dataset.t; renderPlans(); }));
+    const shown = plans.filter(p => planType === "All" || p.type === planType);
+    $("#planCount").textContent = `${shown.length} plan${shown.length === 1 ? "" : "s"}`;
+    $("#planGrid").innerHTML = shown.map(p => `<button type="button" role="radio" aria-checked="${plan && plan.id === p.id}" class="ab-option plan-opt ${plan && plan.id === p.id ? "active" : ""}" data-plan="${p.id}">
+      <span class="badge text-bg-light fs-8 mb-1">${p.type}</span><div class="size">${p.name}</div><div class="fs-8 text-muted mb-1">${p.validity}</div><div class="price tabular">${fmt.naira(p.price)}</div></button>`).join("");
+    $$("#planGrid [data-plan]").forEach(b => b.addEventListener("click", () => { plan = plans.find(p => p.id === b.dataset.plan); $("#planErr").textContent = ""; renderPlans(); }));
+  }
+
+  $("#buyMobile").addEventListener("click", async () => {
+    const ph = phone.value;
+    let ok = setErr(phone, $("#phoneErr"), !/^0[789][01]\d{8}$/.test(ph) ? "Enter a valid 11-digit Nigerian phone number" : "");
+    if (!net) { ok = false; AB.toast("Select a network", "warning"); }
+    const n = net && netById[net];
+    if (tab === "airtime") {
+      const a = Number(airAmt.value);
+      ok = setErr(airAmt, $("#airAmtErr"), !a ? "Enter an amount" : a < 50 ? "Minimum airtime is ₦50" : a > 50000 ? "Maximum airtime is ₦50,000" : "") && ok;
+      if (!ok) return;
+      const paid = await AB.confirmPay({ title: "Confirm airtime", amount: a, rows: [["Network", `<img src="${logo(net)}" class="me-1" width="18" height="18" style="border-radius:5px" alt="">${n.name}`], ["Phone", ph], ["Amount", fmt.naira(a, 2)], ["Cashback", `<span class="text-success">+${fmt.naira(a * 0.02, 2)}</span>`]] });
+      if (!paid) return;
+      const t = record(a, { type: "airtime", title: `${n.name} Airtime`, subtitle: ph, icon: "bi-phone", tone: "warning" }, { Network: n.name, Phone: ph, Amount: fmt.naira(a, 2), Cashback: fmt.naira(a * 0.02, 2) });
+      if (!t) return;
+      if ($("#saveMobile").checked) saveBenef({ kind: "phone", value: ph, network: net, label: ph === store.get("user").phone ? "My number" : n.name + " " + ph.slice(-4) });
+      showReceipt({ title: "Airtime sent", message: `${fmt.naira(a)} ${n.name} airtime sent to <b>${ph}</b>.`, rows: [["Network", n.name], ["Phone", ph], ["Amount", fmt.naira(a, 2)], ["Cashback earned", fmt.naira(a * 0.02, 2)]], tx: t });
+      airAmt.value = ""; clearChips($("#airChips"));
+    } else {
+      if (!plan) { ok = false; $("#planErr").textContent = "Select a data plan"; }
+      if (!ok) return;
+      const p = plan;
+      const paid = await AB.confirmPay({ title: "Confirm data purchase", amount: p.price, rows: [["Network", n.name], ["Phone", ph], ["Plan", `${p.name} ${p.type}`], ["Validity", p.validity]] });
+      if (!paid) return;
+      const t = record(p.price, { type: "data", title: `${n.name} Data ${p.name}`, subtitle: ph, icon: "bi-wifi", tone: "primary" }, { Network: n.name, Phone: ph, Plan: `${p.name} (${p.type})`, Validity: p.validity });
+      if (!t) return;
+      if ($("#saveMobile").checked) saveBenef({ kind: "phone", value: ph, network: net, label: ph === store.get("user").phone ? "My number" : n.name + " " + ph.slice(-4) });
+      showReceipt({ title: "Data activated", message: `<b>${p.name}</b> ${n.name} data sent to <b>${ph}</b>.`, rows: [["Plan", `${p.name} · ${p.type}`], ["Validity", p.validity], ["Phone", ph], ["Amount", fmt.naira(p.price, 2)]], tx: t });
+      plan = null; renderPlans();
+    }
+    $("#saveMobile").checked = false; renderAllBenefs(); updateAirSummary();
+  });
+
+  // ---------- ELECTRICITY ----------
+  $("#disco").innerHTML = D.discos.map(d => `<option>${d}</option>`).join("");
+  let meterType = "Prepaid", meterCustomer = null;
+  function setMeterType(v) { meterType = v; $$("#meterType button").forEach(b => b.classList.toggle("active", b.dataset.v === v)); $("#buyElec").textContent = v === "Prepaid" ? "Buy token" : "Pay postpaid bill"; meterCustomer = null; $("#meterInfo").innerHTML = ""; updElec(); }
+  $$("#meterType button").forEach(b => b.addEventListener("click", () => setMeterType(b.dataset.v)));
+  const meter = $("#meter"), elecAmt = $("#elecAmt");
+  meter.addEventListener("input", () => { meter.value = digits(meter); meterCustomer = null; $("#meterInfo").innerHTML = ""; setErr(meter, $("#meterErr"), ""); });
+  $("#disco").addEventListener("change", () => { meterCustomer = null; $("#meterInfo").innerHTML = ""; updElec(); });
+  async function verifyMeter() {
+    const m = meter.value;
+    if (!setErr(meter, $("#meterErr"), !/^\d{11,13}$/.test(m) ? "Meter number must be 11 – 13 digits" : "")) return false;
+    $("#meterInfo").innerHTML = `<div class="verify-box"><div class="skeleton mb-2" style="height:14px;width:60%"></div><div class="skeleton" style="height:12px;width:85%"></div></div>`;
+    await AB.loading($("#verifyMeter"), 900);
+    if (m.startsWith("000")) { meterCustomer = null; $("#meterInfo").innerHTML = ""; setErr(meter, $("#meterErr"), "Meter not found on " + $("#disco").value + ". Check the number and try again."); return false; }
+    meterCustomer = { name: pick(NAMES, m).toUpperCase(), address: pick(STREETS, m + "a"), arrears: meterType === "Postpaid" ? (hash(m) % 9000) + 1500 : 0 };
+    $("#meterInfo").innerHTML = `<div class="verify-box d-flex gap-3 align-items-start"><span class="ab-icon ab-icon-sm tone-success"><i class="bi bi-patch-check-fill"></i></span>
+      <div class="min-w-0"><div class="fw-bold">${esc(meterCustomer.name)}</div><div class="fs-8 text-muted">${esc(meterCustomer.address)}</div><div class="fs-8 mt-1">${meterType} · ${esc($("#disco").value)}${meterCustomer.arrears ? ` · Outstanding <b>${fmt.naira(meterCustomer.arrears)}</b>` : ""}</div></div></div>`;
+    if (meterCustomer.arrears && !elecAmt.value) elecAmt.value = meterCustomer.arrears;
+    updElec();
+    return true;
+  }
+  $("#verifyMeter").addEventListener("click", verifyMeter);
+  chips($("#elecChips"), [2000, 5000, 10000, 20000, 50000], (v) => { elecAmt.value = v; setErr(elecAmt, $("#elecAmtErr"), ""); updElec(); });
+  elecAmt.addEventListener("input", () => { clearChips($("#elecChips")); setErr(elecAmt, $("#elecAmtErr"), ""); updElec(); });
+  const TARIFF = 68.2, FEE = 100;
+  function updElec() {
+    const a = Number(elecAmt.value) || 0;
+    $("#elecSummary").innerHTML = `${meterType === "Prepaid" ? `<div class="row-item"><span>Estimated units</span><span>${a ? (a / TARIFF).toFixed(1) : "0.0"} kWh</span></div>` : ""}<div class="row-item"><span>Service fee</span><span>${fmt.naira(a ? FEE : 0)}</span></div><div class="row-item total"><span>Total</span><span class="tabular">${fmt.naira(a ? a + FEE : 0, 2)}</span></div>`;
+  }
+  const genToken = () => Array.from({ length: 20 }, () => Math.floor(Math.random() * 10)).join("");
+  const fmtToken = (t) => t.match(/.{1,4}/g).join("-");
+  $("#buyElec").addEventListener("click", async () => {
+    const a = Number(elecAmt.value);
+    let ok = setErr(elecAmt, $("#elecAmtErr"), !a ? "Enter an amount" : a < 1000 ? "Minimum is ₦1,000" : a > 500000 ? "Maximum is ₦500,000" : "");
+    const ep = digits($("#elecPhone"));
+    if (ep && !/^0\d{10}$/.test(ep)) { ok = false; $("#elecPhone").classList.add("is-invalid"); } else $("#elecPhone").classList.remove("is-invalid");
+    if (!meterCustomer) { if (!ok) { verifyMeter(); return; } if (!(await verifyMeter())) return; }
+    if (!ok) return;
+    const disco = $("#disco").value, total = a + FEE, m = meter.value;
+    const paid = await AB.confirmPay({ title: "Confirm electricity payment", amount: total, rows: [["Disco", esc(disco)], ["Meter", `${m} · ${meterType}`], ["Customer", esc(meterCustomer.name)], ["Amount", fmt.naira(a, 2)], ["Service fee", fmt.naira(FEE)]] });
+    if (!paid) return;
+    const token = meterType === "Prepaid" ? fmtToken(genToken()) : null, units = (a / TARIFF).toFixed(1);
+    const discoShort = disco.replace(/\s*\(.*\)/, "");
+    const meta = { Disco: disco, "Meter number": m, "Meter type": meterType, Customer: meterCustomer.name, Address: meterCustomer.address, Amount: fmt.naira(a, 2), "Service fee": fmt.naira(FEE) };
+    if (token) { meta.Token = token; meta.Units = units + " kWh"; }
+    const t = record(total, { type: "electricity", title: `${discoShort} ${token ? "Token" : "Bill"}`, subtitle: `Meter ${m}`, icon: "bi-lightning-charge", tone: "orange" }, meta);
+    if (!t) return;
+    if ($("#saveMeter").checked) saveBenef({ kind: "meter", value: m, provider: disco, meterType, label: meterCustomer.name.split(" ")[0] + " · " + discoShort.split(" ")[0] });
+    showReceipt({
+      title: token ? "Token generated" : "Bill paid", message: token ? `Your ${discoShort} token is ready.${ep ? ` We also sent it to ${ep}.` : ""}` : `Payment posted to meter ${m}.`,
+      rows: [["Customer", esc(meterCustomer.name)], ["Meter", m], ...(token ? [["Units", units + " kWh"]] : []), ["Amount paid", fmt.naira(total, 2)]],
+      extra: token ? `<div class="token-box text-start mb-2"><div class="small-label mb-1">Electricity token</div><div class="d-flex align-items-center justify-content-between gap-2"><div class="tok tabular">${token}</div><button class="btn btn-sm btn-soft flex-shrink-0" data-copy-token="${token.replace(/-/g, "")}"><i class="bi bi-copy me-1"></i>Copy</button></div></div>` : "",
+      tx: t
+    });
+    elecAmt.value = ""; clearChips($("#elecChips")); $("#saveMeter").checked = false; updElec(); renderAllBenefs();
+  });
+
+  // ---------- CABLE ----------
+  let cable = "dstv", iucCustomer = null, cableMode = "renew", cablePlan = null;
+  $("#cableProv").innerHTML = Object.entries(D.cableProviders).map(([id, p]) => `<button type="button" role="radio" class="ab-option prov-opt" data-cable="${id}"><span class="prov-logo" style="background:${p.color}">${CABLE_STYLE[id]?.abbr || p.name.slice(0, 2)}</span>${p.name}</button>`).join("");
+  $$("#cableProv [data-cable]").forEach(b => b.addEventListener("click", () => setCable(b.dataset.cable)));
+  function setCable(id) {
+    cable = id; iucCustomer = null; cablePlan = null;
+    $$("#cableProv [data-cable]").forEach(b => { b.classList.toggle("active", b.dataset.cable === id); b.setAttribute("aria-checked", b.dataset.cable === id); });
+    $("#iucInfo").innerHTML = ""; $("#cablePlanWrap").hidden = true;
+  }
+  const iuc = $("#iuc");
+  iuc.addEventListener("input", () => { iuc.value = digits(iuc); iucCustomer = null; $("#iucInfo").innerHTML = ""; $("#cablePlanWrap").hidden = true; setErr(iuc, $("#iucErr"), ""); });
+  async function verifyIuc() {
+    const v = iuc.value;
+    if (!setErr(iuc, $("#iucErr"), !/^\d{10,12}$/.test(v) ? "Smartcard/IUC number must be 10 – 12 digits" : "")) return;
+    $("#iucInfo").innerHTML = `<div class="verify-box"><div class="skeleton mb-2" style="height:14px;width:55%"></div><div class="skeleton" style="height:12px;width:75%"></div></div>`;
+    await AB.loading($("#verifyIuc"), 900);
+    const plans = D.cableProviders[cable].plans;
+    const due = new Date(Date.now() + ((hash(v) % 20) - 6) * 864e5);
+    iucCustomer = { name: pick(NAMES, v + cable).toUpperCase(), plan: plans[hash(v) % plans.length], due };
+    const expired = due < Date.now();
+    $("#iucInfo").innerHTML = `<div class="verify-box d-flex gap-3 align-items-start"><span class="ab-icon ab-icon-sm tone-success"><i class="bi bi-patch-check-fill"></i></span>
+      <div class="min-w-0 flex-grow-1"><div class="fw-bold">${esc(iucCustomer.name)}</div><div class="fs-8 text-muted">Current bouquet: <b>${D.cableProviders[cable].name} ${iucCustomer.plan.name}</b> · ${fmt.naira(iucCustomer.plan.price)}/mo</div>
+      <div class="fs-8 mt-1"><span class="ab-status ${expired ? "failed" : "success"}">${expired ? "Expired" : "Active"} · ${expired ? "since" : "due"} ${fmt.date(due)}</span></div></div></div>`;
+    cableMode = "renew"; cablePlan = iucCustomer.plan;
+    $$("#cableMode button").forEach(b => b.classList.toggle("active", b.dataset.v === "renew"));
+    $("#cablePlanWrap").hidden = false; renderCablePlans();
+  }
+  $("#verifyIuc").addEventListener("click", verifyIuc);
+  $$("#cableMode button").forEach(b => b.addEventListener("click", () => { cableMode = b.dataset.v; $$("#cableMode button").forEach(x => x.classList.toggle("active", x === b)); cablePlan = cableMode === "renew" ? iucCustomer.plan : null; renderCablePlans(); }));
+  function renderCablePlans() {
+    const p = D.cableProviders[cable];
+    const el = $("#cablePlans");
+    if (cableMode === "renew") {
+      el.innerHTML = `<div class="ab-option active" style="grid-column:1/-1;cursor:default"><div class="d-flex justify-content-between align-items-center"><div><div class="fw-bold">${p.name} ${cablePlan.name}</div><div class="fs-8 text-muted">Renew your current bouquet</div></div><div class="fw-800 text-primary tabular me-4">${fmt.naira(cablePlan.price)}</div></div></div>`;
+    } else {
+      el.innerHTML = p.plans.map(x => `<button type="button" class="ab-option plan-opt ${cablePlan && cablePlan.name === x.name ? "active" : ""}" data-cp="${esc(x.name)}"><div class="fs-8 text-muted">${p.name}</div><div class="fw-bold">${x.name}</div><div class="price tabular mt-1">${fmt.naira(x.price)}</div>${x.name === iucCustomer.plan.name ? `<span class="badge text-bg-light fs-8 mt-1">Current</span>` : ""}</button>`).join("");
+      $$("[data-cp]", el).forEach(b => b.addEventListener("click", () => { cablePlan = p.plans.find(x => x.name === b.dataset.cp); renderCablePlans(); }));
+    }
+    updCable();
+  }
+  $("#cableMonths").addEventListener("change", updCable);
+  function updCable() {
+    const m = Number($("#cableMonths").value), amt = cablePlan ? cablePlan.price * m : 0;
+    $("#cableSummary").innerHTML = `<div class="row-item"><span>Bouquet</span><span>${cablePlan ? D.cableProviders[cable].name + " " + cablePlan.name : "Select a plan"}</span></div><div class="row-item"><span>Duration</span><span>${m} month${m > 1 ? "s" : ""}</span></div><div class="row-item total"><span>Total</span><span class="tabular">${fmt.naira(amt, 2)}</span></div>`;
+  }
+  $("#buyCable").addEventListener("click", async () => {
+    if (!iucCustomer) return verifyIuc();
+    if (!cablePlan) return AB.toast("Select a bouquet", "warning");
+    const p = D.cableProviders[cable], m = Number($("#cableMonths").value), amt = cablePlan.price * m, v = iuc.value;
+    const paid = await AB.confirmPay({ title: "Confirm subscription", amount: amt, rows: [["Provider", p.name], ["Smartcard", v], ["Customer", esc(iucCustomer.name)], ["Bouquet", cablePlan.name + (cableMode === "change" ? " (change)" : " (renewal)")], ["Duration", m + " month" + (m > 1 ? "s" : "")]] });
+    if (!paid) return;
+    const base = Math.max(Date.now(), iucCustomer.due.getTime());
+    const newDue = new Date(base + m * 30 * 864e5);
+    const t = record(amt, { type: "cable", title: `${p.name} ${cablePlan.name}`, subtitle: `IUC ${v}`, icon: "bi-tv", tone: "cyan" }, { Provider: p.name, "Smartcard/IUC": v, Customer: iucCustomer.name, Bouquet: cablePlan.name, Action: cableMode === "change" ? "Plan change" : "Renewal", Duration: m + " month(s)", "Next due": fmt.date(newDue) });
+    if (!t) return;
+    if ($("#saveIuc").checked) saveBenef({ kind: "smartcard", value: v, provider: cable, label: iucCustomer.name.split(" ")[0] + " · " + p.name });
+    showReceipt({ title: "Subscription active", message: `${p.name} <b>${cablePlan.name}</b> activated for ${esc(iucCustomer.name)}.`, rows: [["Smartcard", v], ["Bouquet", cablePlan.name], ["Duration", m + " month" + (m > 1 ? "s" : "")], ["Next due date", fmt.date(newDue)], ["Amount", fmt.naira(amt, 2)]], tx: t });
+    iucCustomer.due = newDue; iucCustomer.plan = cablePlan; $("#saveIuc").checked = false; renderAllBenefs();
+  });
+
+  // ---------- BETTING ----------
+  let bet = "bet9ja", betCustomer = null;
+  $("#betProv").innerHTML = BET.map(b => `<button type="button" role="radio" class="ab-option prov-opt" data-bet="${b.id}"><span class="prov-logo" style="background:${b.bg}">${b.abbr}</span>${b.name}</button>`).join("");
+  $$("#betProv [data-bet]").forEach(b => b.addEventListener("click", () => setBet(b.dataset.bet)));
+  function setBet(id) { bet = id; betCustomer = null; $("#betInfo").innerHTML = ""; $$("#betProv [data-bet]").forEach(b => { b.classList.toggle("active", b.dataset.bet === id); b.setAttribute("aria-checked", b.dataset.bet === id); }); updBet(); }
+  const betId = $("#betId"), betAmt = $("#betAmt");
+  betId.addEventListener("input", () => { betId.value = betId.value.replace(/[^\w]/g, ""); betCustomer = null; $("#betInfo").innerHTML = ""; setErr(betId, $("#betIdErr"), ""); });
+  async function verifyBet() {
+    const v = betId.value;
+    if (!setErr(betId, $("#betIdErr"), v.length < 5 ? "Enter a valid customer ID (min 5 characters)" : "")) return false;
+    await AB.loading($("#verifyBet"), 800);
+    betCustomer = { name: pick(NAMES, v + bet) };
+    $("#betInfo").innerHTML = `<div class="verify-box d-flex gap-2 align-items-center"><i class="bi bi-patch-check-fill text-success"></i><span class="fw-semibold">${esc(betCustomer.name)}</span><span class="fs-8 text-muted ms-auto">${BET.find(b => b.id === bet).name}</span></div>`;
+    return true;
+  }
+  $("#verifyBet").addEventListener("click", verifyBet);
+  chips($("#betChips"), [500, 1000, 2000, 5000, 10000], (v) => { betAmt.value = v; setErr(betAmt, $("#betAmtErr"), ""); updBet(); });
+  betAmt.addEventListener("input", () => { clearChips($("#betChips")); setErr(betAmt, $("#betAmtErr"), ""); updBet(); });
+  function updBet() { const a = Number(betAmt.value) || 0; $("#betSummary").innerHTML = `<div class="row-item"><span>Platform</span><span>${BET.find(b => b.id === bet).name}</span></div><div class="row-item"><span>Fee</span><span class="text-success">Free</span></div><div class="row-item total"><span>Total</span><span class="tabular">${fmt.naira(a, 2)}</span></div>`; }
+  $("#buyBet").addEventListener("click", async () => {
+    const a = Number(betAmt.value);
+    const ok = setErr(betAmt, $("#betAmtErr"), !a ? "Enter an amount" : a < 100 ? "Minimum is ₦100" : a > 500000 ? "Maximum is ₦500,000" : "");
+    if (!betCustomer) { if (!(await verifyBet())) return; }
+    if (!ok) return;
+    const b = BET.find(x => x.id === bet);
+    const paid = await AB.confirmPay({ title: "Fund betting wallet", amount: a, rows: [["Platform", b.name], ["Customer ID", esc(betId.value)], ["Name", esc(betCustomer.name)]] });
+    if (!paid) return;
+    const t = record(a, { type: "betting", title: `${b.name} Funding`, subtitle: `ID ${betId.value}`, icon: "bi-trophy", tone: "success" }, { Platform: b.name, "Customer ID": betId.value, "Account name": betCustomer.name, Fee: "₦0" });
+    if (!t) return;
+    showReceipt({ title: "Wallet funded", message: `${fmt.naira(a)} sent to your ${b.name} account.`, rows: [["Platform", b.name], ["Customer ID", esc(betId.value)], ["Name", esc(betCustomer.name)], ["Amount", fmt.naira(a, 2)]], tx: t });
+    betAmt.value = ""; clearChips($("#betChips")); updBet();
+  });
+
+  // ---------- EDUCATION ----------
+  let edu = "waec", jambCandidate = null;
+  $("#eduProv").innerHTML = EDU.map(e => `<button type="button" role="radio" class="ab-option prov-opt" data-edu="${e.id}"><span class="prov-logo" style="background:${e.bg}">${e.abbr}</span><span>${e.short}</span><span class="fs-8 text-primary fw-bold tabular">${fmt.naira(e.price)}</span></button>`).join("");
+  $$("#eduProv [data-edu]").forEach(b => b.addEventListener("click", () => setEdu(b.dataset.edu)));
+  function setEdu(id) { edu = id; jambCandidate = null; $("#jambInfo").innerHTML = ""; $$("#eduProv [data-edu]").forEach(b => { b.classList.toggle("active", b.dataset.edu === id); b.setAttribute("aria-checked", b.dataset.edu === id); }); const e = EDU.find(x => x.id === id); $("#jambWrap").hidden = !e.needsId; $("#eduQty").disabled = !!e.needsId; if (e.needsId) $("#eduQty").value = "1"; updEdu(); }
+  $("#eduQty").addEventListener("change", updEdu);
+  $("#eduPhone").value = store.get("user").phone || "";
+  const jambId = $("#jambId");
+  jambId.addEventListener("input", () => { jambId.value = digits(jambId); jambCandidate = null; $("#jambInfo").innerHTML = ""; setErr(jambId, $("#jambErr"), ""); });
+  async function verifyJamb() {
+    if (!setErr(jambId, $("#jambErr"), !/^\d{10}$/.test(jambId.value) ? "Profile code must be 10 digits" : "")) return false;
+    await AB.loading($("#verifyJamb"), 800);
+    jambCandidate = { name: pick(NAMES, jambId.value) };
+    $("#jambInfo").innerHTML = `<div class="verify-box d-flex gap-2 align-items-center"><i class="bi bi-patch-check-fill text-success"></i><span class="fw-semibold">${esc(jambCandidate.name)}</span></div>`;
+    return true;
+  }
+  $("#verifyJamb").addEventListener("click", verifyJamb);
+  function updEdu() { const e = EDU.find(x => x.id === edu), q = Number($("#eduQty").value); $("#eduSummary").innerHTML = `<div class="row-item"><span>${e.name}</span><span>${fmt.naira(e.price)} × ${q}</span></div><div class="row-item total"><span>Total</span><span class="tabular">${fmt.naira(e.price * q, 2)}</span></div>`; }
+  $("#buyEdu").addEventListener("click", async () => {
+    const e = EDU.find(x => x.id === edu), q = Number($("#eduQty").value), ep = digits($("#eduPhone"));
+    if (!setErr($("#eduPhone"), $("#eduPhoneErr"), !/^0\d{10}$/.test(ep) ? "Enter a valid phone number for PIN delivery" : "")) return;
+    if (e.needsId && !jambCandidate) { if (!(await verifyJamb())) return; }
+    const amt = e.price * q;
+    const paid = await AB.confirmPay({ title: "Confirm PIN purchase", amount: amt, rows: [["Exam", e.name], ["Quantity", q], ...(e.needsId ? [["Candidate", esc(jambCandidate.name)]] : []), ["Deliver to", ep]] });
+    if (!paid) return;
+    const pins = Array.from({ length: q }, () => ({ serial: "WRN" + Math.floor(1e9 + Math.random() * 9e9), pin: Array.from({ length: 12 }, () => Math.floor(Math.random() * 10)).join("") }));
+    const meta = { Exam: e.name, Quantity: String(q), Phone: ep };
+    if (e.needsId) { meta["Profile code"] = jambId.value; meta.Candidate = jambCandidate.name; }
+    pins.forEach((p, i) => { meta[`PIN ${i + 1}`] = `${p.pin} (Serial ${p.serial})`; });
+    const t = record(amt, { type: "education", title: `${e.short} PIN${q > 1 ? " ×" + q : ""}`, subtitle: e.name, icon: "bi-mortarboard", tone: "violet" }, meta);
+    if (!t) return;
+    showReceipt({
+      title: "PIN purchased", message: `${q} ${e.name}${q > 1 ? "s" : ""} — also sent by SMS to ${ep}.`, rows: [["Exam", e.name], ["Quantity", q], ["Amount", fmt.naira(amt, 2)]],
+      extra: pins.map((p, i) => `<div class="token-box text-start mb-2"><div class="d-flex justify-content-between"><span class="small-label">PIN ${i + 1}</span><span class="fs-8 text-muted tabular">Serial ${p.serial}</span></div><div class="d-flex align-items-center justify-content-between gap-2"><div class="tok tabular">${p.pin.match(/.{1,4}/g).join(" ")}</div><button class="btn btn-sm btn-soft flex-shrink-0" data-copy-token="${p.pin}"><i class="bi bi-copy me-1"></i>Copy</button></div></div>`).join(""),
+      tx: t
+    });
+  });
+
+  // ---------- init ----------
+  setCable("dstv"); setBet("bet9ja"); setEdu("waec"); setMeterType("Prepaid");
+  renderAllBenefs(); renderPlans(); updateAirSummary(); updElec(); updCable();
+  const preset = AB.qs("phone");
+  if (preset) { phone.value = preset; phone.dispatchEvent(new Event("input")); }
+  setTab(tab, false);
+  store.on((k) => { if (k === "transactions") renderRecent(); });
+});
+</script>
+</body>
+</html>

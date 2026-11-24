@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Product · AutoBiz</title>
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/app.css" rel="stylesheet">
+  <script src="../assets/js/brand.js"></script>
+  <style>
+    .pd-main { position: relative; }
+    .pd-main .ab-product-art { font-size: 9rem; border-radius: 22px; transition: background .25s; }
+    .pd-main .ab-product-art i { transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+    .pd-main .pd-off { position: absolute; left: 1rem; top: 1rem; z-index: 2; background: var(--ab-danger); color: #fff; font-weight: 800; padding: .3rem .6rem; border-radius: 10px; font-size: .85rem; }
+    .pd-main .pd-colour { position: absolute; left: 1rem; bottom: 1rem; z-index: 2; background: var(--ab-surface); border-radius: 999px; padding: .3rem .7rem .3rem .35rem; font-size: .75rem; font-weight: 700; display: inline-flex; align-items: center; gap: .4rem; box-shadow: var(--ab-shadow-sm); }
+    .pd-main .pd-colour i { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--ab-border); display: inline-block; }
+    .pd-main .pd-nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; background: var(--ab-surface); border: 1px solid var(--ab-border); color: var(--ab-text); }
+    .pd-thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem; margin-top: .75rem; }
+    .pd-thumb { padding: 0; border: 2px solid transparent; border-radius: 14px; background: none; overflow: hidden; transition: border-color .15s; }
+    .pd-thumb .ab-product-art { font-size: 1.8rem; border-radius: 12px; }
+    .pd-thumb.active { border-color: var(--ab-primary); }
+    .pd-thumb .lbl { display: block; font-size: .68rem; font-weight: 600; color: var(--ab-muted); padding: .25rem 0 .1rem; }
+    .pd-price { font-size: clamp(1.6rem, 3.6vw, 2.1rem); font-weight: 800; letter-spacing: -.03em; }
+    .swatch { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--ab-surface); box-shadow: 0 0 0 1px var(--ab-border); cursor: pointer; transition: box-shadow .15s; position: relative; }
+    .swatch.active { box-shadow: 0 0 0 2px var(--ab-surface), 0 0 0 4px var(--ab-primary); }
+    .pd-perks { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
+    .pd-perks > div { background: var(--ab-surface-2); border-radius: 12px; padding: .7rem; font-size: .75rem; font-weight: 600; display: flex; gap: .5rem; align-items: center; }
+    .pd-perks i { font-size: 1.1rem; color: var(--ab-primary); }
+    @media (max-width: 575.98px) {
+      .pd-perks > div { flex-direction: column; text-align: center; font-size: .68rem; padding: .6rem .3rem; gap: .25rem; }
+      .pd-main .ab-product-art { font-size: 6.5rem; }
+      .pd-actions .btn-lg { padding: .75rem .6rem; font-size: .9rem; white-space: nowrap; }
+      .pd-tabs .nav-link { padding: .7rem .65rem; font-size: .85rem; }
+    }
+    .rb-row { display: grid; grid-template-columns: 34px 1fr 44px; gap: .6rem; align-items: center; font-size: .8rem; padding: .2rem .35rem; border-radius: 8px; cursor: pointer; border: 0; background: none; width: 100%; color: var(--ab-text); }
+    .rb-row:hover, .rb-row.active { background: var(--ab-surface-2); }
+    .rb-row .progress { height: 8px; }
+    .rb-row .progress-bar { background: #f59f00; }
+    .review { border-bottom: 1px dashed var(--ab-border); padding: 1rem 0; }
+    .review:last-child { border-bottom: 0; }
+    .spec-table th { width: 38%; color: var(--ab-muted); font-weight: 600; font-size: .85rem; }
+    .spec-table td { font-weight: 600; font-size: .875rem; }
+    .related .hscroll > * { width: 210px; }
+    @media (max-width: 575.98px) { .related .hscroll > * { width: 165px; } }
+    .pd-tabs { overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
+    .pd-tabs .nav-link { white-space: nowrap; }
+    .del-opt { display: flex; gap: .75rem; align-items: center; padding: .65rem 0; border-bottom: 1px dashed var(--ab-border); font-size: .85rem; }
+    .del-opt:last-child { border-bottom: 0; }
+  </style>
+</head>
+<body data-page="marketplace" data-title="Product" data-public="true">
+<main class="ab-content">
+  <div id="root">
+    <div class="row g-4"><div class="col-lg-6"><div class="skeleton" style="aspect-ratio:1"></div></div><div class="col-lg-6"><div class="skeleton mb-3" style="height:28px;width:70%"></div><div class="skeleton mb-3" style="height:18px;width:40%"></div><div class="skeleton" style="height:180px"></div></div></div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/shop.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { fmt, esc, store } = AB;
+  const root = document.getElementById("root");
+  const p = SHOP.product(AB.qs("id"));
+
+  if (!p) {
+    document.title = "Product not found · AutoBiz";
+    const picks = [...AB_DATA.products].sort((a, b) => b.reviews - a.reviews).slice(0, 4);
+    root.innerHTML = `
+      <div class="card mb-4 fade-up"><div class="ab-empty py-5">
+        <span class="ab-icon ab-icon-xl tone-warning"><i class="bi bi-box2"></i></span>
+        <h5 class="mb-1">We couldn't find that product</h5>
+        <p class="fs-7 mb-3 mx-auto" style="max-width:420px">It may have been sold out, removed by the seller, or the link is incorrect. Explore similar deals below.</p>
+        <div class="d-flex gap-2 justify-content-center flex-wrap">
+          <a href="marketplace.html" class="btn btn-primary"><i class="bi bi-shop me-1"></i>Browse marketplace</a>
+          <a href="cart.html" class="btn btn-light-subtle"><i class="bi bi-bag me-1"></i>Go to cart</a>
+        </div>
+      </div></div>
+      <h6 class="card-title mb-3">Popular right now</h6>
+      <div class="row g-2 g-sm-3 row-cols-2 row-cols-md-4">${picks.map(x => `<div class="col">${SHOP.card(x)}</div>`).join("")}</div>`;
+    return;
+  }
+
+  document.title = p.name + " · AutoBiz";
+  const cat = SHOP.category(p.category);
+  const d = SHOP.disc(p);
+  const rnd = SHOP.seeded(p.id);
+  const TONES = ["primary", "violet", "pink", "cyan", "orange", "success", "warning"];
+  const altTone = TONES[(TONES.indexOf(p.tone) + 2) % TONES.length];
+  const VIEWS = [
+    { label: "Front", tone: p.tone, icon: p.icon, tf: "none" },
+    { label: "Angle", tone: p.tone, icon: p.icon, tf: "rotate(-18deg) translateX(-4%)" },
+    { label: "Detail", tone: altTone, icon: p.icon, tf: "scale(1.55) rotate(8deg)" },
+    { label: p.digital ? "Delivery" : "In the box", tone: "success", icon: p.digital ? "bi-envelope-paper" : "bi-box-seam", tf: "none" }
+  ];
+  let view = 0, color = p.colors ? p.colors[0] : null, qty = 1;
+  const S = { state: (store.get("orders")[0] && store.get("orders")[0].address && store.get("orders")[0].address.state) || "Lagos" };
+  const art = (v, cls = "") => `<div class="ab-product-art tone-${v.tone} ${cls}"><i class="bi ${v.icon}" style="transform:${v.tf}"></i></div>`;
+
+  // Rating breakdown (generated, stable per product)
+  const w = [5, 4, 3, 2, 1].map(k => Math.exp(-(5 - k) * (5.25 - p.rating) * 1.9));
+  const ws = w.reduce((a, b) => a + b, 0);
+  const dist = w.map(x => Math.round(p.reviews * x / ws));
+
+  // Generated reviews
+  const NAMES = ["Chinedu O.", "Aisha B.", "Tunde A.", "Ngozi E.", "Ibrahim M.", "Funke L.", "Emeka N.", "Zainab Y.", "Segun F.", "Blessing K.", "Kelechi U.", "Halima S."];
+  const CITIES = ["Lagos", "Abuja", "Port Harcourt", "Ibadan", "Enugu", "Kano", "Benin City", "Owerri"];
+  const GOOD = [["Exactly as described", "Original product, well packaged and delivery was faster than I expected. Will buy again."], ["Worth every naira", "Compared prices across 3 stores and this was the best deal. Seller was responsive too."], ["Very impressed", "Quality is top notch. Paid from my AutoBiz wallet and got it in 2 days."], ["Great value", "Does everything I need. The discount made it a no-brainer."], ["Fast delivery", "Rider called before arriving, item was sealed. 10/10 experience."]];
+  const MID = [["Good but…", "Product is good, but delivery took a day longer than estimated."], ["Decent", "Works fine. Packaging could be better but item was intact."]];
+  const LOW = [["Not for me", "Item is okay but didn't meet my expectations. Customer support helped with a return."]];
+  const reviews = Array.from({ length: 8 }, (_, i) => {
+    const r = rnd();
+    const star = r < 0.62 ? 5 : r < 0.86 ? 4 : r < 0.95 ? 3 : 2;
+    const pool = star >= 4 ? GOOD : star === 3 ? MID : LOW;
+    const [title, body] = pool[Math.floor(rnd() * pool.length)];
+    return { star, title, body, name: NAMES[Math.floor(rnd() * NAMES.length)], city: CITIES[Math.floor(rnd() * CITIES.length)], date: Date.now() - Math.floor(rnd() * 60 + i * 3) * 864e5, helpful: Math.floor(rnd() * 40), variant: p.colors ? SHOP.colorName(p.colors[Math.floor(rnd() * p.colors.length)]) : null };
+  }).sort((a, b) => b.date - a.date);
+  let revFilter = 0;
+  const helpfulVoted = new Set();
+
+  const SELLER = { rating: (4.3 + rnd() * 0.6).toFixed(1), score: 86 + Math.floor(rnd() * 13), followers: 2 + Math.floor(rnd() * 80), years: 1 + Math.floor(rnd() * 6), items: AB_DATA.products.filter(x => x.seller === p.seller).length };
+
+  const specs = [
+    ["Brand", p.brand], ["Model", p.name], ["Category", cat ? cat.name : p.category], ["SKU", `AB-${p.id.toUpperCase()}-${p.brand.slice(0, 3).toUpperCase()}`],
+    ...(p.colors ? [["Colours", p.colors.map(SHOP.colorName).join(", ")]] : []),
+    ["Condition", p.digital ? "Digital licence / code" : "Brand new, sealed"],
+    ["Warranty", p.digital ? "Code validity guaranteed" : ({ phones: "12 months manufacturer", electronics: "12 months manufacturer", gaming: "12 months seller", home: "6 months seller" }[p.category] || "7-day return policy")],
+    ["Ships from", p.digital ? "Instant (online)" : "Lagos, Nigeria"],
+    ["Seller", p.seller]
+  ];
+  const FEATURES = {
+    phones: ["Super-bright AMOLED display for crisp viewing outdoors", "All-day battery with fast charging support", "Pro-grade camera system for low-light shots", "Official Nigerian warranty & genuine accessories"],
+    electronics: ["Genuine brand-new unit, sealed in original box", "Covered by manufacturer warranty", "Energy efficient and built to last", "Free technical support from the seller"],
+    fashion: ["Premium fabric, colour-fast and breathable", "Tailored fit — check size guide before ordering", "Hand-finished by Nigerian artisans", "Easy 7-day exchange for size issues"],
+    home: ["Designed for Nigerian voltage & power conditions", "Durable build with easy-clean surfaces", "Energy-saving operation", "Seller warranty included"],
+    beauty: ["Dermatologically tested ingredients", "Suitable for all skin types", "Cruelty free, no harsh chemicals", "Sealed for hygiene"],
+    groceries: ["Fresh stock from trusted distributors", "Sealed, tamper-proof packaging", "Long shelf life", "Bulk-friendly pricing"],
+    gaming: ["Genuine hardware from authorised distributors", "Ultra-low latency for competitive play", "Plug & play setup", "Full seller warranty"],
+    digital: ["Code delivered instantly after payment", "Redeemable on the official platform", "Step-by-step redemption guide included", "Full refund if the code fails to redeem"]
+  }[p.category] || [];
+
+  function maxQty() { return Math.max(0, p.stock - SHOP.inCartQty(p.id)); }
+
+  root.innerHTML = `
+    <nav aria-label="breadcrumb" class="mb-3"><ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item"><a href="marketplace.html">Marketplace</a></li>
+      ${cat ? `<li class="breadcrumb-item"><a href="marketplace.html?cat=${cat.id}">${esc(cat.name)}</a></li>` : ""}
+      <li class="breadcrumb-item active text-truncate" aria-current="page" style="max-width:240px">${esc(p.name)}</li>
+    </ol></nav>
+
+    <div class="row g-3 g-lg-4 mb-4">
+      <div class="col-lg-6 fade-up">
+        <div class="card"><div class="card-body">
+          <div class="pd-main">
+            <div id="mainArt"></div>
+            ${d ? `<span class="pd-off">-${d}%</span>` : ""}
+            <span class="pd-colour" id="colourTag" ${color ? "" : "hidden"}></span>
+            <button class="btn btn-icon btn-sm pd-nav" style="left:.75rem" data-nav="-1" aria-label="Previous image"><i class="bi bi-chevron-left"></i></button>
+            <button class="btn btn-icon btn-sm pd-nav" style="right:.75rem" data-nav="1" aria-label="Next image"><i class="bi bi-chevron-right"></i></button>
+          </div>
+          <div class="pd-thumbs" role="tablist" aria-label="Product images">
+            ${VIEWS.map((v, i) => `<button class="pd-thumb ${i === 0 ? "active" : ""}" data-view="${i}" role="tab" aria-selected="${i === 0}" aria-label="${v.label} view">${art(v)}<span class="lbl">${v.label}</span></button>`).join("")}
+          </div>
+        </div></div>
+      </div>
+
+      <div class="col-lg-6 fade-up" style="animation-delay:.05s">
+        <div class="card h-100"><div class="card-body">
+          <div class="d-flex flex-wrap gap-2 mb-2">
+            ${p.badge ? `<span class="badge tone-primary">${esc(p.badge)}</span>` : ""}
+            ${p.digital ? `<span class="tag tag-warning"><i class="bi bi-lightning-charge-fill"></i>Instant delivery</span>` : p.freeShipping ? `<span class="tag tag-success"><i class="bi bi-truck"></i>Free delivery</span>` : ""}
+            <span class="fs-8 text-muted">${esc(p.brand)}</span>
+          </div>
+          <h1 class="h3 mb-2">${esc(p.name)}</h1>
+          <a href="#tabs" class="d-inline-flex align-items-center gap-2 fs-7 text-body mb-3" data-goto-reviews>${SHOP.stars(p.rating, "lg")}<b>${p.rating}</b><span class="text-muted">${fmt.num(p.reviews)} ratings</span></a>
+
+          <div class="d-flex align-items-end flex-wrap gap-2 mb-1">
+            <span class="pd-price tabular">${fmt.naira(p.price)}</span>
+            ${p.oldPrice ? `<span class="text-muted text-decoration-line-through tabular mb-1">${fmt.naira(p.oldPrice)}</span>` : ""}
+            ${d ? `<span class="badge bg-danger mb-2">-${d}%</span>` : ""}
+          </div>
+          ${p.oldPrice ? `<div class="fs-7 text-success fw-semibold mb-3">You save ${fmt.naira(p.oldPrice - p.price)}</div>` : ""}
+
+          ${p.colors ? `<div class="mb-3">
+            <div class="fs-7 fw-semibold mb-2">Colour: <span id="colourName" class="text-muted"></span></div>
+            <div class="d-flex gap-2 flex-wrap" role="radiogroup" aria-label="Choose colour">${p.colors.map((c, i) => `<button class="swatch ${i === 0 ? "active" : ""}" style="background:${c}" data-color="${c}" role="radio" aria-checked="${i === 0}" aria-label="${esc(SHOP.colorName(c))}" title="${esc(SHOP.colorName(c))}"></button>`).join("")}</div>
+          </div>` : ""}
+
+          <div class="mb-3">
+            <div class="fs-7 fw-semibold mb-2">Quantity</div>
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+              <div class="ab-qty lg"><button data-q="-1" aria-label="Decrease quantity"><i class="bi bi-dash-lg"></i></button><input id="qty" type="number" min="1" value="1" aria-label="Quantity"><button data-q="1" aria-label="Increase quantity"><i class="bi bi-plus-lg"></i></button></div>
+              <div class="fs-7" id="stockNote"></div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 mb-3 pd-actions">
+            <button class="btn btn-primary btn-lg flex-fill" id="addBtn"><i class="bi bi-cart-plus me-1"></i>Add to cart</button>
+            <button class="btn btn-outline-primary btn-lg flex-fill" id="buyBtn">Buy now</button>
+            <button class="btn btn-light-subtle btn-lg px-3 ${AB.wishlist.has(p.id) ? "on text-danger" : ""}" data-wish="${p.id}" aria-pressed="${AB.wishlist.has(p.id)}" aria-label="Save to wishlist"><i class="bi ${AB.wishlist.has(p.id) ? "bi-heart-fill" : "bi-heart"}"></i></button>
+          </div>
+          <div class="pd-perks mb-3">
+            <div><i class="bi bi-shield-check"></i>Buyer protection</div>
+            <div><i class="bi bi-arrow-repeat"></i>${p.digital ? "Refund if code fails" : "7-day returns"}</div>
+            <div><i class="bi bi-wallet2"></i>${p.digital ? "Wallet checkout" : "Pay on delivery"}</div>
+          </div>
+
+          <div class="border rounded-3 p-3">
+            <div class="d-flex justify-content-between align-items-center gap-2 mb-1 flex-wrap">
+              <div class="fw-bold fs-7"><i class="bi bi-geo-alt me-1 text-primary"></i>Delivery estimate</div>
+              ${p.digital ? "" : `<select class="form-select form-select-sm w-auto" id="delState" aria-label="Delivery state">${SHOP.STATES.map(s => `<option ${s === S.state ? "selected" : ""}>${s}</option>`).join("")}</select>`}
+            </div>
+            <div id="delInfo"></div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="row g-3 g-lg-4 mb-4">
+      <div class="col-lg-8">
+        <div class="card" id="tabs">
+          <div class="card-header pb-0 border-0">
+            <ul class="nav nav-tabs pd-tabs" role="tablist">
+              <li class="nav-item" role="presentation"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tDesc" role="tab">Description</button></li>
+              <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tSpecs" role="tab">Spec<span class="d-none d-sm-inline">ification</span>s</button></li>
+              <li class="nav-item" role="presentation"><button class="nav-link" id="revTabBtn" data-bs-toggle="tab" data-bs-target="#tRev" role="tab">Reviews (${fmt.num(p.reviews)})</button></li>
+            </ul>
+          </div>
+          <div class="card-body tab-content">
+            <div class="tab-pane fade show active" id="tDesc" role="tabpanel">
+              <p>${esc(SHOP.shortDesc(p))} The <b>${esc(p.name)}</b> from ${esc(p.brand)} is one of the most-loved picks in ${esc(cat ? cat.name : "the marketplace")}, with over ${fmt.num(p.reviews)} verified ratings from AutoBiz shoppers across Nigeria.</p>
+              <h6 class="mt-3">Key features</h6>
+              <ul class="mb-3">${FEATURES.map(f => `<li class="mb-1">${esc(f)}</li>`).join("")}</ul>
+              <div class="alert ${p.digital ? "alert-warning" : "alert-info"} fs-7 mb-0"><i class="bi ${p.digital ? "bi-lightning-charge" : "bi-info-circle"} me-1"></i>${p.digital ? "Your code appears in <b>My Orders</b> right after payment. Digital goods can only be paid with your wallet." : "Sold by <b>" + esc(p.seller) + "</b> and fulfilled by AutoBiz Logistics. Inspect your item at delivery when paying on delivery."}</div>
+            </div>
+            <div class="tab-pane fade" id="tSpecs" role="tabpanel">
+              <table class="table spec-table"><tbody>${specs.map(([k, v]) => `<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</tbody></table>
+            </div>
+            <div class="tab-pane fade" id="tRev" role="tabpanel">
+              <div class="row g-4">
+                <div class="col-md-5">
+                  <div class="text-center text-md-start mb-3">
+                    <div class="display-5 fw-800 lh-1">${p.rating.toFixed(1)}</div>
+                    <div class="my-1">${SHOP.stars(p.rating, "lg")}</div>
+                    <div class="fs-7 text-muted">${fmt.num(p.reviews)} ratings</div>
+                  </div>
+                  <div id="breakdown"></div>
+                </div>
+                <div class="col-md-7"><div class="d-flex justify-content-between align-items-center"><h6 class="mb-0">Customer reviews</h6><span class="fs-8 text-muted" id="revNote"></span></div><div id="reviews"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card ab-sticky">
+          <div class="card-body">
+            <div class="small-label mb-2">Sold by</div>
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <span class="ab-avatar">${esc(p.seller.split(" ").map(x => x[0]).join("").slice(0, 2))}</span>
+              <div class="min-w-0"><div class="fw-bold text-truncate">${esc(p.seller)} <i class="bi bi-patch-check-fill text-primary" title="Verified seller"></i></div><div class="fs-8 text-muted">${SELLER.years} yr${SELLER.years > 1 ? "s" : ""} on AutoBiz · ${SELLER.followers}k followers</div></div>
+            </div>
+            <div class="ab-summary mb-3">
+              <div class="row-item"><span>Seller rating</span><span><i class="bi bi-star-fill text-warning me-1"></i>${SELLER.rating}</span></div>
+              <div class="row-item"><span>Order fulfilment</span><span>${SELLER.score}%</span></div>
+              <div class="row-item"><span>Products listed</span><span>${SELLER.items}</span></div>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="marketplace.html?seller=${encodeURIComponent(p.seller)}" class="btn btn-soft flex-fill"><i class="bi bi-shop me-1"></i>Visit store</a>
+              <button class="btn btn-light-subtle flex-fill" id="followBtn"><i class="bi bi-plus-lg me-1"></i>Follow</button>
+            </div>
+            <hr>
+            <button class="btn btn-link p-0 fs-7" id="shareBtn"><i class="bi bi-share me-1"></i>Share this product</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="related mb-2">
+      <div class="d-flex justify-content-between align-items-center mb-3"><h6 class="card-title">You may also like</h6><a href="marketplace.html${cat ? "?cat=" + cat.id : ""}" class="fs-7 fw-semibold">See more</a></div>
+      <div class="hscroll" id="related"></div>
+    </section>`;
+
+  const $ = (id) => document.getElementById(id);
+
+  // Gallery
+  function setView(i) {
+    view = (i + VIEWS.length) % VIEWS.length;
+    $("mainArt").innerHTML = art(VIEWS[view], "lg");
+    document.querySelectorAll(".pd-thumb").forEach((t, j) => { t.classList.toggle("active", j === view); t.setAttribute("aria-selected", j === view); });
+  }
+  document.querySelectorAll(".pd-thumb").forEach(t => t.addEventListener("click", () => setView(Number(t.dataset.view))));
+  document.querySelectorAll("[data-nav]").forEach(b => b.addEventListener("click", () => setView(view + Number(b.dataset.nav))));
+  setView(0);
+
+  // Colours
+  function setColor(c) {
+    color = c;
+    if (!c) return;
+    $("colourName").textContent = SHOP.colorName(c);
+    $("colourTag").innerHTML = `<i style="background:${c}"></i>${esc(SHOP.colorName(c))}`;
+    document.querySelectorAll(".swatch").forEach(s => { const on = s.dataset.color === c; s.classList.toggle("active", on); s.setAttribute("aria-checked", on); });
+  }
+  document.querySelectorAll(".swatch").forEach(s => s.addEventListener("click", () => setColor(s.dataset.color)));
+  setColor(color);
+
+  // Quantity & stock
+  function syncQty() {
+    const m = maxQty();
+    qty = Math.max(m ? 1 : 0, Math.min(qty, m));
+    $("qty").value = qty; $("qty").max = m;
+    document.querySelector('[data-q="-1"]').disabled = qty <= 1;
+    document.querySelector('[data-q="1"]').disabled = qty >= m;
+    const inCart = SHOP.inCartQty(p.id);
+    $("stockNote").innerHTML = m === 0 ? `<span class="text-danger fw-semibold"><i class="bi bi-exclamation-circle me-1"></i>All available stock is in your cart</span>`
+      : p.digital ? `<span class="text-success fw-semibold"><i class="bi bi-check-circle me-1"></i>Available instantly</span>`
+      : p.stock <= 10 ? `<span class="text-danger fw-semibold">Only ${p.stock} left in stock</span>${inCart ? ` <span class="text-muted">· ${inCart} in cart</span>` : ""}`
+      : `<span class="text-success fw-semibold"><i class="bi bi-check-circle me-1"></i>In stock</span> <span class="text-muted">· ${p.stock} available${inCart ? ` · ${inCart} in cart` : ""}</span>`;
+    $("addBtn").disabled = $("buyBtn").disabled = m === 0;
+  }
+  document.querySelectorAll("[data-q]").forEach(b => b.addEventListener("click", () => { qty += Number(b.dataset.q); syncQty(); }));
+  $("qty").addEventListener("change", () => {
+    const v = parseInt($("qty").value, 10);
+    if (v > maxQty()) AB.toast(`Only ${maxQty()} available to add`, "warning");
+    qty = isNaN(v) ? 1 : v; syncQty();
+  });
+  syncQty();
+
+  $("addBtn").addEventListener("click", () => { if (SHOP.addToCart(p.id, qty, color)) { qty = 1; syncQty(); } });
+  $("buyBtn").addEventListener("click", (e) => {
+    const b = e.currentTarget;
+    if (SHOP.addToCart(p.id, qty, color)) AB.loading(b, 500).then(() => (location.href = "cart.html?checkout=1"));
+  });
+  store.on((k) => { if (k === "cart") syncQty(); if (k === "wishlist") { const b = document.querySelector(`.btn[data-wish="${p.id}"]`); b.classList.toggle("text-danger", AB.wishlist.has(p.id)); } });
+
+  // Delivery estimator
+  function renderDelivery() {
+    if (p.digital) { $("delInfo").innerHTML = `<div class="del-opt"><span class="ab-icon ab-icon-sm tone-warning"><i class="bi bi-lightning-charge"></i></span><div class="flex-grow-1"><div class="fw-semibold">Instant digital delivery</div><div class="fs-8 text-muted">Code shown in My Orders & sent to ${esc(store.get("user").email)}</div></div><span class="fw-bold text-success">Free</span></div>`; return; }
+    const st = $("delState").value;
+    const items = [{ id: p.id, digital: false }];
+    const opts = [
+      ["standard", "Door delivery", "bi-truck", "tone-primary"],
+      ["express", "Express delivery", "bi-lightning", "tone-violet"],
+      ["pickup", "Pickup station", "bi-shop-window", "tone-success"]
+    ];
+    $("delInfo").innerHTML = opts.map(([m, l, ic, tone]) => {
+      const fee = SHOP.deliveryFee(items, m, st);
+      return `<div class="del-opt"><span class="ab-icon ab-icon-sm ${tone}"><i class="bi ${ic}"></i></span><div class="flex-grow-1 min-w-0"><div class="fw-semibold">${l}</div><div class="fs-8 text-muted">Arrives ${SHOP.eta(st, m)}</div></div><span class="fw-bold tabular ${fee ? "" : "text-success"}">${fee ? fmt.naira(fee) : "Free"}</span></div>`;
+    }).join("");
+  }
+  if (!p.digital) $("delState").addEventListener("change", renderDelivery);
+  renderDelivery();
+
+  // Ratings + reviews
+  function renderReviews() {
+    $("breakdown").innerHTML = [5, 4, 3, 2, 1].map((k, i) => `
+      <button class="rb-row ${revFilter === k ? "active" : ""}" data-star="${k}" aria-pressed="${revFilter === k}" aria-label="Show ${k}-star reviews">
+        <span class="fw-semibold">${k} <i class="bi bi-star-fill text-warning fs-8"></i></span>
+        <div class="progress"><div class="progress-bar" style="width:${(dist[i] / p.reviews * 100).toFixed(1)}%"></div></div>
+        <span class="text-muted text-end tabular">${fmt.num(dist[i])}</span>
+      </button>`).join("");
+    $("breakdown").querySelectorAll("[data-star]").forEach(b => b.addEventListener("click", () => { const k = Number(b.dataset.star); revFilter = revFilter === k ? 0 : k; renderReviews(); }));
+    const list = reviews.filter(r => !revFilter || r.star === revFilter);
+    $("revNote").innerHTML = revFilter ? `${revFilter}-star only · <a href="#" id="clearRev">Show all</a>` : "Most recent";
+    const cr = $("clearRev"); if (cr) cr.addEventListener("click", (e) => { e.preventDefault(); revFilter = 0; renderReviews(); });
+    $("reviews").innerHTML = list.length ? list.map((r, i) => `
+      <div class="review">
+        <div class="d-flex justify-content-between align-items-center mb-1">${SHOP.stars(r.star)}<span class="fs-8 text-muted">${fmt.date(r.date)}</span></div>
+        <div class="fw-bold fs-7">${esc(r.title)}</div>
+        <p class="fs-7 mb-2">${esc(r.body)}</p>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <span class="fs-8 text-muted">${esc(r.name)} · ${esc(r.city)}${r.variant ? ` · ${esc(r.variant)}` : ""} · <span class="text-success"><i class="bi bi-patch-check-fill"></i> Verified purchase</span></span>
+          <button class="btn btn-sm btn-light-subtle py-1 ${helpfulVoted.has(reviews.indexOf(r)) ? "text-primary" : ""}" data-helpful="${reviews.indexOf(r)}"><i class="bi bi-hand-thumbs-up me-1"></i>Helpful (${r.helpful + (helpfulVoted.has(reviews.indexOf(r)) ? 1 : 0)})</button>
+        </div>
+      </div>`).join("") : `<div class="ab-empty py-4"><h6>No ${revFilter}-star reviews in this sample</h6><p class="fs-7 mb-0">Try another rating filter.</p></div>`;
+    $("reviews").querySelectorAll("[data-helpful]").forEach(b => b.addEventListener("click", () => { const i = Number(b.dataset.helpful); helpfulVoted.has(i) ? helpfulVoted.delete(i) : helpfulVoted.add(i); renderReviews(); }));
+  }
+  renderReviews();
+  document.querySelector("[data-goto-reviews]").addEventListener("click", (e) => {
+    e.preventDefault(); bootstrap.Tab.getOrCreateInstance($("revTabBtn")).show();
+    $("tabs").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  // Seller follow + share
+  const followKey = "ab_follow_" + p.seller;
+  const syncFollow = () => { let on = false; try { on = localStorage.getItem(followKey) === "1"; } catch (e) {} $("followBtn").innerHTML = on ? `<i class="bi bi-check2 me-1"></i>Following` : `<i class="bi bi-plus-lg me-1"></i>Follow`; $("followBtn").setAttribute("aria-pressed", on); return on; };
+  syncFollow();
+  $("followBtn").addEventListener("click", () => {
+    const on = !syncFollow();
+    try { localStorage.setItem(followKey, on ? "1" : "0"); } catch (e) {}
+    syncFollow(); AB.toast(on ? `You're now following <b>${esc(p.seller)}</b>` : `Unfollowed ${esc(p.seller)}`, on ? "success" : "info");
+  });
+  $("shareBtn").addEventListener("click", () => AB.copy(location.href, "Product link copied"));
+
+  // Related
+  const rel = AB_DATA.products.filter(x => x.id !== p.id && x.category === p.category);
+  const more = AB_DATA.products.filter(x => x.id !== p.id && x.category !== p.category).sort((a, b) => b.reviews - a.reviews);
+  $("related").innerHTML = [...rel, ...more].slice(0, 8).map(x => `<div>${SHOP.card(x)}</div>`).join("");
+});
+</script>
+</body>
+</html>

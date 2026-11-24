@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>eSIM · AutoBiz</title>
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/app.css" rel="stylesheet">
+  <script src="../assets/js/brand.js"></script>
+  <style>
+    /* ---------- Tabs ---------- */
+    .esim-tabs { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+    .esim-tabs::-webkit-scrollbar { display: none; }
+    .esim-tabs button { display: inline-flex; align-items: center; gap: .4rem; }
+    .esim-tabs .count { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: var(--ab-violet); color: #fff; font-size: .68rem; display: inline-grid; place-items: center; }
+    @media (max-width: 575.98px) { .esim-tabs { display: flex; width: 100%; } .esim-tabs button { flex: 1; justify-content: center; padding: .5rem .55rem; } }
+
+    /* ---------- Hero ---------- */
+    .esim-hero { overflow: visible; background: radial-gradient(120% 140% at 100% 0%, #9b7bff 0%, #7048e8 42%, #3a1fa8 100%); box-shadow: 0 24px 48px -20px rgba(112, 72, 232, .55); padding: 2rem; z-index: 5; }
+    .esim-hero::before, .esim-hero::after { display: none; }
+    .esim-hero .deco { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; z-index: 0; }
+    .esim-hero .deco::before { content: ""; position: absolute; width: 320px; height: 320px; right: -90px; top: -140px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.22), transparent 70%); }
+    .esim-hero .deco::after { content: ""; position: absolute; width: 220px; height: 220px; right: 60px; bottom: -150px; border-radius: 50%; border: 30px solid rgba(255,255,255,.07); }
+    .esim-hero .deco i { position: absolute; right: 2.2rem; top: 50%; transform: translateY(-50%) rotate(-10deg); font-size: 9rem; opacity: .14; }
+    .esim-hero h2 { color: #fff; font-size: clamp(1.4rem, 3.2vw, 2rem); font-weight: 800; letter-spacing: -.03em; }
+    .esim-hero .perks { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; font-size: .8125rem; color: rgba(255,255,255,.85); }
+    .esim-hero > .esim-search { position: relative; z-index: 3; max-width: 560px; }
+    .esim-search .form-control { height: 56px; border-radius: 16px; border: 0; padding-left: 3rem; font-weight: 500; box-shadow: 0 12px 30px -12px rgba(0,0,0,.35); }
+    .esim-search > i { left: 18px; font-size: 1.1rem; }
+    .esim-search .clear { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); }
+    .ta-list { position: absolute; left: 0; right: 0; top: calc(100% + 8px); background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 16px; box-shadow: var(--ab-shadow-lg); padding: .4rem; z-index: 30; max-height: 340px; overflow-y: auto; list-style: none; margin: 0; color: var(--ab-text); }
+    .ta-list li { display: flex; align-items: center; gap: .75rem; padding: .6rem .7rem; border-radius: 11px; cursor: pointer; }
+    .ta-list li.hl, .ta-list li:hover { background: var(--ab-surface-2); }
+    .ta-list mark { padding: 0; background: transparent; color: var(--ab-primary); font-weight: 800; }
+
+    /* ---------- Flags ---------- */
+    .flag { width: 40px; height: 30px; border-radius: 7px; object-fit: cover; flex-shrink: 0; box-shadow: 0 0 0 1px var(--ab-border); background: var(--ab-surface-2); }
+    .flag.sm { width: 30px; height: 22px; border-radius: 5px; }
+    .flag.lg { width: 56px; height: 42px; border-radius: 10px; }
+    .flag.ic { display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, var(--ab-primary-300), var(--ab-primary-700)); box-shadow: none; font-size: 1rem; }
+    .flag.lg.ic { font-size: 1.5rem; }
+    .flag.sm.ic { font-size: .85rem; }
+
+    /* ---------- Destination grid ---------- */
+    .dest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .85rem; }
+    @media (max-width: 575.98px) { .dest-grid { grid-template-columns: 1fr 1fr; gap: .6rem; } }
+    .dest { display: flex; flex-direction: column; gap: .75rem; padding: 1rem; border: 1px solid var(--ab-border); border-radius: 16px; background: var(--ab-surface); text-align: left; color: var(--ab-text); width: 100%; cursor: pointer; }
+    .dest:focus-visible { outline: 3px solid rgba(var(--ab-primary-rgb), .35); outline-offset: 2px; }
+    .dest .name { font-weight: 700; font-size: .92rem; line-height: 1.25; }
+    .dest .price { font-weight: 800; font-size: 1.05rem; }
+    .dest .go { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: var(--ab-surface-2); color: var(--ab-muted); transition: all .15s; }
+    .dest:hover .go { background: var(--ab-primary); color: #fff; }
+    .speed { font-size: .65rem; font-weight: 800; padding: .15rem .45rem; border-radius: 6px; background: var(--ab-accent-soft); color: var(--ab-accent); letter-spacing: .02em; }
+    .speed.g4 { background: var(--ab-cyan-soft); color: var(--ab-cyan); }
+    @media (max-width: 575.98px) { .dest { padding: .8rem; } .dest .name { font-size: .84rem; } .dest .price { font-size: .95rem; } }
+
+    /* ---------- Plan picker ---------- */
+    .plan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .65rem; }
+    @media (max-width: 767.98px) { .plan-grid { grid-template-columns: 1fr 1fr; } }
+    .plan-tile { padding: .9rem .85rem .8rem; }
+    .plan-tile .gb { font-size: 1.25rem; font-weight: 800; letter-spacing: -.02em; }
+    .plan-tile .pop { position: absolute; top: -9px; left: 10px; font-size: .62rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; background: linear-gradient(90deg, #f59f00, #fd7e14); color: #fff; padding: .2rem .5rem; border-radius: 6px; }
+    .cov-list { list-style: none; padding: 0; margin: 0; display: grid; gap: .55rem; }
+    .cov-list li { display: flex; gap: .6rem; align-items: flex-start; font-size: .84rem; }
+    .cov-list li i { color: var(--ab-violet); font-size: 1rem; margin-top: 1px; }
+    .qty { display: inline-flex; align-items: center; border: 1px solid var(--ab-border); border-radius: 12px; background: var(--ab-surface-2); }
+    .qty button { width: 38px; height: 38px; border: 0; background: transparent; color: var(--ab-text); font-size: 1.1rem; border-radius: 12px; }
+    .qty button:disabled { opacity: .35; }
+    .qty span { min-width: 28px; text-align: center; font-weight: 800; }
+    .compat { font-size: .8125rem; border-radius: 12px; padding: .6rem .8rem; display: flex; gap: .5rem; align-items: flex-start; }
+    .compat.ok { background: var(--ab-accent-soft); color: var(--ab-accent); }
+    .compat.no { background: var(--ab-danger-soft); color: var(--ab-danger); }
+    .picker-head { background: linear-gradient(135deg, rgba(var(--ab-primary-rgb),.14), rgba(var(--ab-primary-rgb),.04)); }
+
+    /* ---------- QR ---------- */
+    .qr-box { background: #fff; padding: 12px; border-radius: 16px; display: inline-block; box-shadow: 0 0 0 1px var(--ab-border); line-height: 0; }
+    .qr-box svg { width: 188px; height: 188px; display: block; }
+    .copy-field { display: flex; align-items: center; gap: .5rem; background: var(--ab-surface-2); border: 1px solid var(--ab-border); border-radius: 12px; padding: .5rem .5rem .5rem .8rem; text-align: left; }
+    .copy-field code { color: var(--ab-text); font-size: .78rem; word-break: break-all; flex: 1; min-width: 0; }
+    .steps-list { counter-reset: s; list-style: none; padding: 0; margin: 0; }
+    .steps-list li { counter-increment: s; position: relative; padding: 0 0 .8rem 2.3rem; font-size: .875rem; }
+    .steps-list li::before { content: counter(s); position: absolute; left: 0; top: -1px; width: 24px; height: 24px; border-radius: 50%; background: var(--ab-violet-soft); color: var(--ab-violet); font-weight: 800; font-size: .75rem; display: grid; place-items: center; }
+
+    /* ---------- My eSIM cards ---------- */
+    .esim-card { position: relative; }
+    .esim-card .strip { height: 4px; border-radius: var(--ab-radius) var(--ab-radius) 0 0; background: linear-gradient(90deg, var(--ab-primary-300), var(--ab-primary-700)); }
+    .esim-card.status-installed .strip { background: linear-gradient(90deg, #12b886, #1098ad); }
+    .esim-card.status-expired .strip, .esim-card.archived .strip { background: var(--ab-border); }
+    .ring { position: relative; width: 96px; height: 96px; flex-shrink: 0; }
+    .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .ring .track { stroke: var(--ab-surface-2); }
+    .ring .val { stroke: var(--ab-violet); transition: stroke-dashoffset .8s ease; stroke-linecap: round; }
+    .ring.low .val { stroke: var(--ab-danger); }
+    .ring .center { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; line-height: 1.1; }
+    .ring .center b { font-size: 1.05rem; font-weight: 800; }
+    .ring .center small { font-size: .62rem; color: var(--ab-muted); font-weight: 600; }
+    .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem 1rem; font-size: .78rem; }
+    .meta-grid span { color: var(--ab-muted); display: block; }
+    .meta-grid b { font-weight: 700; font-size: .8125rem; }
+
+    /* ---------- How it works ---------- */
+    .how-step { position: relative; height: 100%; }
+    .how-step .num { position: absolute; top: 1rem; right: 1.1rem; font-size: 2.4rem; font-weight: 800; color: var(--ab-surface-2); line-height: 1; letter-spacing: -.04em; }
+    [data-bs-theme="dark"] .how-step .num { color: var(--ab-border); }
+
+    .sk-dest { height: 128px; border-radius: 16px; }
+  </style>
+</head>
+<body data-page="esim" data-title="eSIM" data-public="true">
+<main class="ab-content">
+
+  <div class="ab-page-head fade-up">
+    <div>
+      <nav aria-label="breadcrumb"><ol class="breadcrumb mb-1"><li class="breadcrumb-item"><a href="dashboard.html">Home</a></li><li class="breadcrumb-item active" aria-current="page">Travel eSIM</li></ol></nav>
+      <h1>Travel eSIM</h1>
+      <p>Instant mobile data in 120+ countries. No roaming, no physical SIM.</p>
+    </div>
+    <div class="ab-segment esim-tabs" role="tablist" aria-label="eSIM sections" id="tabs">
+      <button role="tab" data-tab="buy" class="active" aria-selected="true"><i class="bi bi-bag-plus"></i>Buy eSIM</button>
+      <button role="tab" data-tab="mine" aria-selected="false"><i class="bi bi-sim"></i>My eSIMs <span class="count" id="mineCount" hidden>0</span></button>
+      <button role="tab" data-tab="how" aria-selected="false"><i class="bi bi-question-circle"></i><span>How it works</span></button>
+    </div>
+  </div>
+
+  <!-- =================== BUY =================== -->
+  <section data-pane="buy" role="tabpanel">
+    <div class="ab-hero esim-hero mb-4 fade-up">
+      <div class="deco"><i class="bi bi-globe2"></i></div>
+      <span class="badge rounded-pill mb-3" style="background:rgba(255,255,255,.18)"><i class="bi bi-lightning-charge-fill me-1"></i>Instant delivery · Pay in Naira</span>
+      <h2 class="mb-2">Where are you travelling to?</h2>
+      <p class="mb-4" style="color:rgba(255,255,255,.8);max-width:520px">Search a country or region and get a data plan that works the moment you land.</p>
+      <div class="esim-search input-icon mb-3">
+        <i class="bi bi-search"></i>
+        <input type="text" class="form-control" id="destSearch" placeholder="Search a country, e.g. Ghana" autocomplete="off"
+               role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="taList" aria-label="Search destination">
+        <button class="btn btn-icon btn-sm clear" id="clearSearch" aria-label="Clear search" hidden><i class="bi bi-x-lg"></i></button>
+        <ul class="ta-list" id="taList" role="listbox" hidden></ul>
+      </div>
+      <div class="perks">
+        <span><i class="bi bi-check2-circle me-1"></i>Keep your Nigerian WhatsApp number</span>
+        <span><i class="bi bi-check2-circle me-1"></i>Hotspot allowed</span>
+        <span><i class="bi bi-check2-circle me-1"></i>From <b id="heroFrom"></b></span>
+      </div>
+    </div>
+
+    <div class="card fade-up" style="animation-delay:.05s">
+      <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div><h6 class="card-title">Popular destinations</h6><div class="fs-8 text-muted" id="destMeta">Prices include VAT · ₦ at <span id="rateTxt"></span>/$</div></div>
+        <select class="form-select form-select-sm w-auto" style="padding-right:2.25rem" id="sortSel" aria-label="Sort destinations">
+          <option value="popular">Most popular</option>
+          <option value="price">Lowest price</option>
+          <option value="name">A – Z</option>
+        </select>
+      </div>
+      <div class="card-body">
+        <div class="ab-chips mb-3" id="regionChips" role="group" aria-label="Filter by region"></div>
+        <div class="dest-grid" id="destGrid" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== MY ESIMS =================== -->
+  <section data-pane="mine" role="tabpanel" hidden>
+    <div class="row g-3 mb-3" id="mineStats"></div>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+      <div class="ab-chips" id="mineFilter" role="group" aria-label="Filter eSIMs">
+        <button class="ab-chip active" data-f="all">All</button>
+        <button class="ab-chip" data-f="Active">Active</button>
+        <button class="ab-chip" data-f="Not installed">Not installed</button>
+        <button class="ab-chip" data-f="Expired">Expired</button>
+        <button class="ab-chip" data-f="archived"><i class="bi bi-archive"></i>Archived</button>
+      </div>
+      <button class="btn btn-primary btn-sm" data-goto="buy"><i class="bi bi-plus-lg me-1"></i>Buy new eSIM</button>
+    </div>
+    <div class="row g-3" id="mineList"></div>
+  </section>
+
+  <!-- =================== HOW IT WORKS =================== -->
+  <section data-pane="how" role="tabpanel" hidden>
+    <div class="row g-3 mb-4" id="howSteps"></div>
+    <div class="row g-3 g-lg-4">
+      <div class="col-lg-7">
+        <div class="card h-100">
+          <div class="card-header"><h6 class="card-title">Compatibility & FAQ</h6></div>
+          <div class="card-body">
+            <div class="accordion" id="faq"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="d-flex align-items-center gap-3 mb-3"><span class="ab-icon tone-violet"><i class="bi bi-phone"></i></span><div><h6 class="card-title">Is my phone compatible?</h6><div class="fs-8 text-muted">Pick your model to check eSIM support</div></div></div>
+            <select class="form-select" id="howDevice" aria-label="Select your device"></select>
+            <div id="howCompat" class="mt-2"></div>
+            <div class="fs-8 text-muted mt-3"><i class="bi bi-info-circle me-1"></i>Quick test: dial <b>*#06#</b>. If you see an <b>EID</b> number, your phone supports eSIM.</div>
+          </div>
+        </div>
+        <div class="card" style="background:linear-gradient(135deg,rgba(var(--ab-primary-rgb),.14),rgba(var(--ab-primary-rgb),.04))">
+          <div class="card-body">
+            <h6 class="card-title mb-1">Ready to travel?</h6>
+            <p class="fs-7 text-muted mb-3">Buy now, install at home on Wi‑Fi, and your plan only starts when you connect abroad.</p>
+            <button class="btn btn-primary" data-goto="buy"><i class="bi bi-search me-1"></i>Find a plan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { store, fmt, esc } = AB;
+  const D = AB_DATA;
+  const RATE = D.usdRate;
+  const DAY = 864e5;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+  /* ---------- Pricing ---------- */
+  const usdPrice = (country, tpl) => Math.max(0.99, Math.round(country.from * tpl.mult * 10) / 10 - 0.01);
+  const ngn = (usd) => Math.round(usd * RATE);
+  const plansFor = (c) => D.esimPlanTemplates.map((t, i) => ({ ...t, idx: i, usd: +usdPrice(c, t).toFixed(2), ngn: ngn(usdPrice(c, t)) }));
+  const minFrom = (c) => Math.min(...plansFor(c).map(p => p.usd));
+  const countryBy = (code) => D.esimCountries.find(c => c.code === code);
+  const regionName = (id) => (D.esimRegions.find(r => r.id === id) || {}).name || "";
+
+  const flagHtml = (c, size = "") => c.regional
+    ? `<span class="flag ${size} ic" aria-hidden="true"><i class="bi ${c.icon || "bi-globe2"}"></i></span>`
+    : `<img class="flag ${size}" src="${AB.flag(c.code, 80)}" alt="${esc(c.name)} flag" loading="lazy">`;
+
+  /* ---------- Devices ---------- */
+  const DEVICES = [
+    { brand: "Apple", models: [["iPhone 16 / 16 Pro", 1], ["iPhone 15 / 15 Pro", 1], ["iPhone 14 / 14 Pro", 1], ["iPhone 13 series", 1], ["iPhone 12 series", 1], ["iPhone 11 series", 1], ["iPhone XS / XR", 1], ["iPhone X", 0], ["iPhone 8 / 8 Plus", 0]] },
+    { brand: "Samsung", models: [["Galaxy S24 / S23 series", 1], ["Galaxy S22 / S21 / S20", 1], ["Galaxy Z Fold / Z Flip", 1], ["Galaxy A55 / A54", 1], ["Galaxy A15 / A05", 0], ["Galaxy Note 20", 1]] },
+    { brand: "Google", models: [["Pixel 9 / 8 / 7", 1], ["Pixel 6 / 5 / 4", 1], ["Pixel 3a", 0]] },
+    { brand: "Others", models: [["Tecno Camon 30 / Spark 20", 0], ["Infinix Note 40 / Hot 40", 0], ["itel A70 / S23", 0], ["Xiaomi 14 / 13 Pro", 1], ["Redmi Note 13", 0], ["Huawei P40 / Mate 40", 1], ["Oppo Find X5 / X6", 1], ["Motorola Razr 40", 1]] }
+  ];
+  const deviceOptions = () => `<option value="">Select your phone model…</option>` + DEVICES.map(g => `<optgroup label="${g.brand}">${g.models.map(([m, ok]) => `<option value="${ok}" data-name="${esc(m)}">${esc(m)}</option>`).join("")}</optgroup>`).join("");
+  const compatHtml = (sel) => {
+    if (sel.value === "") return "";
+    const name = sel.selectedOptions[0].dataset.name;
+    return sel.value === "1"
+      ? `<div class="compat ok"><i class="bi bi-check-circle-fill"></i><span><b>${esc(name)}</b> supports eSIM. You're good to go!</span></div>`
+      : `<div class="compat no"><i class="bi bi-x-circle-fill"></i><span><b>${esc(name)}</b> doesn't support eSIM. This plan won't work on this device.</span></div>`;
+  };
+
+  /* ---------- Deterministic QR-like SVG ---------- */
+  function qrSvg(text, n = 29) {
+    let h = 2166136261;
+    for (let i = 0; i < text.length; i++) { h ^= text.charCodeAt(i); h = Math.imul(h, 16777619); }
+    const rnd = () => { h += 0x6D2B79F5; let t = h; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    const reserved = (x, y) => (x < 8 && y < 8) || (x >= n - 8 && y < 8) || (x < 8 && y >= n - 8) || (x >= n - 9 && x <= n - 5 && y >= n - 9 && y <= n - 5);
+    let d = "";
+    const px = (x, y) => { d += `M${x} ${y}h1v1h-1z`; };
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      if (reserved(x, y)) continue;
+      if (y === 6) { if (x % 2 === 0) px(x, y); continue; }
+      if (x === 6) { if (y % 2 === 0) px(x, y); continue; }
+      if (rnd() < 0.48) px(x, y);
+    }
+    const finder = (x, y) => `<rect x="${x + .5}" y="${y + .5}" width="6" height="6" fill="none" stroke="#0b1230" stroke-width="1"/><rect x="${x + 2}" y="${y + 2}" width="3" height="3" fill="#0b1230"/>`;
+    const a = n - 9;
+    const align = `<rect x="${a + .5}" y="${a + .5}" width="4" height="4" fill="none" stroke="#0b1230" stroke-width="1"/><rect x="${a + 2}" y="${a + 2}" width="1" height="1" fill="#0b1230"/>`;
+    return `<svg viewBox="-1 -1 ${n + 2} ${n + 2}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="eSIM activation QR code" shape-rendering="crispEdges"><rect x="-1" y="-1" width="${n + 2}" height="${n + 2}" fill="#fff"/><path d="${d}" fill="#0b1230"/>${finder(0, 0)}${finder(n - 7, 0)}${finder(0, n - 7)}${align}</svg>`;
+  }
+
+  /* ---------- eSIM helpers ---------- */
+  const rndDigits = (k) => Array.from({ length: k }, () => Math.floor(Math.random() * 10)).join("");
+  const rndCode = (k) => Array.from({ length: k }, () => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]).join("");
+  const smdp = "smdp.autobiz.io";
+  const parseLpa = (code) => { const p = code.split("$"); return { smdp: p[1] || smdp, matching: p[2] || "" }; };
+
+  // Simulated usage for active eSIMs, deterministic from elapsed time
+  function usage(e) {
+    if (e.status !== "Active" || !e.activatedAt) return 0;
+    const elapsed = Math.max(0, Date.now() - e.activatedAt);
+    const frac = Math.min(1, elapsed / (e.days * DAY));
+    const seed = (parseInt(e.iccid.slice(-4), 10) % 30) / 100; // 0–0.29
+    const used = (e.gb >= 999 ? 2 : e.gb) * Math.min(0.97, 0.04 + seed * 0.5 + frac * 0.85);
+    return Math.round(used * 100) / 100;
+  }
+  function computeStatus(e) {
+    if (e.status === "Active" && e.expiresAt && Date.now() > e.expiresAt) return "Expired";
+    if (e.status === "Not installed" && Date.now() > e.purchasedAt + 180 * DAY) return "Expired";
+    return e.status;
+  }
+  const esims = () => store.get("esims") || [];
+  const saveEsim = (id, fn) => store.update("esims", list => list.map(e => e.id === id ? fn({ ...e }) : e));
+
+  /* ======================================================
+     Tabs
+     ====================================================== */
+  function setTab(t, push = true) {
+    if (!["buy", "mine", "how"].includes(t)) t = "buy";
+    $$("#tabs [data-tab]").forEach(b => { const on = b.dataset.tab === t; b.classList.toggle("active", on); b.setAttribute("aria-selected", on); });
+    $$("[data-pane]").forEach(p => (p.hidden = p.dataset.pane !== t));
+    if (push) history.replaceState(null, "", "#" + t);
+    if (t === "mine") renderMine();
+  }
+  $$("#tabs [data-tab]").forEach(b => b.addEventListener("click", () => setTab(b.dataset.tab)));
+  $("#tabs").addEventListener("keydown", (e) => {
+    if (!["ArrowLeft", "ArrowRight"].includes(e.key)) return;
+    const btns = $$("#tabs [data-tab]"); const i = btns.findIndex(b => b.classList.contains("active"));
+    const nb = btns[(i + (e.key === "ArrowRight" ? 1 : -1) + btns.length) % btns.length]; nb.focus(); setTab(nb.dataset.tab);
+  });
+  document.addEventListener("click", (e) => { const g = e.target.closest("[data-goto]"); if (g) { e.preventDefault(); setTab(g.dataset.goto); window.scrollTo({ top: 0, behavior: "smooth" }); if (g.dataset.goto === "buy") setTimeout(() => $("#destSearch").focus(), 300); } });
+
+  function updateCount() {
+    const n = esims().filter(e => !e.archived).length;
+    const c = $("#mineCount"); c.textContent = n; c.hidden = n === 0;
+  }
+
+  /* ======================================================
+     Buy: search + grid
+     ====================================================== */
+  $("#rateTxt").textContent = fmt.naira(RATE);
+  $("#heroFrom").textContent = fmt.usd(Math.min(...D.esimCountries.map(minFrom)));
+
+  let region = "all", sort = "popular";
+  $("#regionChips").innerHTML = D.esimRegions.map(r => `<button class="ab-chip ${r.id === "all" ? "active" : ""}" data-region="${r.id}" aria-pressed="${r.id === "all"}">${r.id === "global" ? '<i class="bi bi-globe2"></i>' : ""}${esc(r.name)}</button>`).join("");
+  $$("#regionChips [data-region]").forEach(b => b.addEventListener("click", () => {
+    region = b.dataset.region;
+    $$("#regionChips [data-region]").forEach(x => { x.classList.toggle("active", x === b); x.setAttribute("aria-pressed", x === b); });
+    renderGrid(true);
+  }));
+  $("#sortSel").addEventListener("change", (e) => { sort = e.target.value; renderGrid(); });
+
+  let gridTimer;
+  function renderGrid(withSkeleton) {
+    const grid = $("#destGrid");
+    clearTimeout(gridTimer);
+    if (withSkeleton) {
+      grid.innerHTML = Array.from({ length: 8 }, () => `<div class="skeleton sk-dest"></div>`).join("");
+      gridTimer = setTimeout(() => renderGrid(false), 600);
+      return;
+    }
+    let list = D.esimCountries.filter(c => region === "all" || c.region === region);
+    if (sort === "price") list = [...list].sort((a, b) => minFrom(a) - minFrom(b));
+    if (sort === "name") list = [...list].sort((a, b) => a.name.localeCompare(b.name));
+    grid.innerHTML = list.length ? list.map(c => {
+      const from = minFrom(c);
+      return `<button class="dest ab-card-hover" data-code="${c.code}" aria-label="${esc(c.name)}, plans from ${fmt.usd(from)}">
+        <div class="d-flex justify-content-between align-items-start w-100">${flagHtml(c)}<span class="speed ${/5G/.test(c.speed) ? "" : "g4"}">${esc(c.speed)}</span></div>
+        <div class="min-w-0 w-100"><div class="name text-truncate">${esc(c.name)}</div><div class="fs-8 text-muted text-truncate">${c.regional ? "Multi-country pack" : esc(c.networks)}</div></div>
+        <div class="d-flex justify-content-between align-items-end w-100 mt-auto">
+          <div><div class="fs-8 text-muted">from</div><div class="price tabular">${fmt.usd(from)}</div><div class="fs-8 text-muted tabular">≈ ${fmt.naira(ngn(from))}</div></div>
+          <span class="go"><i class="bi bi-arrow-right"></i></span>
+        </div>
+      </button>`;
+    }).join("") : `<div class="ab-empty" style="grid-column:1/-1"><span class="ab-icon ab-icon-lg tone-violet"><i class="bi bi-globe"></i></span><h6>No destinations in this region yet</h6></div>`;
+  }
+  $("#destGrid").addEventListener("click", (e) => { const b = e.target.closest("[data-code]"); if (b) openPicker(b.dataset.code); });
+
+  // Typeahead
+  const input = $("#destSearch"), ta = $("#taList"), clr = $("#clearSearch");
+  let hl = 0, results = [];
+  const norm = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  const highlight = (name, q) => { const i = norm(name).indexOf(q); return i < 0 ? esc(name) : esc(name.slice(0, i)) + "<mark>" + esc(name.slice(i, i + q.length)) + "</mark>" + esc(name.slice(i + q.length)); };
+  function renderTa() {
+    const q = norm(input.value.trim());
+    clr.hidden = !input.value;
+    if (!q) { closeTa(); return; }
+    results = D.esimCountries.filter(c => norm(c.name).includes(q) || c.code === q || regionName(c.region).toLowerCase().includes(q))
+      .sort((a, b) => norm(a.name).indexOf(q) - norm(b.name).indexOf(q) || a.name.localeCompare(b.name)).slice(0, 8);
+    hl = 0;
+    ta.innerHTML = results.length ? results.map((c, i) => `<li role="option" id="ta-${c.code}" data-code="${c.code}" class="${i === hl ? "hl" : ""}" aria-selected="${i === hl}">
+        ${flagHtml(c, "sm")}<div class="flex-grow-1 min-w-0"><div class="fw-semibold fs-7 text-truncate">${highlight(c.name, q)}</div><div class="fs-8 text-muted">${esc(regionName(c.region))} · ${esc(c.speed)}</div></div>
+        <div class="text-end"><div class="fs-8 text-muted">from</div><div class="fw-800 fs-7 tabular">${fmt.usd(minFrom(c))}</div></div></li>`).join("")
+      : `<li class="text-muted fs-7" aria-disabled="true"><i class="bi bi-emoji-frown"></i>No destination matches “${esc(input.value.trim())}”. Try the Global pack.</li>`;
+    ta.hidden = false; input.setAttribute("aria-expanded", "true");
+    if (results[hl]) input.setAttribute("aria-activedescendant", "ta-" + results[hl].code);
+  }
+  function closeTa() { ta.hidden = true; input.setAttribute("aria-expanded", "false"); input.removeAttribute("aria-activedescendant"); }
+  function moveHl(d) {
+    if (!results.length) return;
+    hl = (hl + d + results.length) % results.length;
+    $$("li[data-code]", ta).forEach((li, i) => { li.classList.toggle("hl", i === hl); li.setAttribute("aria-selected", i === hl); });
+    input.setAttribute("aria-activedescendant", "ta-" + results[hl].code);
+    $$("li[data-code]", ta)[hl].scrollIntoView({ block: "nearest" });
+  }
+  input.addEventListener("input", renderTa);
+  input.addEventListener("focus", () => input.value && renderTa());
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown") { e.preventDefault(); ta.hidden ? renderTa() : moveHl(1); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); moveHl(-1); }
+    else if (e.key === "Enter") { e.preventDefault(); if (!ta.hidden && results[hl]) { closeTa(); openPicker(results[hl].code); } }
+    else if (e.key === "Escape") closeTa();
+  });
+  ta.addEventListener("mousedown", (e) => e.preventDefault());
+  ta.addEventListener("click", (e) => { const li = e.target.closest("li[data-code]"); if (li) { closeTa(); openPicker(li.dataset.code); } });
+  input.addEventListener("blur", () => setTimeout(closeTa, 120));
+  clr.addEventListener("click", () => { input.value = ""; clr.hidden = true; closeTa(); input.focus(); });
+
+  /* ======================================================
+     Plan picker
+     ====================================================== */
+  function openPicker(code, opts = {}) {
+    const c = countryBy(code);
+    if (!c) return;
+    const plans = plansFor(c);
+    const topup = opts.topupFor || null;
+    let sel = plans.findIndex(p => p.popular); if (sel < 0) sel = 0;
+    let qty = 1;
+    const is5G = /5G/.test(c.speed);
+    const m = AB.modal(`
+      <div class="modal-header picker-head align-items-center gap-3 pb-3">
+        ${flagHtml(c, "lg")}
+        <div class="min-w-0 flex-grow-1">
+          <div class="small-label">${topup ? "Top up eSIM" : esc(regionName(c.region))}</div>
+          <h5 class="modal-title text-truncate">${esc(c.name)}</h5>
+          <div class="fs-8 text-muted">${topup ? "Adds data & extends validity on ICCID •••• " + esc(topup.iccid.slice(-4)) : "Data-only eSIM · Instant delivery"}</div>
+        </div>
+        <button class="btn-close align-self-start" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-4">
+          <div class="col-md-7 order-md-1">
+            <div class="d-flex justify-content-between align-items-center mb-3"><h6 class="mb-0">Choose a plan</h6><span class="fs-8 text-muted">Prices in USD · charged in ₦</span></div>
+            <div class="plan-grid mb-4" role="radiogroup" aria-label="Data plans">
+              ${plans.map((p, i) => `<button class="ab-option plan-tile ${i === sel ? "active" : ""}" role="radio" aria-checked="${i === sel}" data-plan="${i}">
+                ${p.popular ? `<span class="pop">Popular</span>` : ""}
+                <div class="gb">${p.unlimited ? '<i class="bi bi-infinity"></i>' : esc(p.data)}</div>
+                <div class="fs-8 text-muted mb-2">${p.unlimited ? "Unlimited · " : ""}${p.days} days</div>
+                <div class="fw-800 tabular">${fmt.usd(p.usd)}</div>
+                <div class="fs-8 text-muted tabular">${fmt.naira(p.ngn)}</div>
+              </button>`).join("")}
+            </div>
+            ${topup ? "" : `
+            <h6 class="mb-2">Device compatibility</h6>
+            <select class="form-select mb-2" data-device aria-label="Check device compatibility">${deviceOptions()}</select>
+            <div data-compat class="mb-3"></div>`}
+          </div>
+          <div class="col-md-5 order-md-2">
+            <div class="p-3 rounded-4 bg-surface-2 mb-3">
+              <h6 class="fs-7 mb-3">Coverage & features</h6>
+              <ul class="cov-list">
+                <li><i class="bi bi-broadcast-pin"></i><div><b>Networks:</b> ${esc(c.networks)}${c.regional ? " (best local network in each country)" : ""}</div></li>
+                <li><i class="bi bi-reception-4"></i><div><b>Speed:</b> ${esc(c.speed)}${is5G ? " where available, 4G/LTE fallback" : " LTE"}</div></li>
+                <li><i class="bi bi-wifi"></i><div><b>Hotspot:</b> Allowed — share with laptop & family</div></li>
+                <li><i class="bi bi-clock-history"></i><div><b>Activation:</b> Validity starts when the eSIM first connects in ${c.regional ? "a covered country" : esc(c.name)}. Install within 180 days.</div></li>
+                <li><i class="bi bi-telephone-x"></i><div><b>Data only</b> — use WhatsApp, FaceTime & Zoom for calls</div></li>
+                <li><i class="bi bi-shield-check"></i><div><b>Top-up</b> any time from My eSIMs</div></li>
+              </ul>
+            </div>
+            <div class="ab-summary mb-3" data-summary></div>
+            ${topup ? "" : `<div class="d-flex justify-content-between align-items-center mb-3">
+              <div><div class="fw-semibold fs-7">Quantity</div><div class="fs-8 text-muted">One eSIM per device</div></div>
+              <div class="qty" role="group" aria-label="Quantity"><button data-q="-1" aria-label="Decrease quantity"><i class="bi bi-dash"></i></button><span data-qty aria-live="polite">1</span><button data-q="1" aria-label="Increase quantity"><i class="bi bi-plus"></i></button></div>
+            </div>`}
+            <button class="btn btn-primary btn-lg w-100" data-buy></button>
+            <div class="fs-8 text-muted text-center mt-2"><i class="bi bi-wallet2 me-1"></i>Wallet: <span data-balance></span></div>
+          </div>
+        </div>
+      </div>`, { size: "modal-xl modal-dialog-scrollable" });
+    const el = m.el;
+    AB.refreshShell();
+
+    function sync() {
+      const p = plans[sel];
+      const total = p.ngn * qty;
+      $$("[data-plan]", el).forEach((b, i) => { b.classList.toggle("active", i === sel); b.setAttribute("aria-checked", i === sel); });
+      const q = $("[data-qty]", el); if (q) q.textContent = qty;
+      $$("[data-q]", el).forEach(b => (b.disabled = (b.dataset.q === "-1" && qty <= 1) || (b.dataset.q === "1" && qty >= 5)));
+      $("[data-summary]", el).innerHTML = `
+        <div class="row-item"><span>Plan</span><span>${esc(p.unlimited ? "Unlimited" : p.data)} · ${p.days} days</span></div>
+        <div class="row-item"><span>Price</span><span class="tabular">${fmt.usd(p.usd)}${qty > 1 ? " × " + qty : ""}</span></div>
+        <div class="row-item"><span>Rate</span><span class="tabular">${fmt.naira(RATE)}/$</span></div>
+        <div class="row-item total"><span>Total</span><span class="tabular">${fmt.naira(total)}</span></div>`;
+      $("[data-buy]", el).innerHTML = `<i class="bi bi-${topup ? "plus-circle" : "bag-check"} me-1"></i>${topup ? "Top up" : "Buy"} · ${fmt.naira(total)}`;
+    }
+    $$("[data-plan]", el).forEach(b => b.addEventListener("click", () => { sel = +b.dataset.plan; sync(); }));
+    $(".plan-grid", el).addEventListener("keydown", (e) => {
+      const k = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key]; if (!k) return;
+      e.preventDefault(); sel = (sel + k + plans.length) % plans.length; sync(); $$("[data-plan]", el)[sel].focus();
+    });
+    $$("[data-q]", el).forEach(b => b.addEventListener("click", () => { qty = Math.min(5, Math.max(1, qty + +b.dataset.q)); sync(); }));
+    const dev = $("[data-device]", el);
+    if (dev) dev.addEventListener("change", () => { $("[data-compat]", el).innerHTML = compatHtml(dev); dev.classList.remove("is-invalid"); });
+
+    $("[data-buy]", el).addEventListener("click", async () => {
+      const p = plans[sel];
+      if (dev && dev.value === "0") {
+        dev.classList.add("is-invalid");
+        AB.toast("Your selected device doesn't support eSIM. Pick a compatible phone to continue.", "warning");
+        return;
+      }
+      const total = p.ngn * qty;
+      const label = p.unlimited ? "Unlimited" : p.data;
+      m.close();
+      await new Promise(r => setTimeout(r, 320));
+      const ok = await AB.confirmPay({
+        title: topup ? "Confirm eSIM top-up" : "Confirm eSIM purchase",
+        amount: total,
+        rows: [["Destination", `${esc(c.name)}`], ["Plan", `${esc(label)} · ${p.days} days`], ...(topup ? [["eSIM", `•••• ${esc(topup.iccid.slice(-4))}`]] : [["Quantity", String(qty)]]), ["Price", `${fmt.usd(p.usd * qty)} @ ${fmt.naira(RATE)}/$`]],
+        cta: topup ? "Confirm top-up" : "Pay & get eSIM",
+        note: "eSIMs are delivered instantly. Unused, uninstalled eSIMs are refundable within 7 days."
+      });
+      if (!ok) return;
+      const tx = AB.wallet.debit(total, { type: "esim", title: `${topup ? "eSIM Top-up" : "eSIM"} · ${c.name}`, subtitle: `${label} · ${p.days} days${qty > 1 ? " × " + qty : ""}`, icon: "bi-sim", tone: "violet" });
+      if (!tx) { AB.toast("Insufficient wallet balance", "error"); return; }
+      topup ? finishTopup(topup, c, p, tx) : finishPurchase(c, p, qty, tx);
+    });
+    sync();
+  }
+
+  function finishPurchase(c, p, qty, tx) {
+    const now = Date.now();
+    const created = Array.from({ length: qty }, (_, i) => ({
+      id: "ES" + now.toString(36).toUpperCase() + i + rndCode(3),
+      iccid: "89234" + rndDigits(15),
+      country: c.name, code: c.code, regional: !!c.regional, icon: c.icon || null,
+      plan: `${p.unlimited ? "Unlimited" : p.data} · ${p.days} days`, data: p.unlimited ? "Unlimited" : p.data, gb: p.gb, days: p.days,
+      price: p.ngn, usd: p.usd, status: "Not installed", purchasedAt: now, activatedAt: null, expiresAt: null, topups: [], archived: false, txId: tx.id,
+      activationCode: `LPA:1$${smdp}$${rndCode(4)}-${rndCode(4)}-${rndCode(4)}-${rndCode(4)}`
+    }));
+    store.update("esims", list => [...created, ...(list || [])]);
+    AB.notify({ icon: "bi-sim", tone: "violet", title: `${c.name} eSIM ready`, body: `${created[0].data} · ${p.days} days. Install it before you travel.` });
+    const e = created[0];
+    const r = AB.success({
+      title: "Your eSIM is ready!",
+      message: `${qty > 1 ? qty + " eSIMs for " : ""}${esc(c.name)} · ${esc(e.data)} · ${p.days} days. Scan the QR with the phone you'll travel with.`,
+      rows: [["Amount paid", fmt.naira(p.ngn * qty, 2)], ["ICCID", `<span class="tabular">${esc(e.iccid)}</span>`], ["Reference", `<span class="fs-8">${esc(tx.id)}</span>`]],
+      extra: installBlock(e, true),
+      actions: [{ label: '<i class="bi bi-sim me-1"></i>My eSIMs', id: "mine", onClick: (mm) => { mm.close(); setTab("mine"); } }]
+    });
+    bindInstall(r.el, e);
+  }
+
+  function finishTopup(e, c, p, tx) {
+    const label = p.unlimited ? "Unlimited" : p.data;
+    let next;
+    saveEsim(e.id, x => {
+      x.topups = [...(x.topups || []), { data: label, gb: p.gb, days: p.days, price: p.ngn, at: Date.now() }];
+      if (computeStatus(x) === "Expired") {
+        // Renew: fresh allowance starting now
+        x.status = "Active"; x.activatedAt = Date.now(); x.expiresAt = Date.now() + p.days * DAY; x.days = p.days; x.gb = p.gb; x.data = label;
+      } else {
+        if (p.unlimited || x.gb >= 999) { x.gb = 999; x.data = "Unlimited"; } else { x.gb = x.gb + p.gb; x.data = x.gb + " GB"; }
+        x.days = x.days + p.days;
+        if (x.expiresAt) x.expiresAt = x.expiresAt + p.days * DAY;
+      }
+      x.plan = `${x.data} · ${x.days} days`;
+      next = x; return x;
+    });
+    AB.notify({ icon: "bi-sim", tone: "violet", title: "eSIM topped up", body: `${label} added to your ${c.name} eSIM.` });
+    AB.success({ title: "Top-up successful", message: `${esc(label)} · ${p.days} days added to your ${esc(c.name)} eSIM. No reinstall needed.`,
+      rows: [["Amount paid", fmt.naira(p.ngn, 2)], ["New allowance", esc(next.data)], ["Validity", next.expiresAt ? "Until " + fmt.date(next.expiresAt) : next.days + " days from activation"], ["Reference", `<span class="fs-8">${esc(tx.id)}</span>`]] });
+    renderMine();
+  }
+
+  /* ---------- Install block (QR + manual + iOS/Android) ---------- */
+  function installBlock(e, compact) {
+    const l = parseLpa(e.activationCode);
+    const field = (label, val, key) => `<div class="mb-2"><div class="small-label mb-1 text-start">${label}</div><div class="copy-field"><code>${esc(val)}</code><button class="btn btn-sm btn-soft flex-shrink-0" data-copyv="${esc(val)}" data-copym="${label} copied" aria-label="Copy ${label}"><i class="bi bi-copy"></i></button></div></div>`;
+    return `
+      <div class="text-center mb-3 mt-2">
+        <div class="qr-box">${qrSvg(e.activationCode)}</div>
+        <div class="fs-8 text-muted mt-2">Settings → Mobile data → Add eSIM → Use QR code</div>
+      </div>
+      <div class="text-start">
+        ${compact ? `<div class="ab-divider-text mb-2">or enter manually</div>` : ""}
+        ${field("SM-DP+ address", l.smdp)}
+        ${field("Activation code", l.matching)}
+        ${compact ? "" : field("Full LPA string", e.activationCode)}
+      </div>`;
+  }
+  function bindInstall(root, e) {
+    $$("[data-copyv]", root).forEach(b => b.addEventListener("click", () => AB.copy(b.dataset.copyv, b.dataset.copym)));
+  }
+
+  const STEPS = {
+    ios: ["Connect to Wi‑Fi and open <b>Settings → Mobile Service</b> (or Cellular).", "Tap <b>Add eSIM</b> → <b>Use QR Code</b> and scan the code (or tap <i>Enter details manually</i>).", "Label the line <b>“Travel”</b> and set it for <b>Mobile Data</b> only. Keep your Nigerian line for iMessage & calls.", "On arrival, turn on <b>Data Roaming</b> for the Travel line. Your plan activates automatically."],
+    android: ["Connect to Wi‑Fi and open <b>Settings → Connections → SIM manager</b> (Samsung) or <b>Network & internet → SIMs</b> (Pixel).", "Tap <b>Add eSIM</b> → <b>Scan QR code</b>, or choose <i>Enter activation code</i> and paste the SM-DP+ address and code.", "Set the new eSIM as your <b>Mobile data</b> SIM. Keep your local SIM for calls & SMS.", "On arrival, enable <b>Roaming</b> for the eSIM. It connects to a partner network automatically."]
+  };
+  function openInstall(id) {
+    const e = esims().find(x => x.id === id); if (!e) return;
+    const st = computeStatus(e);
+    const ua = /android/i.test(navigator.userAgent) ? "android" : "ios";
+    const m = AB.modal(`
+      <div class="modal-header align-items-center gap-3">
+        ${flagHtml({ code: e.code, name: e.country, regional: e.regional, icon: e.icon }, "")}
+        <div class="min-w-0 flex-grow-1"><h5 class="modal-title text-truncate">Install ${esc(e.country)} eSIM</h5><div class="fs-8 text-muted">${esc(e.plan)} · ICCID ${esc(e.iccid)}</div></div>
+        <button class="btn-close align-self-start" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-4">
+          <div class="col-md-5">${installBlock(e, false)}</div>
+          <div class="col-md-7">
+            <div class="ab-segment w-100 mb-3" role="tablist" aria-label="Device type">
+              <button role="tab" data-os="ios" class="${ua === "ios" ? "active" : ""}"><i class="bi bi-apple me-1"></i>iPhone</button>
+              <button role="tab" data-os="android" class="${ua === "android" ? "active" : ""}"><i class="bi bi-android2 me-1"></i>Android</button>
+            </div>
+            <ol class="steps-list" data-steps></ol>
+            <div class="alert alert-warning fs-8 py-2 mb-0"><i class="bi bi-exclamation-triangle me-1"></i>Each QR code can be installed <b>once</b>. Don't delete the eSIM from your phone after installing.</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        ${st === "Not installed" ? `<button class="btn btn-success w-100" data-mark><i class="bi bi-check2-circle me-1"></i>I've installed it — activate now</button>` : `<button class="btn btn-primary w-100" data-bs-dismiss="modal">Done</button>`}
+      </div>`, { size: "modal-lg" });
+    const renderSteps = (os) => { $("[data-steps]", m.el).innerHTML = STEPS[os].map(s => `<li>${s}</li>`).join(""); $$("[data-os]", m.el).forEach(b => { b.classList.toggle("active", b.dataset.os === os); b.setAttribute("aria-selected", b.dataset.os === os); }); };
+    $$("[data-os]", m.el).forEach(b => b.addEventListener("click", () => renderSteps(b.dataset.os)));
+    renderSteps(ua);
+    bindInstall(m.el, e);
+    const mk = $("[data-mark]", m.el);
+    if (mk) mk.addEventListener("click", () => AB.loading(mk, 900).then(() => { m.close(); activate(id); }));
+  }
+
+  function activate(id) {
+    let x;
+    saveEsim(id, e => { e.status = "Active"; e.activatedAt = Date.now(); e.expiresAt = Date.now() + e.days * DAY; x = e; return e; });
+    AB.toast(`<b>${esc(x.country)}</b> eSIM is active until ${fmt.date(x.expiresAt)}`, "success");
+    AB.notify({ icon: "bi-sim", tone: "success", title: "eSIM activated", body: `${x.country} · ${x.data}. Validity ends ${fmt.date(x.expiresAt)}.` });
+    renderMine();
+  }
+
+  function confirmDialog({ title, body, cta, danger }) {
+    return new Promise(res => {
+      let ok = false;
+      const m = AB.modal(`<div class="modal-body text-center pt-4">
+          <span class="ab-icon ab-icon-lg ${danger ? "tone-danger" : "tone-warning"} mb-3"><i class="bi ${danger ? "bi-trash3" : "bi-archive"}"></i></span>
+          <h5 class="mb-2">${title}</h5><p class="text-muted fs-7 mb-0">${body}</p></div>
+        <div class="modal-footer flex-nowrap gap-2"><button class="btn btn-light-subtle flex-fill m-0" data-bs-dismiss="modal">Cancel</button><button class="btn ${danger ? "btn-danger" : "btn-primary"} flex-fill m-0" data-ok>${cta}</button></div>`, { size: "modal-sm" });
+      $("[data-ok]", m.el).addEventListener("click", () => { ok = true; m.close(); });
+      m.el.addEventListener("hidden.bs.modal", () => res(ok));
+    });
+  }
+
+  /* ======================================================
+     My eSIMs
+     ====================================================== */
+  let mineF = "all";
+  $$("#mineFilter [data-f]").forEach(b => b.addEventListener("click", () => {
+    mineF = b.dataset.f; $$("#mineFilter [data-f]").forEach(x => x.classList.toggle("active", x === b)); renderMine();
+  }));
+
+  function ring(pct, label, sub, low) {
+    const r = 40, C = 2 * Math.PI * r;
+    return `<div class="ring ${low ? "low" : ""}" role="img" aria-label="${esc(label)} ${esc(sub)}"><svg viewBox="0 0 96 96"><circle class="track" cx="48" cy="48" r="${r}" fill="none" stroke-width="9"/><circle class="val" cx="48" cy="48" r="${r}" fill="none" stroke-width="9" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - pct)}"/></svg><div class="center"><div><b class="tabular">${label}</b><br><small>${sub}</small></div></div></div>`;
+  }
+
+  function renderMine() {
+    updateCount();
+    const all = esims();
+    const live = all.filter(e => !e.archived);
+    const st = live.map(computeStatus);
+    const spent = all.reduce((a, e) => a + (e.price || 0) + (e.topups || []).reduce((s, t) => s + t.price, 0), 0);
+    $("#mineStats").innerHTML = [
+      { l: "Active", v: st.filter(s => s === "Active").length, i: "bi-reception-4", t: "success" },
+      { l: "Ready to install", v: st.filter(s => s === "Not installed").length, i: "bi-qr-code", t: "violet" },
+      { l: "Countries", v: new Set(all.map(e => e.code)).size, i: "bi-globe2", t: "cyan" },
+      { l: "Total spent", v: fmt.naira(spent), i: "bi-wallet2", t: "primary" }
+    ].map(s => `<div class="col-6 col-xl-3"><div class="card h-100"><div class="card-body d-flex align-items-center gap-3"><span class="ab-icon tone-${s.t}"><i class="bi ${s.i}"></i></span><div class="min-w-0"><div class="fs-8 text-muted">${s.l}</div><div class="fw-800 tabular text-truncate" style="font-size:clamp(1rem,4.2vw,1.25rem)">${s.v}</div></div></div></div></div>`).join("");
+
+    let list = mineF === "archived" ? all.filter(e => e.archived) : live;
+    if (!["all", "archived"].includes(mineF)) list = list.filter(e => computeStatus(e) === mineF);
+    const box = $("#mineList");
+    if (!list.length) {
+      box.innerHTML = `<div class="col-12"><div class="card"><div class="ab-empty">
+        <span class="ab-icon ab-icon-xl tone-violet"><i class="bi bi-sim"></i></span>
+        <h6>${all.length ? "No eSIMs here" : "No eSIMs yet"}</h6>
+        <p class="fs-7 mb-3">${all.length ? "Nothing matches this filter." : "Buy a travel eSIM and stay connected the moment you land."}</p>
+        ${all.length ? `<button class="btn btn-light-subtle" id="resetMineF">Show all</button>` : `<button class="btn btn-primary" data-goto="buy"><i class="bi bi-search me-1"></i>Find a destination</button>`}
+      </div></div></div>`;
+      const rb = $("#resetMineF"); if (rb) rb.addEventListener("click", () => $('#mineFilter [data-f="all"]').click());
+      return;
+    }
+    box.innerHTML = list.map(e => {
+      const s = computeStatus(e);
+      const unl = e.gb >= 999;
+      const used = usage(e);
+      const total = unl ? null : e.gb;
+      const left = unl ? null : Math.max(0, +(total - used).toFixed(2));
+      let ringHtml;
+      if (s === "Active") ringHtml = unl ? ring(1, "∞", used.toFixed(1) + " GB used") : ring(left / total, left.toFixed(left < 10 ? 1 : 0) + " GB", "of " + total + " GB left", left / total < .2);
+      else if (s === "Expired") ringHtml = ring(0, "0 GB", "expired");
+      else ringHtml = ring(1, unl ? "∞" : total + " GB", "unused");
+      const daysLeft = e.expiresAt ? Math.max(0, Math.ceil((e.expiresAt - Date.now()) / DAY)) : null;
+      const statusCls = { Active: "success", "Not installed": "info", Expired: "neutral" }[s] || "neutral";
+      const country = countryBy(e.code);
+      return `<div class="col-md-6 col-xxl-4"><div class="card esim-card h-100 ${s === "Active" ? "status-installed" : ""} ${s === "Expired" ? "status-expired" : ""} ${e.archived ? "archived" : ""}" data-id="${e.id}">
+        <div class="strip"></div>
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            ${flagHtml({ code: e.code, name: e.country, regional: e.regional, icon: e.icon })}
+            <div class="min-w-0 flex-grow-1"><div class="fw-bold text-truncate">${esc(e.country)}</div><div class="fs-8 text-muted text-truncate">${esc(e.plan)}</div></div>
+            <span class="ab-status ${statusCls}">${e.archived ? "Archived" : esc(s)}</span>
+          </div>
+          <div class="d-flex align-items-center gap-3 mb-3">
+            ${ringHtml}
+            <div class="meta-grid flex-grow-1">
+              <div><span>${s === "Active" ? "Expires" : s === "Expired" ? "Expired" : "Install by"}</span><b>${e.expiresAt ? fmt.date(e.expiresAt) : fmt.date(e.purchasedAt + 180 * DAY)}</b></div>
+              <div><span>${s === "Active" ? "Days left" : "Validity"}</span><b>${s === "Active" ? daysLeft + (daysLeft === 1 ? " day" : " days") : e.days + " days"}</b></div>
+              <div><span>Network</span><b class="text-truncate d-block">${esc(country ? country.networks : "—")}</b></div>
+              <div><span>ICCID</span><b class="tabular">•••• ${esc(e.iccid.slice(-4))}</b></div>
+            </div>
+          </div>
+          ${s === "Active" && !unl ? `<div class="progress mb-1" style="height:6px" role="progressbar" aria-label="Data used" aria-valuenow="${Math.round(used / total * 100)}" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar" style="width:${used / total * 100}%;background:var(--ab-violet)"></div></div><div class="d-flex justify-content-between fs-8 text-muted mb-3"><span>${used.toFixed(2)} GB used</span><span>${Math.round(used / total * 100)}%</span></div>` : ""}
+          ${(e.topups || []).length ? `<div class="fs-8 text-muted mb-3"><i class="bi bi-plus-circle me-1"></i>${e.topups.length} top-up${e.topups.length > 1 ? "s" : ""} · last ${fmt.ago(e.topups[e.topups.length - 1].at)}</div>` : ""}
+          <div class="d-flex flex-wrap gap-2 mt-auto">
+            ${e.archived ? `<button class="btn btn-sm btn-soft flex-fill" data-act="unarchive"><i class="bi bi-arrow-counterclockwise me-1"></i>Restore</button>` : `
+            ${s === "Not installed" ? `<button class="btn btn-sm btn-primary flex-fill" data-act="install"><i class="bi bi-qr-code me-1"></i>Install</button><button class="btn btn-sm btn-success flex-fill" data-act="activate"><i class="bi bi-check2-circle me-1"></i>Mark installed</button>` : ""}
+            ${s === "Active" ? `<button class="btn btn-sm btn-primary flex-fill" data-act="topup"><i class="bi bi-plus-circle me-1"></i>Top up</button><button class="btn btn-sm btn-light-subtle flex-fill" data-act="install"><i class="bi bi-qr-code me-1"></i>QR & setup</button>` : ""}
+            ${s === "Expired" ? `<button class="btn btn-sm btn-primary flex-fill" data-act="topup"><i class="bi bi-arrow-repeat me-1"></i>Renew</button>` : ""}`}
+            <div class="dropdown">
+              <button class="btn btn-sm btn-light-subtle btn-icon" data-bs-toggle="dropdown" aria-label="More actions for ${esc(e.country)} eSIM"><i class="bi bi-three-dots"></i></button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><button class="dropdown-item" data-act="install"><i class="bi bi-qr-code"></i>View QR & instructions</button></li>
+                <li><button class="dropdown-item" data-act="copy"><i class="bi bi-copy"></i>Copy ICCID</button></li>
+                ${e.archived ? "" : `<li><button class="dropdown-item" data-act="archive"><i class="bi bi-archive"></i>Archive</button></li>`}
+                <li><hr class="dropdown-divider"></li>
+                <li><button class="dropdown-item text-danger" data-act="delete"><i class="bi bi-trash3"></i>Delete</button></li>
+              </ul>
+            </div>
+          </div>
+        </div></div></div>`;
+    }).join("");
+  }
+
+  $("#mineList").addEventListener("click", async (ev) => {
+    const b = ev.target.closest("[data-act]"); if (!b) return;
+    const id = b.closest("[data-id]").dataset.id;
+    const e = esims().find(x => x.id === id); if (!e) return;
+    switch (b.dataset.act) {
+      case "install": openInstall(id); break;
+      case "activate": AB.loading(b, 800).then(() => activate(id)); break;
+      case "topup": openPicker(e.code, { topupFor: e }); break;
+      case "copy": AB.copy(e.iccid, "ICCID copied"); break;
+      case "unarchive": saveEsim(id, x => ({ ...x, archived: false })); AB.toast("eSIM restored", "success"); renderMine(); break;
+      case "archive":
+        if (await confirmDialog({ title: "Archive this eSIM?", body: `${esc(e.country)} · ${esc(e.data)} will be hidden from your list. You can restore it from the Archived filter.`, cta: "Archive" })) {
+          saveEsim(id, x => ({ ...x, archived: true })); AB.toast("eSIM archived", "info"); renderMine();
+        } break;
+      case "delete":
+        if (await confirmDialog({ title: "Delete this eSIM?", body: `This permanently removes the ${esc(e.country)} eSIM record and its QR code from AutoBiz. ${computeStatus(e) === "Active" ? "<b>Remaining data will be lost.</b>" : ""}`, cta: "Delete", danger: true })) {
+          store.update("esims", l => l.filter(x => x.id !== id)); AB.toast("eSIM deleted", "info"); renderMine();
+        } break;
+    }
+  });
+
+  /* ======================================================
+     How it works
+     ====================================================== */
+  $("#howSteps").innerHTML = [
+    { i: "bi-search", t: "violet", h: "Pick a destination", p: "Search a country or choose a regional pack for multi-country trips." },
+    { i: "bi-wallet2", t: "primary", h: "Pay in Naira", p: "Choose a plan and pay from your AutoBiz wallet. No dollar card needed." },
+    { i: "bi-qr-code-scan", t: "cyan", h: "Scan the QR code", p: "Install on Wi‑Fi before you fly. It takes under 2 minutes." },
+    { i: "bi-airplane", t: "success", h: "Land & connect", p: "Turn on roaming for the eSIM when you arrive. Validity starts on first connection." }
+  ].map((s, i) => `<div class="col-6 col-lg-3"><div class="card how-step"><div class="card-body"><span class="num">0${i + 1}</span><span class="ab-icon tone-${s.t} mb-3"><i class="bi ${s.i}"></i></span><h6 class="mb-1">${s.h}</h6><p class="fs-7 text-muted mb-0">${s.p}</p></div></div></div>`).join("");
+
+  const FAQ = [
+    ["Which phones support eSIM?", "Most phones from 2019 onwards: iPhone XS/XR and newer, Samsung Galaxy S20 and newer, Z Fold/Flip, Google Pixel 4 and newer, and many Xiaomi, Oppo and Huawei flagships. Most Tecno, Infinix and itel models do <b>not</b> support eSIM yet. Your phone must also be <b>carrier-unlocked</b>."],
+    ["Can I keep my Nigerian SIM active?", "Yes. eSIM works alongside your physical SIM (dual SIM). Keep your Nigerian line for calls, SMS and bank OTPs, and use the eSIM for data."],
+    ["When does my plan start?", "Validity starts when the eSIM first connects to a supported network in your destination — not when you buy or install it. Install within 180 days of purchase."],
+    ["Can I make calls or send SMS?", "These are data-only eSIMs. Use WhatsApp, FaceTime, Telegram or Zoom for calls and messages."],
+    ["What if I run out of data?", "Open <b>My eSIMs</b> and tap <b>Top up</b>. New data is added instantly to the same eSIM — no new QR code needed."],
+    ["Can I reuse or transfer the QR code?", "Each QR code can be installed only once. If you delete the eSIM from your phone, contact support for a replacement before your trip."],
+    ["Refunds", "Unused eSIMs that haven't been installed can be refunded to your wallet within 7 days of purchase."]
+  ];
+  $("#faq").innerHTML = FAQ.map(([q, a], i) => `<div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button ${i ? "collapsed" : ""}" type="button" data-bs-toggle="collapse" data-bs-target="#faq${i}" aria-expanded="${!i}" aria-controls="faq${i}">${q}</button></h2><div id="faq${i}" class="accordion-collapse collapse ${i ? "" : "show"}" data-bs-parent="#faq"><div class="accordion-body fs-7 text-muted">${a}</div></div></div>`).join("");
+  const hd = $("#howDevice"); hd.innerHTML = deviceOptions();
+  hd.addEventListener("change", () => ($("#howCompat").innerHTML = compatHtml(hd)));
+
+  /* ---------- Init ---------- */
+  renderGrid(true);
+  updateCount();
+  store.on((k) => { if (k === "esims") updateCount(); });
+  const startTab = (AB.qs("tab") || location.hash.slice(1) || "buy");
+  setTab(startTab, false);
+  window.addEventListener("hashchange", () => setTab(location.hash.slice(1), false));
+  const pre = AB.qs("country"); if (pre && countryBy(pre)) openPicker(pre);
+});
+</script>
+</body>
+</html>

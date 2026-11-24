@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AutoBiz · Shop, travel &amp; pay — all in one place</title>
+  <meta name="description" content="Shop from verified sellers, buy travel eSIMs, book flights, get a USD virtual card, sell gift cards and pay for airtime, data and bills — all on AutoBiz.">
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="./assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="./assets/css/app.css" rel="stylesheet">
+  <script src="./assets/js/brand.js"></script>
+  <style>
+    .hm-section { margin-bottom: 2.25rem; }
+    .hm-head { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+    .hm-head h2 { font-size: 1.3rem; margin: 0; }
+    .hm-head p { margin: .15rem 0 0; color: var(--ab-muted); font-size: .875rem; }
+    .hm-head a { font-weight: 600; font-size: .875rem; white-space: nowrap; }
+
+    /* Hero carousel */
+    .hm-hero .carousel, .hm-hero .carousel-inner, .hm-hero .carousel-item { height: 100%; }
+    .hm-slide { border-radius: 22px; padding: 2.25rem; color: #fff; position: relative; overflow: hidden; min-height: 360px; height: 100%; display: flex; flex-direction: column; justify-content: center; }
+    .hm-slide h1, .hm-slide h2 { color: #fff; font-size: clamp(1.6rem, 3.4vw, 2.5rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.12; max-width: 520px; }
+    .hm-slide p { opacity: .85; max-width: 440px; }
+    .hm-slide .art { position: absolute; right: 4%; bottom: 50%; transform: translateY(50%) rotate(-8deg); font-size: 11rem; opacity: .9; filter: drop-shadow(0 20px 30px rgba(0,0,0,.25)); }
+    .hm-slide::after { content: ""; position: absolute; width: 380px; height: 380px; border-radius: 50%; right: -100px; top: -120px; background: radial-gradient(circle, rgba(255,255,255,.18), transparent 70%); }
+    .hm-slide > * { position: relative; z-index: 1; }
+    .hm-slide .art { z-index: 0; }
+    .hm-slide.s1 { background: linear-gradient(120deg, var(--ab-sidebar) 0%, var(--ab-primary-700) 65%, var(--ab-primary) 130%); }
+    .hm-slide.s1 .art { color: #ffd43b; }
+    .hm-slide.s2 { background: linear-gradient(120deg, #4c2bd1, #7048e8 60%, #9775fa); }
+    .hm-slide.s3 { background: linear-gradient(120deg, #a61e4d, #e64980 70%, #f783ac); }
+    .hm-slide .btn-white { background: #fff; color: #0f1730; font-weight: 700; }
+    .hm-slide .btn-white:hover { background: var(--ab-primary-soft); }
+    .hm-hero .carousel-indicators { justify-content: flex-start; margin: 0 0 1.1rem 2.25rem; }
+    .hm-hero .carousel-indicators [data-bs-target] { width: 22px; height: 4px; border-radius: 4px; border: 0; }
+    @media (max-width: 767.98px) { .hm-slide { min-height: 260px; padding: 1.5rem 1.5rem 2.5rem; } .hm-slide .art { font-size: 6rem; right: -2%; opacity: .3; } .hm-hero .carousel-indicators { margin-left: 1.5rem; } }
+
+    /* Quick services widget */
+    .hm-quick .nav-tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .hm-quick .nav-tabs::-webkit-scrollbar { display: none; }
+    .hm-quick .nav-tabs .nav-link { padding: .7rem .75rem; font-size: .8125rem; white-space: nowrap; display: flex; align-items: center; gap: .35rem; }
+    .hm-quick .form-label { font-size: .75rem; color: var(--ab-muted); }
+    .hm-payout { background: var(--ab-accent-soft); color: var(--ab-accent); border-radius: 12px; padding: .7rem .9rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+
+    /* Services grid */
+    .hm-svc { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    @media (max-width: 991.98px) { .hm-svc { grid-template-columns: repeat(2, 1fr); gap: .75rem; } }
+    .hm-svc a { display: flex; gap: .9rem; align-items: flex-start; padding: 1.1rem; background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 18px; color: var(--ab-text); transition: all .2s; height: 100%; }
+    .hm-svc a:hover { border-color: rgba(var(--ab-primary-rgb), .35); transform: translateY(-3px); box-shadow: var(--ab-shadow); }
+    .hm-svc b { display: block; font-size: .95rem; }
+    .hm-svc span.d { display: block; font-size: .78rem; color: var(--ab-muted); margin-top: 2px; }
+    @media (max-width: 575.98px) { .hm-svc a { flex-direction: column; gap: .6rem; padding: .9rem; } }
+
+    /* Product cards */
+    .hm-prod { background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 18px; padding: .7rem; height: 100%; display: flex; flex-direction: column; transition: all .2s; }
+    .hm-prod:hover { box-shadow: var(--ab-shadow); transform: translateY(-3px); }
+    .hm-prod .art-wrap { position: relative; }
+    .hm-prod .off { position: absolute; top: 8px; left: 8px; background: var(--ab-danger); color: #fff; font-size: .7rem; font-weight: 700; padding: 2px 7px; border-radius: 7px; z-index: 2; }
+    .hm-prod .nm { font-size: .84rem; font-weight: 600; margin: .6rem 0 .2rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.4em; color: var(--ab-text); }
+    .hm-prod .pr { font-weight: 800; }
+    .hm-prod .old { font-size: .75rem; color: var(--ab-muted); text-decoration: line-through; }
+    .hm-prod .add { width: 34px; height: 34px; }
+    .hm-deals { background: linear-gradient(180deg, var(--ab-danger-soft), transparent 70%); border: 1px solid var(--ab-border); border-radius: 22px; padding: 1.25rem; }
+    .hm-deals .hscroll > * { width: 200px; }
+    @media (max-width: 575.98px) { .hm-deals .hscroll > * { width: 165px; } .hm-deals { padding: 1rem; } }
+    .cd span { background: var(--ab-danger); color: #fff; border-radius: 8px; padding: .2rem .45rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+    /* Categories */
+    .hm-cats { display: grid; grid-template-columns: repeat(8, 1fr); gap: .75rem; }
+    @media (max-width: 991.98px) { .hm-cats { grid-template-columns: repeat(4, 1fr); } }
+    .hm-cats a { text-align: center; padding: 1rem .5rem; background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 16px; color: var(--ab-text); font-size: .78rem; font-weight: 600; transition: all .2s; }
+    .hm-cats a:hover { border-color: rgba(var(--ab-primary-rgb), .35); transform: translateY(-2px); }
+    .hm-cats .ab-icon { margin-bottom: .5rem; }
+    @media (max-width: 575.98px) { .hm-cats { gap: .5rem; } .hm-cats a { padding: .75rem .25rem; font-size: .7rem; } .hm-cats .ab-icon { width: 44px; height: 44px; font-size: 1.2rem; } }
+
+    /* Travel lists */
+    .hm-row { display: flex; align-items: center; gap: .85rem; padding: .7rem; border-radius: 14px; color: var(--ab-text); transition: background .15s; }
+    .hm-row:hover { background: var(--ab-surface-2); color: var(--ab-text); }
+    .hm-row img { width: 40px; height: 28px; object-fit: cover; border-radius: 6px; box-shadow: 0 0 0 1px var(--ab-border); }
+    .hm-route { font-weight: 800; letter-spacing: -.01em; }
+    .hm-rate { border: 1px solid var(--ab-border); }
+
+    /* USD card band */
+    .hm-band { border-radius: 24px; padding: 2.25rem; color: #fff; position: relative; overflow: hidden; background: radial-gradient(120% 140% at 100% 0%, rgba(var(--ab-primary-rgb), .35) 0%, var(--ab-sidebar) 60%); }
+    .hm-band h2 { color: #fff; }
+    .hm-band ul { list-style: none; padding: 0; margin: 1rem 0 1.5rem; }
+    .hm-band li { margin-bottom: .5rem; opacity: .9; }
+    .hm-band li i { color: #3ddba9; margin-right: .5rem; }
+    .hm-vcard { width: 100%; max-width: 360px; aspect-ratio: 1.586; border-radius: 20px; padding: 1.4rem; margin-left: auto; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(135deg, var(--ab-primary-300), var(--ab-primary) 55%, var(--ab-primary-700)); box-shadow: 0 30px 60px -20px rgba(var(--ab-primary-rgb), .7); transform: rotate(-6deg); }
+    .hm-vnum { font-size: clamp(.95rem, 4vw, 1.25rem) !important; }
+    .hm-vcard .chip { width: 42px; height: 32px; border-radius: 7px; background: linear-gradient(135deg, #f8e3a1, #c9a74a); }
+    @media (max-width: 767.98px) { .hm-band { padding: 1.5rem; } .hm-vcard { transform: none; margin: .5rem auto 0; max-width: 300px; } }
+
+    /* Bills */
+    .hm-nets img { width: 44px; height: 44px; border-radius: 12px; object-fit: cover; }
+
+    /* Steps + CTA */
+    .hm-step { text-align: center; padding: 1.5rem 1rem; }
+    .hm-step .n { width: 34px; height: 34px; border-radius: 50%; background: var(--ab-primary); color: #fff; font-weight: 800; display: inline-grid; place-items: center; margin-bottom: .75rem; }
+    .hm-cta { border-radius: 24px; padding: 2rem; background: linear-gradient(120deg, var(--ab-primary-700), var(--ab-primary)); color: #fff; }
+    .hm-cta h2 { color: #fff; }
+  </style>
+</head>
+<body data-page="home" data-title="Home" data-public="true" data-shell="store">
+<main class="ab-content">
+
+  <!-- Hero: promos + quick services -->
+  <section class="hm-section row g-3 g-lg-4">
+    <div class="col-lg-8 hm-hero">
+      <div id="hmCarousel" class="carousel slide h-100" data-bs-ride="carousel" data-bs-interval="6000">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#hmCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#hmCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+          <button type="button" data-bs-target="#hmCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner rounded-2xl h-100">
+          <div class="carousel-item active">
+            <div class="hm-slide s1">
+              <span class="badge bg-warning text-dark align-self-start mb-3"><i class="bi bi-lightning-charge-fill me-1"></i>Black Friday deals</span>
+              <h1>Up to 30% off phones, gadgets &amp; more</h1>
+              <p class="mb-4">Genuine products from verified sellers, delivered nationwide.</p>
+              <div><a href="./app/marketplace.html" class="btn btn-white btn-lg">Shop deals</a></div>
+              <i class="bi bi-phone art" aria-hidden="true"></i>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="hm-slide s2">
+              <span class="badge bg-white text-dark align-self-start mb-3"><i class="bi bi-globe2 me-1"></i>Travel eSIM</span>
+              <h2>Land connected in 120+ countries</h2>
+              <p class="mb-4">Buy data before you fly. Install in 2 minutes — no roaming bills.</p>
+              <div><a href="./app/esim.html" class="btn btn-white btn-lg">Find an eSIM</a></div>
+              <i class="bi bi-sim art" aria-hidden="true"></i>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="hm-slide s3">
+              <span class="badge bg-white text-dark align-self-start mb-3"><i class="bi bi-gift me-1"></i>Gift card exchange</span>
+              <h2>Turn gift cards into Naira in minutes</h2>
+              <p class="mb-4" id="heroGiftLine">Apple, Steam, Amazon &amp; more at top rates.</p>
+              <div><a href="./app/giftcards.html" class="btn btn-white btn-lg">Check rates</a></div>
+              <i class="bi bi-gift art" aria-hidden="true"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card h-100 hm-quick">
+        <div class="card-header pb-0 pt-3 px-3 border-0">
+          <h6 class="card-title mb-2 px-1">What do you need today?</h6>
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#qAirtime" type="button" role="tab"><i class="bi bi-phone"></i>Airtime</button></li>
+            <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#qFlight" type="button" role="tab"><i class="bi bi-airplane"></i>Flights</button></li>
+            <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#qEsim" type="button" role="tab"><i class="bi bi-sim"></i>eSIM</button></li>
+            <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#qGift" type="button" role="tab"><i class="bi bi-gift"></i>Gift card</button></li>
+          </ul>
+        </div>
+        <div class="card-body tab-content">
+          <!-- Airtime / data -->
+          <form class="tab-pane fade show active" id="qAirtime" role="tabpanel" novalidate>
+            <div class="d-flex gap-2 mb-3" id="qNets"></div>
+            <label class="form-label" for="qPhone">Phone number</label>
+            <input class="form-control" id="qPhone" inputmode="tel" maxlength="11" placeholder="0803 123 4567" autocomplete="tel">
+            <div class="invalid-feedback">Enter a valid 11-digit Nigerian number</div>
+            <div class="fs-8 text-muted mt-1 mb-3" id="qNetHint">We'll detect the network for you</div>
+            <div class="row g-2">
+              <div class="col-6"><button type="submit" class="btn btn-primary w-100" data-go-bills="airtime">Buy airtime</button></div>
+              <div class="col-6"><button type="button" class="btn btn-light-subtle w-100" data-go-bills="data">Buy data</button></div>
+            </div>
+            <div class="d-flex flex-wrap gap-2 mt-3">
+              <a href="./app/bills.html?tab=electricity" class="ab-chip"><i class="bi bi-lightning-charge"></i>Electricity</a>
+              <a href="./app/bills.html?tab=cable" class="ab-chip"><i class="bi bi-tv"></i>Cable TV</a>
+              <a href="./app/bills.html?tab=betting" class="ab-chip"><i class="bi bi-trophy"></i>Betting</a>
+            </div>
+          </form>
+          <!-- Flights -->
+          <form class="tab-pane fade" id="qFlight" role="tabpanel" novalidate>
+            <label class="form-label" for="qFrom">From</label>
+            <select class="form-select mb-2" id="qFrom"></select>
+            <label class="form-label" for="qTo">To</label>
+            <select class="form-select" id="qTo"></select>
+            <div class="invalid-feedback">Choose a different destination</div>
+            <button class="btn btn-primary w-100 mt-3"><i class="bi bi-search me-1"></i>Search flights</button>
+            <div class="fs-8 text-muted text-center mt-2">Local &amp; international · Pay in Naira</div>
+          </form>
+          <!-- eSIM -->
+          <form class="tab-pane fade" id="qEsim" role="tabpanel" novalidate>
+            <label class="form-label" for="qCountry">Where are you travelling?</label>
+            <select class="form-select mb-3" id="qCountry"></select>
+            <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-surface-2 mb-3">
+              <img id="qFlag" src="" alt="" width="40" height="28" style="border-radius:6px;object-fit:cover">
+              <div><div class="fw-bold" id="qEsimFrom"></div><div class="fs-8 text-muted" id="qEsimNet"></div></div>
+            </div>
+            <button class="btn btn-primary w-100">See data plans</button>
+          </form>
+          <!-- Gift card -->
+          <form class="tab-pane fade" id="qGift" role="tabpanel" novalidate>
+            <div class="row g-2 mb-2">
+              <div class="col-7"><label class="form-label" for="qCard">Card</label><select class="form-select" id="qCard"></select></div>
+              <div class="col-5"><label class="form-label" for="qUsd">Amount ($)</label><input class="form-control" id="qUsd" type="number" min="10" value="100"></div>
+            </div>
+            <div class="hm-payout mb-1 mt-3"><span class="fs-7">You'll receive about</span><span class="fs-5 tabular" id="qPayout">₦0</span></div>
+            <div class="fs-8 text-muted mb-3" id="qRate"></div>
+            <button class="btn btn-primary w-100">Sell this card</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Everything on AutoBiz -->
+  <section class="hm-section">
+    <div class="hm-head"><div><h2>Everything you can do on AutoBiz</h2><p>One account, one wallet — shopping, travel and payments.</p></div></div>
+    <div class="hm-svc">
+      <a href="./app/marketplace.html"><span class="ab-icon ab-icon-lg tone-primary"><i class="bi bi-shop"></i></span><span><b>Shop the marketplace</b><span class="d">Phones, fashion, home &amp; more from verified sellers</span></span></a>
+      <a href="./app/esim.html"><span class="ab-icon ab-icon-lg tone-violet"><i class="bi bi-sim"></i></span><span><b>Travel eSIM</b><span class="d">Mobile data in 120+ countries from $3</span></span></a>
+      <a href="./app/flights.html"><span class="ab-icon ab-icon-lg tone-cyan"><i class="bi bi-airplane"></i></span><span><b>Book flights</b><span class="d">Local &amp; international, pay in Naira</span></span></a>
+      <a href="./app/virtual-cards.html"><span class="ab-icon ab-icon-lg tone-success"><i class="bi bi-credit-card-2-front"></i></span><span><b>USD virtual card</b><span class="d">Pay Netflix, Amazon, AliExpress &amp; more</span></span></a>
+      <a href="./app/giftcards.html"><span class="ab-icon ab-icon-lg tone-pink"><i class="bi bi-gift"></i></span><span><b>Sell gift cards</b><span class="d">Top rates, paid to your wallet in minutes</span></span></a>
+      <a href="./app/bills.html?tab=airtime"><span class="ab-icon ab-icon-lg tone-warning"><i class="bi bi-phone"></i></span><span><b>Airtime &amp; data</b><span class="d">All networks, delivered instantly</span></span></a>
+      <a href="./app/bills.html?tab=electricity"><span class="ab-icon ab-icon-lg tone-orange"><i class="bi bi-lightning-charge"></i></span><span><b>Electricity</b><span class="d">Prepaid tokens for every DisCo</span></span></a>
+      <a href="./app/bills.html?tab=cable"><span class="ab-icon ab-icon-lg tone-cyan"><i class="bi bi-tv"></i></span><span><b>Cable TV &amp; more</b><span class="d">DStv, GOtv, StarTimes, exam pins, betting</span></span></a>
+    </div>
+  </section>
+
+  <!-- Flash deals -->
+  <section class="hm-section hm-deals">
+    <div class="hm-head">
+      <div><h2><i class="bi bi-lightning-charge-fill text-danger me-1"></i>Flash deals</h2><p>Biggest discounts of the day</p></div>
+      <div class="d-flex align-items-center gap-2"><span class="fs-8 text-muted d-none d-sm-inline">Ends in</span><span class="cd d-flex gap-1 align-items-center" id="cd" aria-label="Time left"></span></div>
+    </div>
+    <div class="hscroll" id="deals"></div>
+  </section>
+
+  <!-- Categories -->
+  <section class="hm-section">
+    <div class="hm-head"><div><h2>Shop by category</h2></div><a href="./app/marketplace.html">See all <i class="bi bi-arrow-right"></i></a></div>
+    <div class="hm-cats" id="cats"></div>
+  </section>
+
+  <!-- Travel -->
+  <section class="hm-section row g-3 g-lg-4" id="travel">
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="hm-head"><div><h2><i class="bi bi-sim text-primary me-1"></i>Travel eSIMs</h2><p>Instant data abroad. No physical SIM needed.</p></div><a href="./app/esim.html">All destinations</a></div>
+          <div class="row g-1" id="esims"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="hm-head"><div><h2><i class="bi bi-airplane text-primary me-1"></i>Popular flights</h2><p>Compare airlines and book in Naira.</p></div><a href="./app/flights.html">Search flights</a></div>
+          <div id="routes"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gift cards -->
+  <section class="hm-section card" id="giftcards">
+    <div class="card-body">
+      <div class="hm-head"><div><h2><i class="bi bi-gift text-primary me-1"></i>Today's gift card rates</h2><p>Sell your gift cards and get paid to your wallet in 5–15 minutes.</p></div><a href="./app/giftcards.html?tab=rates">All rates</a></div>
+      <div class="row g-2" id="rates"></div>
+    </div>
+  </section>
+
+  <!-- USD card band -->
+  <section class="hm-section hm-band">
+    <div class="row align-items-center g-4">
+      <div class="col-md-7">
+        <span class="badge rounded-pill mb-3" style="background:rgba(61,219,169,.18);color:#3ddba9">USD virtual card</span>
+        <h2 class="mb-2">Shop and subscribe anywhere online in dollars</h2>
+        <p class="opacity-75 mb-0">Create a Visa or Mastercard in seconds and fund it from your Naira wallet.</p>
+        <ul>
+          <li><i class="bi bi-check-circle-fill"></i>Works on Netflix, Spotify, Amazon, AliExpress, Apple &amp; more</li>
+          <li><i class="bi bi-check-circle-fill"></i>Freeze, unfreeze and set spending limits anytime</li>
+          <li><i class="bi bi-check-circle-fill"></i>$2 to create · fund from $5</li>
+        </ul>
+        <a href="./app/virtual-cards.html" class="btn btn-light btn-lg fw-bold">Get your card</a>
+      </div>
+      <div class="col-md-5">
+        <div class="hm-vcard" aria-hidden="true">
+          <div class="d-flex justify-content-between align-items-center"><span class="fw-800">AutoBiz</span><i class="bi bi-wifi fs-4" style="transform:rotate(90deg)"></i></div>
+          <div class="chip"></div>
+          <div class="d-flex justify-content-between align-items-end"><div><div class="fs-5 fw-semibold tabular text-nowrap hm-vnum">•••• •••• •••• 4081</div><div class="fs-8 opacity-75">VALID THRU 11/29</div></div><span class="fw-800 fst-italic fs-4">VISA</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trending -->
+  <section class="hm-section">
+    <div class="hm-head"><div><h2>Trending products</h2><p>What shoppers are buying this week</p></div><a href="./app/marketplace.html">View all <i class="bi bi-arrow-right"></i></a></div>
+    <div class="row g-2 g-md-3" id="trending"></div>
+  </section>
+
+  <!-- Bills -->
+  <section class="hm-section card">
+    <div class="card-body d-flex flex-column flex-lg-row align-items-lg-center gap-3 justify-content-between">
+      <div class="d-flex align-items-center gap-3">
+        <span class="ab-icon ab-icon-lg tone-warning"><i class="bi bi-lightning-charge"></i></span>
+        <div><h2 class="h5 mb-1">Airtime, data &amp; bills in seconds</h2><div class="fs-7 text-muted">MTN, Airtel, Glo &amp; 9mobile · electricity · cable TV · exam pins</div></div>
+      </div>
+      <div class="d-flex align-items-center gap-2 hm-nets flex-wrap">
+        <img src="./assets/img/networks/mtn.png" alt="MTN"><img src="./assets/img/networks/airtel.png" alt="Airtel"><img src="./assets/img/networks/glo.png" alt="Glo"><img src="./assets/img/networks/9mobile.png" alt="9mobile">
+        <a href="./app/bills.html" class="btn btn-primary ms-lg-3">Pay a bill</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="hm-section" id="how">
+    <div class="hm-head justify-content-center text-center"><div><h2>How AutoBiz works</h2><p>Browse freely — you only need an account when you pay.</p></div></div>
+    <div class="row g-3">
+      <div class="col-md-4"><div class="card hm-step h-100"><div><span class="n">1</span></div><h6>Browse everything</h6><p class="fs-7 text-muted mb-0">Shop products, compare flights, check eSIM plans and gift card rates — no sign-up needed.</p></div></div>
+      <div class="col-md-4"><div class="card hm-step h-100"><div><span class="n">2</span></div><h6>Create a free account</h6><p class="fs-7 text-muted mb-0">Sign up in a minute when you're ready to pay, then fund your wallet by transfer or card.</p></div></div>
+      <div class="col-md-4"><div class="card hm-step h-100"><div><span class="n">3</span></div><h6>Pay with your PIN</h6><p class="fs-7 text-muted mb-0">Confirm with your 4-digit PIN. Orders, tickets, eSIMs and tokens arrive instantly.</p></div></div>
+    </div>
+  </section>
+
+  <!-- FAQ + CTA -->
+  <section class="hm-section row g-3 g-lg-4" id="faq">
+    <div class="col-lg-7">
+      <h2 class="h4 mb-3">Frequently asked questions</h2>
+      <div class="accordion" id="faqAcc">
+        <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#f1">Do I need an account to shop?</button></h3><div id="f1" class="accordion-collapse collapse show" data-bs-parent="#faqAcc"><div class="accordion-body fs-7 text-muted">No. You can browse every product and service and add items to your cart. We only ask you to log in or sign up when you're ready to pay.</div></div></div>
+        <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#f2">How do I pay?</button></h3><div id="f2" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body fs-7 text-muted">Fund your AutoBiz wallet by bank transfer to your dedicated account, by debit card or with a voucher, then pay for anything with your transaction PIN. Marketplace orders also support pay on delivery.</div></div></div>
+        <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#f3">How does a travel eSIM work?</button></h3><div id="f3" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body fs-7 text-muted">Pick your destination and data plan, scan the QR code we give you, and your phone connects when you land. Your phone must support eSIM — you can check on the eSIM page.</div></div></div>
+        <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#f4">How fast are gift card payouts?</button></h3><div id="f4" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body fs-7 text-muted">Most trades are reviewed and paid to your wallet within 5–15 minutes. You can follow each trade's progress under My trades.</div></div></div>
+        <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#f5">What if my order doesn't arrive?</button></h3><div id="f5" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body fs-7 text-muted">Every marketplace order has buyer protection. If it doesn't arrive, or isn't as described, you get your money back to your wallet.</div></div></div>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="hm-cta h-100 d-flex flex-column justify-content-center">
+        <span class="ab-icon ab-icon-lg mb-3" style="background:rgba(255,255,255,.16);color:#fff"><i class="bi bi-person-plus"></i></span>
+        <h2 class="h3 mb-2" id="ctaTitle">Ready when you are</h2>
+        <p class="opacity-75 mb-4" id="ctaText">Create a free account in a minute and get ₦1,000 off your first marketplace order.</p>
+        <div class="d-flex flex-wrap gap-2" id="ctaBtns">
+          <a href="./register.html" class="btn btn-light btn-lg fw-bold">Create free account</a>
+          <a href="./login.html" class="btn btn-lg text-white border border-light border-opacity-50">Log in</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/js/data.js"></script>
+<script src="./assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const D = AB_DATA, { fmt, esc } = AB;
+  const $ = (id) => document.getElementById(id);
+  const disc = (p) => Math.round((1 - p.price / p.oldPrice) * 100);
+
+  /* ---- Product cards (browse + add to cart without an account) ---- */
+  const card = (p) => `
+    <div class="hm-prod">
+      <a href="./app/product.html?id=${p.id}" class="art-wrap d-block">${p.oldPrice > p.price ? `<span class="off">-${disc(p)}%</span>` : ""}${AB.productArt(p)}</a>
+      <a href="./app/product.html?id=${p.id}" class="nm">${esc(p.name)}</a>
+      <span class="fs-8 text-muted"><i class="bi bi-star-fill text-warning"></i> ${p.rating} (${fmt.num(p.reviews)})</span>
+      <div class="d-flex align-items-end justify-content-between mt-auto pt-2 gap-1">
+        <div class="min-w-0"><div class="pr tabular text-truncate">${fmt.naira(p.price)}</div><div class="old tabular">${fmt.naira(p.oldPrice)}</div></div>
+        <button class="btn btn-soft btn-icon add flex-shrink-0" data-add="${p.id}" aria-label="Add ${esc(p.name)} to cart"><i class="bi bi-cart-plus"></i></button>
+      </div>
+    </div>`;
+  $("deals").innerHTML = [...D.products].sort((a, b) => disc(b) - disc(a)).slice(0, 10).map(card).join("");
+  $("trending").innerHTML = [...D.products].sort((a, b) => b.reviews - a.reviews).slice(0, 8).map((p) => `<div class="col-6 col-md-4 col-lg-3">${card(p)}</div>`).join("");
+  document.querySelector("main").addEventListener("click", (e) => { const b = e.target.closest("[data-add]"); if (b) AB.cart.add(b.dataset.add, 1); });
+
+  // Deal countdown to midnight
+  const tick = () => {
+    const end = new Date(); end.setHours(24, 0, 0, 0);
+    const s = Math.max(0, Math.floor((end - Date.now()) / 1000));
+    const p = (n) => String(n).padStart(2, "0");
+    $("cd").innerHTML = `<span>${p(Math.floor(s / 3600))}</span>:<span>${p(Math.floor(s / 60) % 60)}</span>:<span>${p(s % 60)}</span>`;
+  };
+  tick(); setInterval(tick, 1000);
+
+  /* ---- Categories ---- */
+  $("cats").innerHTML = D.categories.map((c) => `<a href="./app/marketplace.html?cat=${c.id}"><span class="ab-icon ab-icon-lg tone-${c.tone}"><i class="bi ${c.icon}"></i></span><div>${esc(c.name)}</div></a>`).join("");
+
+  /* ---- eSIM destinations ---- */
+  $("esims").innerHTML = ["gb", "us", "ae", "ca", "gh", "tr", "fr", "gl"].map((code) => D.esimCountries.find((c) => c.code === code)).filter(Boolean).map((c) => `
+    <div class="col-sm-6"><a class="hm-row" href="./app/esim.html?country=${c.code}">
+      ${c.regional ? `<span class="ab-icon ab-icon-sm tone-violet"><i class="bi ${c.icon}"></i></span>` : `<img src="${AB.flag(c.code)}" alt="" loading="lazy">`}
+      <div class="min-w-0 flex-grow-1"><div class="fw-semibold fs-7 text-truncate">${esc(c.name)}</div><div class="fs-8 text-muted">${c.speed} · from ${fmt.usd(c.from)}</div></div>
+      <span class="fs-8 fw-bold text-primary text-nowrap">${fmt.naira(Math.round(c.from * D.usdRate))}</span>
+    </a></div>`).join("");
+
+  /* ---- Flight routes ---- */
+  const ap = (code) => D.airports.find((a) => a.code === code);
+  $("routes").innerHTML = [["LOS", "ABV"], ["LOS", "DXB"], ["ABV", "LHR"], ["LOS", "ACC"], ["PHC", "LOS"], ["LOS", "JFK"]].map(([f, t]) => `
+    <a class="hm-row" href="./app/flights.html?from=${f}&to=${t}">
+      <span class="ab-icon ab-icon-sm tone-cyan"><i class="bi bi-airplane"></i></span>
+      <div class="flex-grow-1 min-w-0"><div class="hm-route fs-7 text-truncate">${ap(f).city} <i class="bi bi-arrow-right mx-1 text-muted"></i> ${ap(t).city}</div><div class="fs-8 text-muted text-truncate">${f} → ${t} · ${ap(t).country === "Nigeria" && ap(f).country === "Nigeria" ? "Domestic" : "International"}</div></div>
+      <span class="btn btn-sm btn-soft flex-shrink-0">Check fares</span>
+    </a>`).join("");
+
+  /* ---- Gift card rates ---- */
+  const best = (g) => Math.max(...Object.values(g.types));
+  const topCards = [...D.giftcards].sort((a, b) => best(b) - best(a)).slice(0, 6);
+  $("rates").innerHTML = topCards.map((g) => `
+    <div class="col-6 col-md-4 col-xl-2"><a href="./app/giftcards.html?card=${g.id}" class="hm-row hm-rate flex-column align-items-start h-100">
+      <span class="ab-icon" style="background:${g.color};color:#fff"><i class="bi ${g.icon}"></i></span>
+      <div class="fw-semibold fs-7 mt-1">${esc(g.name)}</div>
+      <div><span class="fs-8 text-muted">up to </span><span class="fw-800 text-success tabular">${fmt.naira(best(g))}/$</span></div>
+    </a></div>`).join("");
+  $("heroGiftLine").textContent = `Apple, Steam, Amazon & more — up to ${fmt.naira(best(topCards[0]))}/$, paid in minutes.`;
+
+  /* ---- Quick services widget ---- */
+  // Airtime / data: detect network from the number, then continue on the bills page
+  const prefixes = { mtn: ["0803", "0806", "0703", "0706", "0813", "0816", "0810", "0814", "0903", "0906", "0913", "0916"], airtel: ["0802", "0808", "0708", "0812", "0701", "0902", "0901", "0904", "0907", "0912"], glo: ["0805", "0807", "0705", "0815", "0811", "0905", "0915"], "9mobile": ["0809", "0817", "0818", "0909", "0908"] };
+  $("qNets").innerHTML = D.networks.map((n) => `<img src="./assets/img/networks/${n.logo}" alt="${n.name}" title="${n.name}" class="network-logo" data-net="${n.id}" style="opacity:.4;transition:opacity .2s">`).join("");
+  const phone = $("qPhone");
+  phone.addEventListener("input", () => {
+    phone.value = phone.value.replace(/\D/g, "").slice(0, 11);
+    phone.classList.remove("is-invalid");
+    const net = Object.keys(prefixes).find((k) => prefixes[k].includes(phone.value.slice(0, 4)));
+    document.querySelectorAll("#qNets img").forEach((i) => (i.style.opacity = net ? (i.dataset.net === net ? 1 : .2) : .4));
+    $("qNetHint").textContent = net ? `${D.networks.find((n) => n.id === net).name} number detected` : "We'll detect the network for you";
+  });
+  const goBills = (tab) => {
+    if (!/^0[789]\d{9}$/.test(phone.value)) { phone.classList.add("is-invalid"); phone.focus(); return; }
+    location.href = `./app/bills.html?tab=${tab}&phone=${phone.value}`;
+  };
+  $("qAirtime").addEventListener("submit", (e) => { e.preventDefault(); goBills("airtime"); });
+  document.querySelector('[data-go-bills="data"]').addEventListener("click", () => goBills("data"));
+
+  // Flights
+  const opts = (sel) => D.airports.map((a) => `<option value="${a.code}" ${a.code === sel ? "selected" : ""}>${esc(a.city)} (${a.code})</option>`).join("");
+  $("qFrom").innerHTML = opts("LOS"); $("qTo").innerHTML = opts("ABV");
+  [$("qFrom"), $("qTo")].forEach((s) => s.addEventListener("change", () => $("qTo").classList.remove("is-invalid")));
+  $("qFlight").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if ($("qFrom").value === $("qTo").value) { $("qTo").classList.add("is-invalid"); return; }
+    location.href = `./app/flights.html?from=${$("qFrom").value}&to=${$("qTo").value}`;
+  });
+
+  // eSIM
+  $("qCountry").innerHTML = D.esimCountries.map((c) => `<option value="${c.code}" ${c.code === "gb" ? "selected" : ""}>${esc(c.name)}</option>`).join("");
+  const syncEsim = () => {
+    const c = D.esimCountries.find((x) => x.code === $("qCountry").value);
+    $("qFlag").src = AB.flag(c.regional ? "un" : c.code);
+    $("qEsimFrom").textContent = `From ${fmt.usd(c.from)} · ${fmt.naira(Math.round(c.from * D.usdRate))}`;
+    $("qEsimNet").textContent = `${c.speed} · ${c.networks}`;
+  };
+  $("qCountry").addEventListener("change", syncEsim); syncEsim();
+  $("qEsim").addEventListener("submit", (e) => { e.preventDefault(); location.href = `./app/esim.html?country=${$("qCountry").value}`; });
+
+  // Gift card calculator
+  $("qCard").innerHTML = D.giftcards.map((g) => `<option value="${g.id}">${esc(g.name)}</option>`).join("");
+  const syncGift = () => {
+    const g = D.giftcards.find((x) => x.id === $("qCard").value);
+    const usd = Math.max(0, Number($("qUsd").value) || 0), rate = best(g);
+    $("qPayout").textContent = fmt.naira(usd * rate);
+    $("qRate").textContent = `Best rate ${fmt.naira(rate)}/$ · accepts $${g.range[0]}–$${g.range[1]}`;
+  };
+  ["change", "input"].forEach((ev) => { $("qCard").addEventListener(ev, syncGift); $("qUsd").addEventListener(ev, syncGift); });
+  syncGift();
+  $("qGift").addEventListener("submit", (e) => { e.preventDefault(); location.href = `./app/giftcards.html?card=${$("qCard").value}`; });
+
+  /* ---- Members see their account instead of sign-up prompts ---- */
+  if (AB.auth.isAuthed()) {
+    const u = AB.store.get("user");
+    $("ctaTitle").textContent = `Welcome back, ${u.firstName}`;
+    $("ctaText").textContent = "Your wallet, orders, trips, eSIMs and cards are all in your account.";
+    $("ctaBtns").innerHTML = `<a href="./app/dashboard.html" class="btn btn-light btn-lg fw-bold">Go to my account</a><a href="./app/wallet.html" class="btn btn-lg text-white border border-light border-opacity-50">Fund wallet</a>`;
+  }
+});
+</script>
+</body>
+</html>

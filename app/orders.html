@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>My Orders · AutoBiz</title>
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/app.css" rel="stylesheet">
+  <script src="../assets/js/brand.js"></script>
+  <style>
+    .order-card .thumbs { display: flex; gap: .5rem; }
+    .order-card .thumbs .ab-product-art.sm { width: 54px; height: 54px; font-size: 1.35rem; }
+    .order-card .more { width: 54px; height: 54px; border-radius: 12px; background: var(--ab-surface-2); display: grid; place-items: center; font-weight: 700; font-size: .8rem; color: var(--ab-muted); flex-shrink: 0; }
+    .order-card .meta-grid { display: grid; grid-template-columns: repeat(3, auto); gap: .25rem 1.5rem; }
+    @media (max-width: 575.98px) { .order-card .meta-grid { grid-template-columns: 1fr 1fr; } .order-card .thumbs .ab-product-art.sm:nth-child(n+4) { display: none; } }
+    .oc-detail { width: min(520px, 100vw) !important; }
+    .voucher { border: 1.5px dashed rgba(var(--ab-primary-rgb), .45); background: var(--ab-primary-soft); border-radius: 12px; padding: .55rem .75rem; display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+    .voucher code { color: var(--ab-text); font-size: .9rem; font-weight: 700; letter-spacing: .05em; word-break: break-all; }
+    @media (max-width: 575.98px) { .voucher code { font-size: .78rem; letter-spacing: 0; } }
+    .voucher.void { opacity: .55; } .voucher.void code { text-decoration: line-through; }
+    .eta-box { border-radius: 14px; padding: 1rem; background: linear-gradient(135deg, var(--ab-primary-soft), var(--ab-violet-soft)); }
+    .d-item { display: flex; gap: .8rem; align-items: flex-start; padding: .7rem 0; border-bottom: 1px dashed var(--ab-border); }
+    .d-item:last-child { border-bottom: 0; }
+  </style>
+</head>
+<body data-page="orders" data-title="My Orders">
+<main class="ab-content">
+
+  <div class="ab-page-head fade-up">
+    <div>
+      <h1>My orders</h1>
+      <p>Track deliveries, get your digital codes and reorder favourites.</p>
+    </div>
+    <div class="ab-segment" role="tablist" aria-label="Orders or wishlist">
+      <button class="active" data-pane-btn="orders" role="tab" aria-selected="true"><i class="bi bi-box-seam me-1"></i>Orders</button>
+      <button data-pane-btn="wishlist" role="tab" aria-selected="false"><i class="bi bi-heart me-1"></i>Wishlist <span id="wlCount"></span></button>
+    </div>
+  </div>
+
+  <section data-pane="orders">
+    <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between mb-3">
+      <div class="ab-chips" id="statusTabs" role="tablist" aria-label="Filter by status"></div>
+      <div class="input-icon" style="min-width:220px;flex:0 1 280px"><i class="bi bi-search"></i><input type="search" class="form-control" id="oq" placeholder="Search order ID or item" aria-label="Search orders"></div>
+    </div>
+    <div id="orderList"></div>
+  </section>
+
+  <section data-pane="wishlist" hidden>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="fs-7 text-muted" id="wlInfo"></div>
+      <button class="btn btn-soft btn-sm" id="wlAll" hidden><i class="bi bi-cart-plus me-1"></i>Add all to cart</button>
+    </div>
+    <div id="wishGrid"></div>
+  </section>
+
+</main>
+
+<div class="offcanvas offcanvas-end oc-detail" tabindex="-1" id="detailOc" aria-labelledby="detailTitle">
+  <div class="offcanvas-header">
+    <div><h5 class="offcanvas-title mb-0" id="detailTitle">Order</h5><div class="fs-8 text-muted" id="detailSub"></div></div>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body" id="detailBody"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/shop.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { fmt, esc, store } = AB;
+  const $ = (id) => document.getElementById(id);
+  const ST = SHOP.ORDER_STATUS;
+  let tab = "all", q = "", openId = null;
+  const oc = new bootstrap.Offcanvas($("detailOc"));
+  $("detailOc").addEventListener("hidden.bs.offcanvas", () => { openId = null; const u = new URL(location); u.searchParams.delete("id"); history.replaceState(null, "", u); });
+
+  SHOP.advanceOrders();
+  const orders = () => store.get("orders") || [];
+  const find = (id) => orders().find(o => o.id === id);
+  const hasDigital = (o) => o.items.some(i => i.digital);
+  const methodLabel = (o) => ({ standard: "Standard delivery", express: "Express delivery", pickup: "Pickup station", digital: "Instant digital" }[o.method] || o.method);
+
+  /* ---------- Panes ---------- */
+  function setPane(p) {
+    document.querySelectorAll("[data-pane-btn]").forEach(b => { const on = b.dataset.paneBtn === p; b.classList.toggle("active", on); b.setAttribute("aria-selected", on); });
+    document.querySelectorAll("[data-pane]").forEach(s => s.hidden = s.dataset.pane !== p);
+    const u = new URL(location); p === "wishlist" ? u.searchParams.set("tab", "wishlist") : u.searchParams.delete("tab"); history.replaceState(null, "", u);
+  }
+  document.querySelectorAll("[data-pane-btn]").forEach(b => b.addEventListener("click", () => setPane(b.dataset.paneBtn)));
+
+  /* ---------- Orders list ---------- */
+  function renderTabs() {
+    const all = orders();
+    const tabs = [["all", "All"], ["processing", "Processing"], ["shipped", "Shipped"], ["delivered", "Delivered"], ["cancelled", "Cancelled"]];
+    $("statusTabs").innerHTML = tabs.map(([k, l]) => {
+      const n = k === "all" ? all.length : all.filter(o => o.status === k).length;
+      return `<button class="ab-chip ${tab === k ? "active" : ""}" data-tab="${k}" role="tab" aria-selected="${tab === k}">${l}<span class="badge rounded-pill ${tab === k ? "bg-white text-primary" : "bg-surface-2 text-muted"}">${n}</span></button>`;
+    }).join("");
+    $("statusTabs").querySelectorAll("[data-tab]").forEach(b => b.addEventListener("click", () => { tab = b.dataset.tab; renderList(); }));
+  }
+  function renderList() {
+    renderTabs();
+    const all = orders();
+    const el = $("orderList");
+    if (!all.length) {
+      el.innerHTML = `<div class="card"><div class="ab-empty py-5">
+        <span class="ab-icon ab-icon-xl tone-violet"><i class="bi bi-box-seam"></i></span>
+        <h5 class="mb-1">No orders yet</h5>
+        <p class="fs-7 mb-3">When you buy something on the marketplace, you'll track it here.</p>
+        <a href="marketplace.html" class="btn btn-primary"><i class="bi bi-shop me-1"></i>Start shopping</a>
+      </div></div>`;
+      return;
+    }
+    const terms = q.toLowerCase();
+    const list = all.filter(o => (tab === "all" || o.status === tab) && (!terms || o.id.toLowerCase().includes(terms) || o.items.some(i => i.name.toLowerCase().includes(terms))));
+    if (!list.length) {
+      el.innerHTML = `<div class="card"><div class="ab-empty"><span class="ab-icon ab-icon-lg tone-primary"><i class="bi bi-funnel"></i></span><h6>No ${tab === "all" ? "" : ST[tab].label.toLowerCase() + " "}orders${q ? ` matching “${esc(q)}”` : ""}</h6><button class="btn btn-light-subtle btn-sm mt-2" id="showAll">Show all orders</button></div></div>`;
+      $("showAll").addEventListener("click", () => { tab = "all"; q = ""; $("oq").value = ""; renderList(); });
+      return;
+    }
+    el.innerHTML = list.map((o, i) => {
+      const s = ST[o.status], count = o.items.reduce((a, l) => a + l.qty, 0);
+      return `<div class="card order-card mb-3 fade-up" style="animation-delay:${Math.min(i, 6) * .03}s">
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2 py-3">
+          <div class="d-flex align-items-center gap-2 flex-wrap"><span class="fw-800 tabular">${o.id}</span><span class="fs-8 text-muted">${fmt.datetime(o.date)}</span></div>
+          <span class="ab-status ${s.cls}">${s.label}</span>
+        </div>
+        <div class="card-body">
+          <div class="d-flex gap-3 align-items-center flex-wrap flex-md-nowrap">
+            <div class="thumbs">${o.items.slice(0, 4).map(l => AB.productArt(l, "sm")).join("")}${o.items.length > 4 ? `<span class="more">+${o.items.length - 4}</span>` : ""}</div>
+            <div class="flex-grow-1 min-w-0">
+              <div class="fw-semibold text-truncate">${esc(o.items[0].name)}${o.items.length > 1 ? ` <span class="text-muted fw-normal">+ ${o.items.length - 1} more</span>` : ""}</div>
+              <div class="fs-8 text-muted">${count} item${count > 1 ? "s" : ""} · ${methodLabel(o)}${o.status === "cancelled" ? "" : o.status === "delivered" ? " · Delivered" : ` · ETA ${esc(o.eta)}`}</div>
+              ${hasDigital(o) && o.status !== "cancelled" ? `<div class="fs-8 text-warning fw-semibold mt-1" style="color:#d48806!important"><i class="bi bi-key me-1"></i>Digital code${o.items.filter(i => i.digital).reduce((a, i) => a + i.qty, 0) > 1 ? "s" : ""} ready</div>` : ""}
+            </div>
+            <div class="text-md-end">
+              <div class="fw-800 tabular fs-5">${fmt.naira(o.total)}</div>
+              <div class="fs-8 text-muted">${o.payment === "wallet" ? (o.refunded ? "Refunded to wallet" : "Paid · Wallet") : o.paid ? "Paid on delivery" : "Pay on delivery"}</div>
+            </div>
+          </div>
+          <div class="d-flex gap-2 mt-3 flex-wrap">
+            <button class="btn btn-sm btn-soft" data-open="${o.id}"><i class="bi ${o.status === "cancelled" ? "bi-receipt" : "bi-geo-alt"} me-1"></i>${o.status === "cancelled" ? "View details" : hasDigital(o) ? "View codes & details" : "Track order"}</button>
+            <button class="btn btn-sm btn-light-subtle" data-reorder="${o.id}"><i class="bi bi-arrow-repeat me-1"></i>Reorder</button>
+            ${canCancel(o) ? `<button class="btn btn-sm btn-link text-danger" data-cancel="${o.id}">Cancel order</button>` : ""}
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+    el.querySelectorAll("[data-open]").forEach(b => b.addEventListener("click", () => openDetail(b.dataset.open)));
+    el.querySelectorAll("[data-reorder]").forEach(b => b.addEventListener("click", () => reorder(b.dataset.reorder)));
+    el.querySelectorAll("[data-cancel]").forEach(b => b.addEventListener("click", () => cancelOrder(b.dataset.cancel)));
+  }
+  $("oq").addEventListener("input", AB.debounce(() => { q = $("oq").value.trim(); renderList(); }, 250));
+  const canCancel = (o) => o.status === "processing" && !hasDigital(o);
+
+  /* ---------- Detail ---------- */
+  function openDetail(id) {
+    const o = find(id);
+    if (!o) { AB.toast("Order not found", "error"); return; }
+    openId = id;
+    renderDetail();
+    oc.show();
+    const u = new URL(location); u.searchParams.set("id", id); history.replaceState(null, "", u);
+  }
+  function renderDetail() {
+    const o = find(openId); if (!o) return;
+    const s = ST[o.status];
+    $("detailTitle").textContent = o.id;
+    $("detailSub").textContent = "Placed " + fmt.datetime(o.date);
+    const tl = o.timeline;
+    const currentIdx = tl.findIndex(t => !t.done);
+    const a = o.address;
+    const line = (k, v, cls = "") => `<div class="row-item ${cls}"><span>${k}</span><span>${v}</span></div>`;
+    $("detailBody").innerHTML = `
+      <div class="eta-box mb-4 d-flex justify-content-between align-items-center gap-2">
+        <div><div class="small-label">${o.status === "cancelled" ? "Order cancelled" : o.status === "delivered" ? "Delivered" : "Estimated delivery"}</div>
+        <div class="fw-800 fs-5">${o.status === "cancelled" ? (o.refunded ? "Refunded " + fmt.naira(o.total) : "No charge") : o.status === "delivered" ? fmt.date((tl.find(t => t.key === "delivered") || {}).date || o.date) : esc(o.eta)}</div></div>
+        <span class="ab-status ${s.cls}"><i class="bi ${s.icon}"></i>${s.label}</span>
+      </div>
+
+      <h6 class="mb-3">Tracking</h6>
+      <ul class="ab-timeline mb-4">${tl.map((t, i) => {
+        const isCancel = t.key === "cancelled";
+        const cls = isCancel ? "cancel done" : t.done ? "done" : (o.status !== "cancelled" && i === currentIdx ? "current" : "");
+        return `<li class="${cls}"><span class="dot"><i class="bi ${isCancel ? "bi-x-lg" : t.done ? "bi-check-lg" : i === currentIdx && o.status !== "cancelled" ? "bi-circle-fill" : ""}" style="${i === currentIdx && !t.done ? "font-size:.45rem" : ""}"></i></span>
+          <div class="fw-semibold fs-7 ${!t.done && !isCancel ? "text-muted" : ""}">${esc(t.label)}</div>
+          <div class="fs-8 text-muted">${esc(t.note || "")}${t.done && t.date ? ` · ${fmt.datetime(t.date)}` : ""}</div></li>`;
+      }).join("")}</ul>
+
+      <h6 class="mb-2">Items (${o.items.reduce((x, l) => x + l.qty, 0)})</h6>
+      <div class="mb-4">${o.items.map(l => `
+        <div class="d-item">
+          <a href="product.html?id=${l.id}">${AB.productArt(l, "sm")}</a>
+          <div class="flex-grow-1 min-w-0">
+            <a href="product.html?id=${l.id}" class="fw-semibold fs-7 text-body d-block">${esc(l.name)}</a>
+            <div class="fs-8 text-muted">${l.qty} × ${fmt.naira(l.price)}${l.color ? " · " + esc(SHOP.colorName(l.color)) : ""} · ${esc(l.seller)}</div>
+            ${l.digital && l.codes ? `<div class="mt-2 d-grid gap-2">${l.codes.map((c, n) => `
+              <div class="voucher ${o.status === "cancelled" ? "void" : ""}"><div class="min-w-0"><div class="fs-8 text-muted">${o.status === "cancelled" ? "Voided" : "Voucher code" + (l.codes.length > 1 ? " " + (n + 1) : "")}</div><code>${c}</code></div>
+              ${o.status === "cancelled" ? "" : `<button class="btn btn-sm btn-primary flex-shrink-0" data-copy="${c}" aria-label="Copy code ${c}"><i class="bi bi-copy me-1"></i>Copy</button>`}</div>`).join("")}
+              ${o.status === "cancelled" ? "" : `<div class="fs-8 text-muted"><i class="bi bi-info-circle me-1"></i>Redeem on the official ${esc(SHOP.product(l.id)?.brand || "")} website or app.</div>`}</div>` : ""}
+          </div>
+          <div class="fw-bold tabular fs-7">${fmt.naira(l.price * l.qty)}</div>
+        </div>`).join("")}</div>
+
+      <div class="row g-2 mb-4">
+        <div class="col-sm-6"><div class="border rounded-3 p-3 h-100"><div class="small-label mb-1">${o.method === "digital" ? "Delivered to" : o.method === "pickup" ? "Pickup station" : "Ship to"}</div>
+          <div class="fw-semibold fs-7">${esc(a.name)}</div>
+          <div class="fs-8 text-muted">${o.method === "digital" ? esc(a.email) : o.method === "pickup" ? esc(o.pickupHub) + "<br>" + esc(a.state) : `${esc(a.street)}, ${esc(a.city)}, ${esc(a.state)}`}<br>${esc(a.phone)}</div></div></div>
+        <div class="col-sm-6"><div class="border rounded-3 p-3 h-100"><div class="small-label mb-1">Delivery</div><div class="fw-semibold fs-7">${methodLabel(o)}</div><div class="fs-8 text-muted">${o.method === "digital" ? "Instant" : "ETA " + esc(o.eta)}</div></div></div>
+      </div>
+
+      <h6 class="mb-2">Receipt</h6>
+      <div class="ab-summary mb-4">
+        ${line("Subtotal", fmt.naira(o.subtotal))}
+        ${o.discount ? line(`Coupon (${esc(o.coupon)})`, `<span class="text-success">−${fmt.naira(o.discount)}</span>`) : ""}
+        ${line("Delivery", o.deliveryFee ? fmt.naira(o.deliveryFee) : '<span class="text-success">Free</span>')}
+        ${line("Total", fmt.naira(o.total, 2), "total")}
+        ${line("Payment", o.payment === "wallet" ? "AutoBiz wallet" : "Pay on delivery")}
+        ${line("Payment status", o.refunded ? '<span class="ab-status info">Refunded</span>' : o.paid ? '<span class="ab-status success">Paid</span>' : o.status === "cancelled" ? '<span class="ab-status neutral">Not charged</span>' : '<span class="ab-status pending">Due on delivery</span>')}
+        ${o.txId ? line("Reference", `<span class="tabular fs-8">${esc(o.txId)}</span>`) : ""}
+      </div>
+
+      <div class="d-grid gap-2">
+        ${o.status === "shipped" ? `<button class="btn btn-success" data-d-received><i class="bi bi-check2-circle me-1"></i>I've received this order</button>` : ""}
+        <button class="btn btn-primary" data-d-reorder><i class="bi bi-arrow-repeat me-1"></i>Reorder items</button>
+        <div class="d-flex gap-2">
+          <button class="btn btn-light-subtle flex-fill" data-d-copy><i class="bi bi-copy me-1"></i>Copy order ID</button>
+          <button class="btn btn-light-subtle flex-fill" data-d-print><i class="bi bi-printer me-1"></i>Print receipt</button>
+        </div>
+        ${canCancel(o) ? `<button class="btn btn-outline-danger" data-d-cancel><i class="bi bi-x-circle me-1"></i>Cancel order</button>` : o.status === "processing" && hasDigital(o) ? `<div class="fs-8 text-muted text-center">Orders with digital codes can't be cancelled once codes are issued.</div>` : ""}
+      </div>`;
+    const b = $("detailBody");
+    b.querySelectorAll("[data-copy]").forEach(x => x.addEventListener("click", () => AB.copy(x.dataset.copy, "Voucher code copied")));
+    b.querySelector("[data-d-reorder]").addEventListener("click", () => reorder(o.id));
+    b.querySelector("[data-d-copy]").addEventListener("click", () => AB.copy(o.id, "Order ID copied"));
+    b.querySelector("[data-d-print]").addEventListener("click", () => printReceipt(o));
+    b.querySelector("[data-d-cancel]")?.addEventListener("click", () => cancelOrder(o.id));
+    b.querySelector("[data-d-received]")?.addEventListener("click", () => markReceived(o.id));
+  }
+
+  /* ---------- Actions ---------- */
+  function cancelOrder(id) {
+    const o = find(id); if (!o || !canCancel(o)) return;
+    const reasons = ["Changed my mind", "Ordered by mistake", "Found a better price", "Delivery takes too long", "Other"];
+    const m = AB.modal(`
+      <div class="modal-header"><h5 class="modal-title">Cancel order ${o.id}?</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body pt-1">
+        <p class="fs-7 text-muted">${o.payment === "wallet" ? `<b>${fmt.naira(o.total, 2)}</b> will be refunded to your AutoBiz wallet instantly.` : "You haven't been charged for this pay-on-delivery order."}</p>
+        <label class="form-label" for="cReason">Reason for cancelling</label>
+        <select class="form-select" id="cReason"><option value="">Select a reason</option>${reasons.map(r => `<option>${r}</option>`).join("")}</select>
+        <div class="invalid-feedback">Please select a reason.</div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-light-subtle flex-fill" data-bs-dismiss="modal">Keep order</button><button class="btn btn-danger flex-fill" data-yes>Cancel order</button></div>`);
+    const sel = m.el.querySelector("#cReason");
+    sel.addEventListener("change", () => sel.classList.remove("is-invalid"));
+    m.el.querySelector("[data-yes]").addEventListener("click", (e) => {
+      if (!sel.value) { sel.classList.add("is-invalid"); sel.focus(); return; }
+      AB.loading(e.currentTarget, 900).then(() => {
+        const cur = find(id);
+        if (!cur || !canCancel(cur)) { m.close(); AB.toast("This order can no longer be cancelled", "warning"); return; }
+        let refundTx = null;
+        if (cur.payment === "wallet" && cur.paid) refundTx = AB.wallet.credit(cur.total, { type: "refund", title: "Order Refund", subtitle: `${cur.id} · cancelled`, icon: "bi-arrow-counterclockwise", tone: "success" });
+        store.update("orders", list => list.map(x => x.id !== id ? x : {
+          ...x, status: "cancelled", cancelReason: sel.value, refunded: !!refundTx, paid: false, refundTxId: refundTx ? refundTx.id : null,
+          timeline: [...x.timeline.filter(t => t.done), { key: "cancelled", label: "Order cancelled", note: sel.value + (refundTx ? " · refunded to wallet" : ""), done: true, date: Date.now() }]
+        }));
+        AB.notify({ icon: "bi-x-circle", tone: "danger", title: `Order ${id} cancelled`, body: refundTx ? `${fmt.naira(cur.total)} refunded to your wallet.` : "Your order has been cancelled." });
+        m.close();
+        setTimeout(() => AB.success({ title: "Order cancelled", message: refundTx ? `${fmt.naira(cur.total, 2)} has been refunded to your wallet.` : "Your order was cancelled. No charge was made.", rows: [["Order", id], ["Reason", esc(sel.value)], ...(refundTx ? [["New balance", fmt.naira(AB.wallet.balance(), 2)]] : [])] }), 300);
+      });
+    });
+  }
+  function reorder(id) {
+    const o = find(id); if (!o) return;
+    let added = 0, capped = false;
+    store.update("cart", cart => {
+      const c = [...cart];
+      o.items.forEach(l => {
+        const p = SHOP.product(l.id); if (!p) return;
+        const have = c.filter(x => x.id === l.id).reduce((a, x) => a + x.qty, 0);
+        const qty = Math.min(l.qty, p.stock - have);
+        if (qty < l.qty) capped = true;
+        if (qty <= 0) return;
+        const line = c.find(x => x.id === l.id && x.color === (l.color || null));
+        if (line) line.qty += qty; else c.push({ id: p.id, name: p.name, price: p.price, icon: p.icon, tone: p.tone, qty, color: l.color || null, seller: p.seller, digital: !!p.digital });
+        added += qty;
+      });
+      return c;
+    });
+    if (!added) return AB.toast("These items are already in your cart at maximum stock", "warning");
+    AB.toast(`${added} item${added > 1 ? "s" : ""} added to your cart${capped ? " (limited by stock)" : ""}`, "success", { action: { label: "Go to cart", href: "cart.html" } });
+  }
+  function markReceived(id) {
+    store.update("orders", list => list.map(x => x.id !== id ? x : { ...x, status: "delivered", paid: true, timeline: x.timeline.map(t => t.done ? t : { ...t, done: true, date: Date.now() }) }));
+    AB.notify({ icon: "bi-check2-circle", tone: "success", title: `Order ${id} delivered`, body: "Thanks for shopping on AutoBiz!" });
+    AB.toast("Marked as delivered. Enjoy your purchase!", "success");
+  }
+  function printReceipt(o) {
+    const w = window.open("", "_blank", "width=480,height=700");
+    if (!w) return AB.toast("Allow pop-ups to print the receipt", "warning");
+    w.document.write(`<!doctype html><title>Receipt ${o.id}</title><style>body{font-family:system-ui,sans-serif;padding:24px;color:#111}h2{margin:0 0 4px}table{width:100%;border-collapse:collapse;margin-top:16px}td{padding:6px 0;border-bottom:1px dashed #ccc;font-size:14px}td:last-child{text-align:right}.t td{font-weight:800;border:0;font-size:16px}</style>
+      <h2>AutoBiz</h2><div>Order ${o.id} · ${fmt.datetime(o.date)}</div><div>Status: ${ST[o.status].label}</div>
+      <table>${o.items.map(l => `<tr><td>${esc(l.name)} × ${l.qty}</td><td>${fmt.naira(l.price * l.qty)}</td></tr>`).join("")}
+      <tr><td>Subtotal</td><td>${fmt.naira(o.subtotal)}</td></tr>${o.discount ? `<tr><td>Coupon</td><td>−${fmt.naira(o.discount)}</td></tr>` : ""}<tr><td>Delivery</td><td>${fmt.naira(o.deliveryFee)}</td></tr><tr class="t"><td>Total</td><td>${fmt.naira(o.total, 2)}</td></tr></table>
+      <p>Payment: ${o.payment === "wallet" ? "AutoBiz wallet" : "Pay on delivery"}</p><script>window.onload=()=>window.print()<\/script>`);
+    w.document.close();
+  }
+
+  /* ---------- Wishlist ---------- */
+  function renderWish() {
+    const w = store.get("wishlist").map(SHOP.product).filter(Boolean);
+    $("wlCount").textContent = w.length ? `(${w.length})` : "";
+    $("wlInfo").textContent = w.length ? `${w.length} saved item${w.length > 1 ? "s" : ""}` : "";
+    $("wlAll").hidden = !w.length;
+    $("wishGrid").innerHTML = w.length ? `<div class="row g-2 g-sm-3 row-cols-2 row-cols-md-3 row-cols-xl-4">${w.map(p => `<div class="col">${SHOP.card(p)}</div>`).join("")}</div>`
+      : `<div class="card"><div class="ab-empty py-5"><span class="ab-icon ab-icon-xl tone-pink"><i class="bi bi-heart"></i></span><h5 class="mb-1">Your wishlist is empty</h5><p class="fs-7 mb-3">Tap the heart on any product to save it for later.</p><a href="marketplace.html" class="btn btn-primary"><i class="bi bi-shop me-1"></i>Explore marketplace</a></div></div>`;
+  }
+  $("wlAll").addEventListener("click", () => {
+    const w = store.get("wishlist");
+    let n = 0;
+    w.forEach(id => { const p = SHOP.product(id); if (p && SHOP.inCartQty(id) < p.stock) { store.update("cart", c => { const line = c.find(x => x.id === id); if (line) line.qty += 1; else c.push({ id: p.id, name: p.name, price: p.price, icon: p.icon, tone: p.tone, qty: 1, color: p.colors ? p.colors[0] : null, seller: p.seller, digital: !!p.digital }); return c; }); n++; } });
+    AB.toast(n ? `${n} item${n > 1 ? "s" : ""} added to cart` : "All saved items are already in your cart", n ? "success" : "info", n ? { action: { label: "Go to cart", href: "cart.html" } } : {});
+  });
+
+  /* ---------- Init ---------- */
+  store.on((k) => {
+    if (k === "orders") { renderList(); if (openId) renderDetail(); }
+    if (k === "wishlist") renderWish();
+  });
+  setInterval(() => { SHOP.advanceOrders(); }, 15000);
+  renderList(); renderWish();
+  if (AB.qs("tab") === "wishlist") setPane("wishlist");
+  if (AB.qs("id")) { if (find(AB.qs("id"))) openDetail(AB.qs("id")); else AB.toast("We couldn't find that order", "warning"); }
+});
+</script>
+</body>
+</html>

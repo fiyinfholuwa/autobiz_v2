@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Transactions · AutoBiz</title>
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/app.css" rel="stylesheet">
+  <script src="../assets/js/brand.js"></script>
+  <style>
+    .sum-card .value { font-size: 1.35rem; font-weight: 800; letter-spacing: -.02em; }
+    .tx-table tbody tr { cursor: pointer; }
+    .tx-table .day-row td { background: var(--ab-surface-2); font-size: .75rem; font-weight: 700; color: var(--ab-muted); text-transform: uppercase; letter-spacing: .05em; padding: .5rem 1rem; }
+    .day-head { font-size: .75rem; font-weight: 700; color: var(--ab-muted); text-transform: uppercase; letter-spacing: .05em; padding: .9rem 0 .2rem; display: flex; justify-content: space-between; }
+    .tx-mobile .ab-list-item { cursor: pointer; }
+    .tx-mobile .ab-list-item:active { background: var(--ab-surface-2); }
+    .filter-bar .form-control, .filter-bar .form-select { height: 44px; padding-top: .45rem; padding-bottom: .45rem; }
+    .receipt-head { text-align: center; padding: .5rem 0 1rem; }
+    .receipt-head .amt { font-size: 2rem; font-weight: 800; letter-spacing: -.03em; }
+    @media print {
+      body > *:not(.modal) { display: none !important; }
+      .modal { position: static !important; display: block !important; }
+      .modal-backdrop, .modal-footer, .btn-close, .no-print { display: none !important; }
+      .modal-dialog { transform: none !important; max-width: 100% !important; }
+    }
+  </style>
+</head>
+<body data-page="transactions" data-title="Transactions">
+<main class="ab-content">
+
+  <div class="ab-page-head fade-up">
+    <div><h1>Transactions</h1><p>Every payment, purchase and transfer in one place.</p></div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-light-subtle" id="exportBtn"><i class="bi bi-download me-1"></i>Export CSV</button>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3" id="summary"></div>
+
+  <div class="card mb-3 fade-up">
+    <div class="card-body filter-bar">
+      <div class="row g-2 align-items-center">
+        <div class="col-12 col-lg-4"><div class="input-icon"><i class="bi bi-search"></i><input class="form-control" id="q" type="search" placeholder="Search title, number, reference…" aria-label="Search transactions"></div></div>
+        <div class="col-6 col-lg-2"><select class="form-select" id="fType" aria-label="Type"></select></div>
+        <div class="col-6 col-lg-2"><select class="form-select" id="fRange" aria-label="Date range">
+          <option value="all">All time</option><option value="today">Today</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option><option value="custom">Custom range…</option></select></div>
+        <div class="col-12 col-lg-4"><div class="ab-segment w-100 d-flex" id="fDir"><button class="active" data-v="all">All</button><button data-v="in">Money in</button><button data-v="out">Money out</button></div></div>
+        <div class="col-12" id="customRange" hidden>
+          <div class="row g-2"><div class="col-6 col-lg-3"><label class="form-label fs-8 mb-1" for="dFrom">From</label><input type="date" class="form-control" id="dFrom"></div><div class="col-6 col-lg-3"><label class="form-label fs-8 mb-1" for="dTo">To</label><input type="date" class="form-control" id="dTo"></div></div>
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2 mt-3 flex-wrap">
+        <div class="ab-chips flex-grow-1" id="fStatus"></div>
+        <button class="btn btn-link btn-sm p-0" id="clearF" hidden>Clear filters</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card fade-up">
+    <div class="d-none d-md-block" id="tableWrap">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle tx-table">
+          <thead><tr><th>Transaction</th><th>Type</th><th>Reference</th><th>Time</th><th>Status</th><th class="text-end">Amount</th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="d-md-none card-body pt-0 tx-mobile" id="mlist"></div>
+    <div id="emptyWrap"></div>
+    <div class="card-body pt-2 text-center" id="moreWrap"></div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { store, fmt, esc } = AB;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const TYPE_LABEL = { airtime: "Airtime", data: "Data", electricity: "Electricity", cable: "Cable TV", betting: "Betting", education: "Education", funding: "Wallet funding", withdrawal: "Withdrawal", transfer: "Transfer", convert: "Conversion", giftcard: "Gift card", shop: "Marketplace", esim: "eSIM", flight: "Flight", card: "Virtual card", refund: "Refund" };
+  const typeLabel = (t) => TYPE_LABEL[t] || (t ? t[0].toUpperCase() + t.slice(1) : "Other");
+  const PAGE = 15;
+  const F = { q: "", type: AB.qs("type") || "all", status: "all", dir: "all", range: "all", from: "", to: "" };
+  let shown = PAGE;
+  const txRef = (t) => t.ref || t.id;
+
+  function buildTypes() {
+    const present = [...new Set(store.get("transactions").map(t => t.type))];
+    if (F.type !== "all" && !present.includes(F.type)) present.push(F.type);
+    $("#fType").innerHTML = `<option value="all">All types</option>` + present.sort().map(t => `<option value="${esc(t)}" ${F.type === t ? "selected" : ""}>${esc(typeLabel(t))}</option>`).join("");
+  }
+  $("#fStatus").innerHTML = [["all", "All statuses"], ["success", "Successful"], ["pending", "Pending"], ["failed", "Failed"]].map(([v, l]) => `<button class="ab-chip ${v === "all" ? "active" : ""}" data-v="${v}">${l}</button>`).join("");
+
+  function filtered() {
+    const q = F.q.toLowerCase();
+    let from = 0, to = Infinity;
+    const day0 = new Date(); day0.setHours(0, 0, 0, 0);
+    if (F.range === "today") from = day0.getTime();
+    else if (["7", "30", "90"].includes(F.range)) from = day0.getTime() - (Number(F.range) - 1) * 864e5;
+    else if (F.range === "custom") { if (F.from) from = new Date(F.from + "T00:00:00").getTime(); if (F.to) to = new Date(F.to + "T23:59:59").getTime(); }
+    return store.get("transactions").filter(t =>
+      (F.type === "all" || t.type === F.type) && (F.status === "all" || t.status === F.status) && (F.dir === "all" || t.direction === F.dir) &&
+      t.date >= from && t.date <= to &&
+      (!q || [t.title, t.subtitle, txRef(t), t.type, ...(t.meta ? Object.values(t.meta) : [])].join(" ").toLowerCase().includes(q))
+    ).sort((a, b) => b.date - a.date);
+  }
+  const dayLabel = (d) => {
+    const t0 = new Date(); t0.setHours(0, 0, 0, 0);
+    const x = new Date(d); x.setHours(0, 0, 0, 0);
+    const diff = Math.round((t0 - x) / 864e5);
+    return diff === 0 ? "Today" : diff === 1 ? "Yesterday" : x.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  };
+  const groupBy = (list) => { const g = []; list.forEach(t => { const k = dayLabel(t.date); const last = g[g.length - 1]; if (last && last.k === k) last.items.push(t); else g.push({ k, items: [t] }); }); return g; };
+  const statusCls = (s) => ({ success: "success", pending: "pending", failed: "failed" }[s] || "neutral");
+  const amt = (t) => `<span class="fw-bold tabular ${t.direction === "in" ? "amount-in" : "amount-out"}">${t.direction === "in" ? "+" : "−"}${fmt.naira(t.amount, 2)}</span>`;
+
+  function render() {
+    const all = filtered();
+    const hasFilter = F.q || F.type !== "all" || F.status !== "all" || F.dir !== "all" || F.range !== "all";
+    $("#clearF").hidden = !hasFilter;
+    // Summary
+    const ok = all.filter(t => t.status === "success");
+    const tin = ok.filter(t => t.direction === "in").reduce((a, t) => a + t.amount, 0);
+    const tout = ok.filter(t => t.direction === "out").reduce((a, t) => a + t.amount, 0);
+    const cards = [["Money in", fmt.naira(tin), "bi-arrow-down-left", "success"], ["Money out", fmt.naira(tout), "bi-arrow-up-right", "danger"], ["Net flow", (tin - tout < 0 ? "−" : "+") + fmt.naira(Math.abs(tin - tout)), "bi-activity", "primary"], ["Transactions", `${all.length} <span class="fs-7 text-muted fw-semibold">· ${all.filter(t => t.status === "pending").length} pending</span>`, "bi-receipt", "violet"]];
+    $("#summary").innerHTML = cards.map(([l, v, i, tone]) => `<div class="col-6 col-xl-3"><div class="card sum-card h-100"><div class="card-body d-flex gap-3 align-items-center"><span class="ab-icon tone-${tone} d-none d-sm-inline-grid"><i class="bi ${i}"></i></span><div class="min-w-0"><div class="fs-7 text-muted">${l}${hasFilter ? ` <span class="fs-8">(filtered)</span>` : ""}</div><div class="value tabular text-truncate">${v}</div></div></div></div></div>`).join("");
+
+    const page = all.slice(0, shown);
+    const groups = groupBy(page);
+    $("#tbody").innerHTML = groups.map(g => `<tr class="day-row"><td colspan="6">${g.k}</td></tr>` + g.items.map(t => `
+      <tr data-id="${esc(t.id)}" tabindex="0" aria-label="View ${esc(t.title)}">
+        <td><div class="d-flex align-items-center gap-3"><span class="ab-icon ab-icon-sm tone-${t.tone}"><i class="bi ${t.icon}"></i></span><div class="min-w-0"><div class="fw-semibold text-truncate" style="max-width:260px">${esc(t.title)}</div><div class="fs-8 text-muted text-truncate" style="max-width:260px">${esc(t.subtitle || "")}</div></div></div></td>
+        <td class="fs-7">${esc(typeLabel(t.type))}</td>
+        <td class="fs-8 text-muted tabular">${esc(txRef(t)).slice(0, 18)}</td>
+        <td class="fs-7 text-muted text-nowrap">${fmt.time(t.date)}</td>
+        <td><span class="ab-status ${statusCls(t.status)}">${esc(t.status)}</span></td>
+        <td class="text-end text-nowrap">${amt(t)}</td>
+      </tr>`).join("")).join("");
+    $("#mlist").innerHTML = groups.map(g => `<div class="day-head"><span>${g.k}</span></div><ul class="ab-list">${g.items.map(t => AB.txRow(t).replace("<li class=\"ab-list-item\"", `<li class="ab-list-item" data-id="${esc(t.id)}" tabindex="0"`)).join("")}</ul>`).join("");
+    $("#emptyWrap").innerHTML = all.length ? "" : `<div class="ab-empty"><span class="ab-icon ab-icon-xl tone-primary"><i class="bi bi-receipt-cutoff"></i></span><h6 class="mb-1">${hasFilter ? "No matching transactions" : "No transactions yet"}</h6><p class="fs-7 mb-3">${hasFilter ? "Try a different search or clear your filters." : "Your payments and purchases will appear here."}</p>${hasFilter ? `<button class="btn btn-soft btn-sm" data-clear>Clear filters</button>` : `<a href="bills.html" class="btn btn-primary btn-sm">Make a payment</a>`}</div>`;
+    $("#tableWrap").classList.toggle("d-md-block", !!all.length);
+    const left = all.length - page.length;
+    $("#moreWrap").innerHTML = all.length ? (left > 0 ? `<button class="btn btn-light-subtle px-4" id="more">Load more <span class="text-muted">(${left} more)</span></button>` : `<div class="fs-8 text-muted">Showing all ${all.length} transaction${all.length === 1 ? "" : "s"}</div>`) : "";
+    const more = $("#more"); if (more) more.addEventListener("click", () => { shown += PAGE; render(); });
+    const cl = $("[data-clear]"); if (cl) cl.addEventListener("click", clearFilters);
+    $$("[data-id]").forEach(r => { r.addEventListener("click", () => openDetail(r.dataset.id)); r.addEventListener("keydown", (e) => { if (e.key === "Enter") openDetail(r.dataset.id); }); });
+  }
+
+  function openDetail(id) {
+    const t = store.get("transactions").find(x => x.id === id);
+    if (!t) return AB.toast("Transaction not found", "error");
+    const rows = [["Type", typeLabel(t.type)], ["Description", t.subtitle || "—"], ["Direction", t.direction === "in" ? "Credit (money in)" : "Debit (money out)"], ...(t.meta ? Object.entries(t.meta) : []), ["Date", fmt.datetime(t.date)], ["Transaction ID", t.id]];
+    const m = AB.modal(`
+      <div class="modal-header"><h5 class="modal-title">Transaction details</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body pt-0">
+        <div class="receipt-head">
+          <span class="ab-icon ab-icon-lg tone-${t.tone} mb-2"><i class="bi ${t.icon}"></i></span>
+          <div class="fw-semibold">${esc(t.title)}</div>
+          <div class="amt tabular ${t.direction === "in" ? "amount-in" : ""}">${t.direction === "in" ? "+" : "−"}${fmt.naira(t.amount, 2)}</div>
+          <span class="ab-status ${statusCls(t.status)}">${esc(t.status)}</span>
+          ${t.reported ? `<div class="fs-8 text-warning mt-2"><i class="bi bi-flag-fill me-1"></i>Issue reported · ticket ${esc(t.reported)}</div>` : ""}
+        </div>
+        <div class="d-flex align-items-center justify-content-between gap-2 p-3 rounded-3 border mb-3">
+          <div class="min-w-0"><div class="fs-8 text-muted">Reference</div><div class="fw-bold tabular text-truncate">${esc(txRef(t))}</div></div>
+          <button class="btn btn-sm btn-soft no-print" data-copyref><i class="bi bi-copy me-1"></i>Copy</button>
+        </div>
+        <div class="ab-summary">${rows.map(([k, v]) => `<div class="row-item"><span>${esc(k)}</span><span class="text-break">${esc(v)}</span></div>`).join("")}</div>
+        <div class="fs-8 text-muted text-center mt-3">AutoBiz Technologies Ltd · support@autobiz.ng</div>
+      </div>
+      <div class="modal-footer flex-row gap-2">
+        <button class="btn btn-light-subtle flex-fill m-0" data-report ${t.reported ? "disabled" : ""}><i class="bi bi-flag me-1"></i>${t.reported ? "Reported" : "Report issue"}</button>
+        <button class="btn btn-primary flex-fill m-0" data-print><i class="bi bi-printer me-1"></i>Print receipt</button>
+      </div>`);
+    $("[data-copyref]", m.el).addEventListener("click", () => AB.copy(txRef(t), "Reference copied"));
+    $("[data-print]", m.el).addEventListener("click", () => window.print());
+    $("[data-report]", m.el).addEventListener("click", () => { m.close(); setTimeout(() => openReport(t), 300); });
+  }
+
+  function openReport(t) {
+    const m = AB.modal(`
+      <div class="modal-header"><h5 class="modal-title">Report an issue</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+      <div class="modal-body pt-1">
+        <div class="d-flex gap-3 align-items-center p-3 rounded-3 bg-surface-2 mb-3"><span class="ab-icon ab-icon-sm tone-${t.tone}"><i class="bi ${t.icon}"></i></span><div class="min-w-0"><div class="fw-semibold text-truncate">${esc(t.title)}</div><div class="fs-8 text-muted">${fmt.naira(t.amount, 2)} · ${fmt.datetime(t.date)}</div></div></div>
+        <label class="form-label" for="rReason">What went wrong?</label>
+        <select class="form-select mb-3" id="rReason"><option value="">Select a reason</option><option>Value not received</option><option>Debited twice</option><option>Wrong amount charged</option><option>Wrong recipient / number</option><option>Token not working</option><option>Other</option></select>
+        <div class="invalid-feedback" id="rReasonErr">Please select a reason</div>
+        <label class="form-label" for="rMsg">Details</label>
+        <textarea class="form-control" id="rMsg" rows="3" maxlength="500" placeholder="Tell us a little more…"></textarea>
+        <div class="invalid-feedback" id="rMsgErr">Please describe the issue (min 10 characters)</div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-primary btn-lg w-100" id="rGo">Submit report</button></div>`);
+    $("#rGo", m.el).addEventListener("click", async (e) => {
+      const r = $("#rReason", m.el), msg = $("#rMsg", m.el);
+      r.classList.toggle("is-invalid", !r.value); msg.classList.toggle("is-invalid", msg.value.trim().length < 10);
+      if (!r.value || msg.value.trim().length < 10) return;
+      await AB.loading(e.currentTarget, 900);
+      const ticket = "TCK-" + Math.floor(100000 + Math.random() * 900000);
+      store.update("transactions", list => list.map(x => x.id === t.id ? { ...x, reported: ticket } : x));
+      AB.notify({ icon: "bi-headset", tone: "primary", title: "Support ticket opened", body: `${ticket}: ${r.value} — we'll respond within 24 hours.` });
+      m.close();
+      AB.toast(`Report submitted · <b>${ticket}</b>`, "success");
+    });
+  }
+
+  function exportCSV() {
+    const list = filtered();
+    if (!list.length) return AB.toast("Nothing to export", "warning");
+    const cell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const head = ["Date", "Time", "Reference", "Type", "Title", "Description", "Direction", "Amount (NGN)", "Status"];
+    const lines = [head.map(cell).join(","), ...list.map(t => [new Date(t.date).toISOString().slice(0, 10), fmt.time(t.date), txRef(t), typeLabel(t.type), t.title, t.subtitle, t.direction === "in" ? "Credit" : "Debit", (t.direction === "in" ? "" : "-") + t.amount, t.status].map(cell).join(","))];
+    const blob = new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = `autobiz-transactions-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    AB.toast(`Exported ${list.length} transaction${list.length === 1 ? "" : "s"}`, "success");
+  }
+
+  function clearFilters() {
+    Object.assign(F, { q: "", type: "all", status: "all", dir: "all", range: "all", from: "", to: "" });
+    $("#q").value = ""; $("#fType").value = "all"; $("#fRange").value = "all"; $("#customRange").hidden = true; $("#dFrom").value = ""; $("#dTo").value = "";
+    $$("#fStatus .ab-chip").forEach(c => c.classList.toggle("active", c.dataset.v === "all"));
+    $$("#fDir button").forEach(c => c.classList.toggle("active", c.dataset.v === "all"));
+    history.replaceState(null, "", location.pathname);
+    shown = PAGE; render();
+  }
+
+  // Wire filters
+  $("#q").addEventListener("input", AB.debounce(() => { F.q = $("#q").value.trim(); shown = PAGE; render(); }, 200));
+  $("#fType").addEventListener("change", () => { F.type = $("#fType").value; shown = PAGE; render(); });
+  $("#fRange").addEventListener("change", () => { F.range = $("#fRange").value; $("#customRange").hidden = F.range !== "custom"; shown = PAGE; render(); });
+  ["dFrom", "dTo"].forEach(id => $("#" + id).addEventListener("change", () => {
+    F.from = $("#dFrom").value; F.to = $("#dTo").value;
+    if (F.from && F.to && F.from > F.to) { $("#dTo").classList.add("is-invalid"); AB.toast("End date must be after start date", "warning"); return; }
+    $("#dTo").classList.remove("is-invalid"); shown = PAGE; render();
+  }));
+  $$("#fStatus .ab-chip").forEach(c => c.addEventListener("click", () => { F.status = c.dataset.v; $$("#fStatus .ab-chip").forEach(x => x.classList.toggle("active", x === c)); shown = PAGE; render(); }));
+  $$("#fDir button").forEach(c => c.addEventListener("click", () => { F.dir = c.dataset.v; $$("#fDir button").forEach(x => x.classList.toggle("active", x === c)); shown = PAGE; render(); }));
+  $("#clearF").addEventListener("click", clearFilters);
+  $("#exportBtn").addEventListener("click", exportCSV);
+
+  buildTypes(); render();
+  store.on((k) => { if (k === "transactions") { buildTypes(); render(); } });
+  const openId = AB.qs("id"); if (openId) setTimeout(() => openDetail(openId), 200);
+});
+</script>
+</body>
+</html>
