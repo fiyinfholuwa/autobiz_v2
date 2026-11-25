@@ -69,7 +69,7 @@ export type ScreenProps = {
   refreshing?: boolean;
   onRefresh?: () => void;
   scrollProps?: ScrollViewProps;
-  scrollRef?: React.Ref<ScrollView>;
+  scrollRef?: React.Ref<React.ComponentRef<typeof ScrollView>>;
   /** extra bottom padding (e.g. for tab bar) */
   bottomInset?: number;
   bg?: string;

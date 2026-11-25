@@ -107,3 +107,6 @@ export function shadow(level: 1 | 2 | 3 = 1, isDark = false) {
   const m = { 1: [0.06, 10, 4, 2], 2: [0.1, 18, 8, 5], 3: [0.18, 28, 14, 10] }[level];
   return { shadowColor: "#191919", shadowOpacity: m[0], shadowRadius: m[1], shadowOffset: { width: 0, height: m[2] }, elevation: m[3] };
 }
+
+/** Bottom padding tab screens must add so content clears the floating tab bar. */
+export const TAB_BAR_SPACE = 84;

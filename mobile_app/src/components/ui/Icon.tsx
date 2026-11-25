@@ -15,7 +15,7 @@ const MAP: Record<string, Entry> = {
   // navigation / general
   "house-door": I("home-outline"), "house-door-fill": I("home"), house: I("home-outline"), "house-heart": M("home-heart"), "house-heart-fill": M("home-heart"),
   grid: I("grid-outline"), "grid-1x2": I("grid-outline"), "grid-3x3-gap": M("dialpad"), shop: I("storefront-outline"), "shop-window": M("storefront-outline"),
-  gear: I("settings-outline"), bell: I("notifications-outline"), "bell-fill": I("notifications"), search: I("search"), list: I("menu"),
+  inbox: I("file-tray-outline"), gear: I("settings-outline"), bell: I("notifications-outline"), "bell-fill": I("notifications"), search: I("search"), list: I("menu"),
   "three-dots-vertical": I("ellipsis-vertical"), "three-dots": I("ellipsis-horizontal"), x: I("close"), "x-lg": I("close"), "plus-lg": I("add"), plus: I("add"), "dash-lg": I("remove"),
   "check-lg": I("checkmark"), check: I("checkmark"), check2: I("checkmark"), "check-circle-fill": I("checkmark-circle"), "check-circle": I("checkmark-circle-outline"), "check2-circle": I("checkmark-circle-outline"),
   "x-circle": I("close-circle-outline"), "x-circle-fill": I("close-circle"), "x-octagon": M("octagon-outline"),

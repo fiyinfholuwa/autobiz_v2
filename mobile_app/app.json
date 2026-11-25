@@ -8,14 +8,15 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "app.autobiz.mobile"
+      "bundleIdentifier": "app.autobiz.mobile",
+      "icon": "./assets/icon.png"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#299d91",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
+        "monochromeImage": "./assets/android-icon-monochrome.png",
+        "backgroundColor": "#299d91"
       },
       "predictiveBackGestureEnabled": false,
       "package": "app.autobiz.mobile"
@@ -30,9 +31,11 @@
         "expo-splash-screen",
         {
           "image": "./assets/splash-icon.png",
-          "imageWidth": 160,
-          "backgroundColor": "#299d91",
+          "imageWidth": 120,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff",
           "dark": {
+            "image": "./assets/splash-icon.png",
             "backgroundColor": "#121212"
           }
         }

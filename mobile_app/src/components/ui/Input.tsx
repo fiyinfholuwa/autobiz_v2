@@ -10,6 +10,8 @@ import { Row } from "./primitives";
 import { Sheet } from "./Sheet";
 import { Text } from "./Text";
 
+export type TextInputRef = React.ComponentRef<typeof TextInput>;
+
 /* ---------------- Field wrapper ---------------- */
 export function FieldLabel({ label, right }: { label: string; right?: React.ReactNode }) {
   return (
@@ -42,7 +44,7 @@ export type TextFieldProps = TextInputProps & {
   success?: boolean;
 };
 
-export const TextField = forwardRef<TextInput, TextFieldProps>(function TextField(
+export const TextField = forwardRef<TextInputRef, TextFieldProps>(function TextField(
   { label, labelRight, error, hint, prefix, suffix, icon, containerStyle, big, password, success, style, multiline, editable = true, ...rest },
   ref
 ) {
@@ -204,7 +206,7 @@ export type CodeInputHandle = { clear: () => void; shake: () => void; focus: () 
 export const CodeInput = forwardRef<CodeInputHandle, { length?: number; value: string; onChange: (v: string) => void; onComplete?: (v: string) => void; secret?: boolean; autoFocus?: boolean; error?: boolean }>(
   function CodeInput({ length = 6, value, onChange, onComplete, secret, autoFocus = true, error }, ref) {
     const { c } = useTheme();
-    const input = useRef<TextInput>(null);
+    const input = useRef<TextInputRef>(null);
     const shakeA = useRef(new Animated.Value(0)).current;
     const [focused, setFocused] = useState(false);
     React.useImperativeHandle(ref, () => ({

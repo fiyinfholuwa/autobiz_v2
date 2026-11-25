@@ -1,7 +1,7 @@
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useRef } from "react";
-import { Animated, Image, Pressable, ScrollView, Switch as RNSwitch, View, type StyleProp, type ViewStyle } from "react-native";
+import { Animated, Image, StyleSheet, Pressable, ScrollView, Switch as RNSwitch, View, type StyleProp, type ViewStyle } from "react-native";
 import { radius, shadow, toneGradient, useTheme } from "@/theme";
 import { Button } from "./Button";
 import { Icon } from "./Icon";
@@ -330,7 +330,7 @@ export function ProductArt({ icon, tone, size = 72, style, iconScale = 0.42, rot
   const n = typeof size === "number" ? size : 160;
   return (
     <View style={[{ width: size, aspectRatio: 1, borderRadius: n * 0.18, backgroundColor: tc.bg, alignItems: "center", justifyContent: "center", overflow: "hidden" }, style]}>
-      <LinearGradient colors={[g[0] + (dark ? "33" : "22"), "transparent"]} style={{ position: "absolute", inset: 0 } as any} />
+      <LinearGradient colors={[g[0] + (dark ? "33" : "22"), "transparent"]} style={StyleSheet.absoluteFill} />
       <View style={{ transform: rotate ? [{ rotate }] : undefined }}>
         <Icon name={icon} size={n * iconScale} color={tc.fg} />
       </View>
