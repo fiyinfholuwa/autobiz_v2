@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AutoBiz · Shop. Travel. Pay.</title>
+  <meta name="description" content="Shop from verified sellers, buy travel eSIMs, book flights, get a USD virtual card, sell gift cards and pay for airtime, data and bills — all on AutoBiz.">
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="./assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="./assets/css/app.css" rel="stylesheet">
+  <script src="./assets/js/brand.js"></script>
+  <style>
+    /* ================= Editorial magazine homepage (v3) ================= */
+    body.ed { background: var(--ab-surface); color: var(--ab-text); overflow-x: hidden; }
+    .ed-wrap { max-width: 1360px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 56px); }
+    .ed-caps { font-size: .7rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--ab-muted); }
+    .ed-rule { border: 0; border-top: 1px solid var(--ab-border); margin: 0; opacity: 1; }
+    .ed a:focus-visible, .ed button:focus-visible, .ed input:focus-visible, .ed select:focus-visible { outline: 2px solid var(--ab-primary); outline-offset: 3px; border-radius: 4px; }
+    .ed-link { color: var(--ab-text); font-weight: 700; display: inline-flex; align-items: center; gap: .5rem; border-bottom: 1.5px solid currentColor; padding-bottom: 2px; transition: gap .2s, color .2s; }
+    .ed-link:hover { color: var(--ab-primary); gap: .8rem; }
+    .ed-btn { display: inline-flex; align-items: center; gap: .6rem; padding: .95rem 1.5rem; border-radius: 999px; font-weight: 700; background: var(--ab-text); color: var(--ab-surface); border: 0; transition: transform .2s, background .2s; }
+    .ed-btn:hover { background: var(--ab-primary); color: var(--ab-on-primary); transform: translateY(-2px); }
+    .ed-btn.brand { background: var(--ab-primary); color: var(--ab-on-primary); }
+    .ed-btn.brand:hover { background: var(--ab-primary-700); }
+
+    /* ---------- Masthead ---------- */
+    .ed-topline { border-bottom: 1px solid var(--ab-border); }
+    .ed-topline .ed-wrap { display: flex; justify-content: space-between; align-items: center; height: 34px; gap: 1rem; }
+    .ed-topline a { color: var(--ab-muted); }
+    .ed-topline a:hover { color: var(--ab-text); }
+    .ed-head { position: sticky; top: 0; z-index: 1030; background: color-mix(in srgb, var(--ab-surface) 88%, transparent); backdrop-filter: saturate(1.4) blur(14px); border-bottom: 1px solid var(--ab-border); }
+    .ed-nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 68px; gap: 1rem; }
+    .ed-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: clamp(.9rem, 1.8vw, 1.8rem); }
+    .ed-nav ul a { color: var(--ab-text); font-size: .82rem; font-weight: 600; letter-spacing: .01em; position: relative; padding: .3rem 0; }
+    .ed-nav ul a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -2px; height: 1.5px; background: var(--ab-primary); transition: right .25s; }
+    .ed-nav ul a:hover::after { right: 0; }
+    .ed-nav .right { justify-self: end; display: flex; align-items: center; gap: 1.4rem; }
+    .ed-logo { display: inline-flex; align-items: center; gap: .55rem; font-weight: 800; font-size: 1.3rem; letter-spacing: -.04em; color: var(--ab-text); }
+    .ed-logo img { width: 30px; height: 30px; }
+    .ed-icon-btn { width: 40px; height: 40px; border-radius: 50%; display: inline-grid; place-items: center; color: var(--ab-text); border: 1px solid var(--ab-border); background: transparent; position: relative; font-size: 1.05rem; }
+    .ed-icon-btn:hover { border-color: var(--ab-text); color: var(--ab-text); }
+    .ed-icon-btn .ab-dot-badge, .ed-count { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; border-radius: 9px; background: var(--ab-primary); color: var(--ab-on-primary); font-size: .65rem; font-weight: 800; display: grid; place-items: center; padding: 0 4px; }
+    .ed-count[hidden] { display: none; }
+    .ed-acct { font-size: .82rem; font-weight: 700; color: var(--ab-text); }
+    .ed-acct:hover { color: var(--ab-primary); }
+    .ed-burger { display: none; }
+    @media (max-width: 1099.98px) {
+      .ed-nav { grid-template-columns: auto 1fr auto; }
+      .ed-nav ul, .ed-nav .acct-links { display: none !important; }
+      .ed-burger { display: inline-grid; }
+      .ed-logo { justify-self: center; }
+    }
+    .ed-oc .offcanvas-body a.big { display: flex; justify-content: space-between; align-items: center; font-size: 1.6rem; font-weight: 800; letter-spacing: -.04em; color: var(--ab-text); padding: .65rem 0; border-bottom: 1px solid var(--ab-border); }
+    .ed-oc .offcanvas-body a.big small { font-size: .7rem; letter-spacing: .14em; color: var(--ab-muted); font-weight: 700; }
+    .ed-oc { background: var(--ab-surface); color: var(--ab-text); }
+
+    /* ---------- Cover ---------- */
+    .ed-cover { padding: clamp(2rem, 5vw, 4.5rem) 0 clamp(2.5rem, 5vw, 4rem); }
+    .ed-cover-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: end; }
+    .ed-cover .meta { display: flex; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; margin-bottom: clamp(1.5rem, 3vw, 2.5rem); border-bottom: 1px solid var(--ab-border); }
+    .ed-h1 { font-size: clamp(4.2rem, 12vw, 10rem); font-weight: 800; line-height: .84; letter-spacing: -.075em; margin: 0 0 clamp(1.5rem, 3vw, 2.25rem); }
+    .ed-h1 span { display: block; }
+    .ed-h1 .outline { font-weight: 400; letter-spacing: -.07em; color: var(--ab-text); }
+    .ed-h1 .brand { color: var(--ab-primary); }
+    .ed-dek { font-size: clamp(1.05rem, 1.5vw, 1.3rem); line-height: 1.55; color: var(--ab-text); max-width: 34ch; margin-bottom: 2rem; font-weight: 500; }
+    .ed-dek em { font-style: normal; color: var(--ab-muted); }
+    .ed-cover-ctas { display: flex; align-items: center; gap: 1.75rem; flex-wrap: wrap; }
+
+    .ed-show { position: relative; aspect-ratio: 4 / 5; border-radius: 28px; overflow: hidden; isolation: isolate;
+      background: radial-gradient(120% 80% at 85% 10%, var(--ab-primary-300) 0%, transparent 55%), linear-gradient(160deg, var(--ab-primary) 0%, var(--ab-primary-700) 55%, var(--ab-sidebar) 100%); color: #fff; }
+    .ed-show .ring { position: absolute; border-radius: 50%; border: 1px solid rgba(255,255,255,.22); left: 50%; top: 46%; transform: translate(-50%, -50%); }
+    .ed-show .r1 { width: 58%; aspect-ratio: 1; } .ed-show .r2 { width: 82%; aspect-ratio: 1; } .ed-show .r3 { width: 112%; aspect-ratio: 1; border-style: dashed; opacity: .6; }
+    .ed-show .disc { position: absolute; left: 50%; top: 46%; width: 46%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.95), rgba(255,255,255,.75) 60%, rgba(255,255,255,.55)); box-shadow: 0 40px 80px -20px rgba(0,0,0,.45); display: grid; place-items: center; }
+    .ed-show .disc i { font-size: clamp(5rem, 9vw, 8.5rem); color: var(--ab-sidebar); line-height: 1; }
+    .ed-show .tile { position: absolute; width: 22%; border-radius: 18px; box-shadow: 0 24px 40px -18px rgba(0,0,0,.5); }
+    .ed-show .tile .ab-product-art { font-size: clamp(1.6rem, 2.6vw, 2.4rem); border-radius: 18px; background-color: var(--ab-surface); }
+    .ed-show .t1 { left: 7%; top: 14%; transform: rotate(-9deg); }
+    .ed-show .t2 { right: 7%; top: 52%; transform: rotate(8deg); }
+    .ed-show .t3 { left: 12%; top: 60%; transform: rotate(5deg); width: 17%; }
+    .ed-show .chip { position: absolute; display: inline-flex; align-items: center; gap: .5rem; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.28); backdrop-filter: blur(10px); border-radius: 999px; padding: .45rem .85rem; font-size: .75rem; font-weight: 700; color: #fff; white-space: nowrap; }
+    .ed-show .chip img { width: 20px; height: 14px; object-fit: cover; border-radius: 3px; }
+    .ed-show .c1 { right: 6%; top: 8%; } .ed-show .c2 { left: 6%; top: 42%; }
+    .ed-show .cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 1.3rem 1.5rem; display: flex; justify-content: space-between; align-items: end; gap: 1rem; background: linear-gradient(transparent, rgba(0,0,0,.35)); }
+    .ed-show .cap .ed-caps { color: rgba(255,255,255,.7); }
+    .ed-show .cap b { display: block; font-size: 1.05rem; letter-spacing: -.02em; }
+    .ed-show .cap a { color: #fff; }
+    .ed-show .cap .price { font-size: 1.35rem; font-weight: 800; letter-spacing: -.03em; white-space: nowrap; }
+    @media (prefers-reduced-motion: no-preference) {
+      .ed-show .tile, .ed-show .chip { animation: edFloat 7s ease-in-out infinite; }
+      .ed-show .t2, .ed-show .c2 { animation-delay: -2.5s; } .ed-show .t3 { animation-delay: -4.5s; }
+      @keyframes edFloat { 50% { translate: 0 -10px; } }
+    }
+
+    /* ---------- Contents ---------- */
+    .ed-toc { border-top: 1px solid var(--ab-text); border-bottom: 1px solid var(--ab-border); }
+    .ed-toc ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, 1fr); }
+    .ed-toc li + li { border-left: 1px solid var(--ab-border); }
+    .ed-toc a { display: block; padding: 1.3rem 1.1rem 1.4rem; color: var(--ab-text); height: 100%; transition: background .2s; }
+    .ed-toc a:hover { background: var(--ab-surface-2); }
+    .ed-toc .n { font-size: .72rem; font-weight: 800; color: var(--ab-primary); letter-spacing: .1em; }
+    .ed-toc b { display: block; font-size: 1.05rem; letter-spacing: -.02em; margin: .35rem 0 .2rem; }
+    .ed-toc span.d { font-size: .78rem; color: var(--ab-muted); line-height: 1.4; display: block; }
+    @media (max-width: 991.98px) { .ed-toc ol { grid-template-columns: repeat(3, 1fr); } .ed-toc li:nth-child(4) { border-left: 0; } .ed-toc li:nth-child(n+4) { border-top: 1px solid var(--ab-border); } }
+    @media (max-width: 575.98px) { .ed-toc ol { grid-template-columns: repeat(2, 1fr); } .ed-toc li:nth-child(odd) { border-left: 0; } .ed-toc li:nth-child(4) { border-left: 1px solid var(--ab-border); } .ed-toc li:nth-child(n+3) { border-top: 1px solid var(--ab-border); } .ed-toc a { padding: 1rem .8rem; } }
+
+    /* ---------- Chapters ---------- */
+    .ed-ch { padding: clamp(3.5rem, 8vw, 7.5rem) 0; border-bottom: 1px solid var(--ab-border); scroll-margin-top: 70px; }
+    .ed-ch.alt { background: var(--ab-surface-2); }
+    .ed-ch-head { display: grid; grid-template-columns: auto 1fr; gap: clamp(1rem, 3vw, 2.5rem); align-items: end; margin-bottom: clamp(2rem, 4vw, 3.5rem); }
+    .ed-num { font-size: clamp(5rem, 13vw, 12rem); font-weight: 800; letter-spacing: -.08em; line-height: .78; color: transparent; -webkit-text-stroke: 1.5px var(--ab-muted); }
+    .ed-ch-head .ed-caps { display: flex; gap: .75rem; align-items: center; margin-bottom: .75rem; }
+    .ed-ch-head .ed-caps::before { content: ""; width: 28px; height: 1.5px; background: var(--ab-primary); }
+    .ed-h2 { font-size: clamp(2.2rem, 5.6vw, 5rem); font-weight: 800; letter-spacing: -.06em; line-height: .95; margin: 0; }
+    .ed-h2 .muted { color: var(--ab-muted); }
+    .ed-ch-body { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; }
+    .ed-ch.rev .ed-ch-body { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+    .ed-ch.rev .ed-ch-text { order: 2; }
+    .ed-ch-text p.lede { font-size: 1.08rem; line-height: 1.7; color: var(--ab-text); margin-bottom: 2rem; }
+    .ed-ch-text p.lede::first-letter { font-size: 3.4em; font-weight: 800; float: left; line-height: .82; margin: .08em .1em 0 0; color: var(--ab-primary); }
+    .ed-quote { border-left: 3px solid var(--ab-primary); padding: .3rem 0 .3rem 1.4rem; margin: 0 0 2.25rem; }
+    .ed-quote .big { font-size: clamp(2.4rem, 4.6vw, 3.8rem); font-weight: 800; letter-spacing: -.06em; line-height: 1; display: block; }
+    .ed-quote .cap { display: block; margin-top: .55rem; color: var(--ab-muted); font-size: .9rem; max-width: 34ch; }
+    @media (max-width: 991.98px) {
+      .ed-ch-body, .ed-ch.rev .ed-ch-body { grid-template-columns: 1fr; }
+      .ed-ch.rev .ed-ch-text { order: 0; }
+      .ed-ch-head { grid-template-columns: 1fr; gap: .5rem; }
+    }
+
+    /* Shop data */
+    .ed-prods { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--ab-border); border: 1px solid var(--ab-border); border-radius: 22px; overflow: hidden; }
+    .ed-prod { background: var(--ab-surface); padding: 1.1rem; display: flex; flex-direction: column; gap: .7rem; position: relative; }
+    .ed-prod .ab-product-art { font-size: 3rem; border-radius: 14px; aspect-ratio: 5 / 4; }
+    .ed-prod .row1 { display: flex; justify-content: space-between; align-items: start; gap: .5rem; }
+    .ed-prod a.name { color: var(--ab-text); font-weight: 700; font-size: .92rem; line-height: 1.3; }
+    .ed-prod a.name:hover { color: var(--ab-primary); }
+    .ed-prod a.name::after { content: ""; position: absolute; inset: 0; }
+    .ed-prod .by { font-size: .75rem; color: var(--ab-muted); }
+    .ed-prod .bottom { display: flex; justify-content: space-between; align-items: center; gap: .5rem; margin-top: auto; }
+    .ed-prod .price { font-weight: 800; letter-spacing: -.02em; }
+    .ed-prod .old { font-size: .75rem; color: var(--ab-muted); text-decoration: line-through; margin-left: .35rem; font-weight: 500; }
+    .ed-add { position: relative; z-index: 2; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--ab-border); background: var(--ab-surface); color: var(--ab-text); display: grid; place-items: center; flex-shrink: 0; transition: all .2s; }
+    .ed-add:hover { background: var(--ab-primary); border-color: var(--ab-primary); color: var(--ab-on-primary); }
+    .ed-cats { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; }
+    .ed-cats a { font-size: .78rem; font-weight: 600; color: var(--ab-text); border: 1px solid var(--ab-border); border-radius: 999px; padding: .4rem .85rem; }
+    .ed-cats a:hover { border-color: var(--ab-primary); color: var(--ab-primary); }
+
+    /* eSIM data */
+    .ed-flags { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); column-gap: 2.5rem; border-top: 1px solid var(--ab-text); }
+    .ed-flags a { display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: .9rem; padding: .95rem 0; border-bottom: 1px solid var(--ab-border); color: var(--ab-text); }
+    .ed-flags a:hover b { color: var(--ab-primary); }
+    .ed-flags img { width: 34px; height: 24px; object-fit: cover; border-radius: 4px; box-shadow: 0 0 0 1px var(--ab-border); }
+    .ed-flags .fi { width: 34px; height: 24px; display: grid; place-items: center; color: var(--ab-primary); font-size: 1.1rem; }
+    .ed-flags b { font-size: .92rem; display: block; line-height: 1.2; }
+    .ed-flags small { font-size: .72rem; color: var(--ab-muted); }
+    .ed-flags .p { text-align: right; font-weight: 800; font-size: .95rem; letter-spacing: -.02em; }
+    .ed-flags .p small { display: block; font-weight: 500; }
+    @media (max-width: 575.98px) { .ed-flags { grid-template-columns: 1fr; } }
+
+    /* Flights data */
+    .ed-board { background: var(--ab-sidebar); color: #fff; border-radius: 22px; padding: clamp(1.1rem, 2.5vw, 1.8rem); }
+    .ed-board .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; color: rgba(255,255,255,.6); }
+    .ed-board .top .ed-caps { color: rgba(255,255,255,.6); }
+    .ed-board a.row-r { display: grid; grid-template-columns: 1fr auto 1fr auto; align-items: center; gap: 1rem; padding: 1rem .25rem; border-top: 1px solid rgba(255,255,255,.1); color: #fff; }
+    .ed-board a.row-r:hover { background: rgba(255,255,255,.04); }
+    .ed-board .code { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1; }
+    .ed-board .city { font-size: .74rem; color: rgba(255,255,255,.6); display: block; margin-top: .25rem; }
+    .ed-board .path { display: flex; align-items: center; gap: .4rem; color: var(--ab-primary-300); }
+    .ed-board .path::before, .ed-board .path::after { content: ""; width: clamp(14px, 4vw, 48px); border-top: 1.5px dashed rgba(255,255,255,.3); }
+    .ed-board .go { font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--ab-primary-300); white-space: nowrap; }
+    .ed-board .to { text-align: right; }
+    @media (max-width: 575.98px) { .ed-board a.row-r { grid-template-columns: 1fr auto 1fr; } .ed-board .go { display: none; } }
+
+    /* USD card data */
+    .ed-card-wrap { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 1.75rem; align-items: center; }
+    .ed-vcard { aspect-ratio: 1.586; border-radius: 22px; padding: clamp(1rem, 2.4vw, 1.6rem); color: #fff; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
+      background: linear-gradient(135deg, var(--ab-sidebar) 0%, var(--ab-primary-700) 70%, var(--ab-primary) 120%); box-shadow: 0 40px 60px -30px rgba(var(--ab-primary-rgb), .7); transform: rotate(-4deg); }
+    .ed-vcard::before { content: ""; position: absolute; width: 70%; aspect-ratio: 1; border-radius: 50%; right: -25%; top: -45%; border: 30px solid rgba(255,255,255,.06); }
+    .ed-vcard .chipx { width: 42px; height: 32px; border-radius: 7px; background: linear-gradient(135deg, #f3d98b, #c9a24a); }
+    .ed-vcard .num { font-size: clamp(.9rem, 1.6vw, 1.15rem); letter-spacing: .14em; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .ed-vcard .row-b { display: flex; justify-content: space-between; align-items: end; font-size: .72rem; }
+    .ed-vcard .row-b b { font-size: 1.4rem; letter-spacing: -.03em; display: block; }
+    .ed-vcard .net { display: flex; } .ed-vcard .net span { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,.85); } .ed-vcard .net span + span { margin-left: -12px; background: rgba(255,255,255,.45); }
+    .ed-conv { border: 1px solid var(--ab-border); border-radius: 22px; padding: 1.4rem; background: var(--ab-surface); }
+    .ed-conv label { display: block; margin-bottom: .4rem; }
+    .ed-conv .inp { display: flex; align-items: center; border-bottom: 2px solid var(--ab-text); padding-bottom: .3rem; }
+    .ed-conv .inp span { font-size: 1.8rem; font-weight: 800; color: var(--ab-muted); }
+    .ed-conv input { border: 0; background: transparent; color: var(--ab-text); font-size: 2rem; font-weight: 800; letter-spacing: -.04em; width: 100%; padding: 0 .3rem; outline: none; }
+    .ed-conv .out { margin-top: 1rem; font-size: .9rem; color: var(--ab-muted); }
+    .ed-conv .out b { display: block; color: var(--ab-text); font-size: 1.5rem; letter-spacing: -.03em; }
+    .ed-ticks { list-style: none; padding: 0; margin: 0 0 2rem; }
+    .ed-ticks li { display: flex; gap: .75rem; padding: .6rem 0; border-bottom: 1px solid var(--ab-border); font-size: .95rem; }
+    .ed-ticks i { color: var(--ab-primary); }
+    @media (max-width: 767.98px) { .ed-card-wrap { grid-template-columns: 1fr; } .ed-vcard { max-width: 380px; transform: rotate(-2deg); } }
+
+    /* Gift card data */
+    .ed-rates { width: 100%; border-collapse: collapse; }
+    .ed-rates th { text-align: left; padding: 0 0 .7rem; border-bottom: 1px solid var(--ab-text); }
+    .ed-rates th:last-child, .ed-rates td:last-child { text-align: right; }
+    .ed-rates td { padding: .9rem 0; border-bottom: 1px solid var(--ab-border); vertical-align: middle; }
+    .ed-rates .gc { display: flex; align-items: center; gap: .8rem; color: var(--ab-text); font-weight: 700; }
+    .ed-rates .gc:hover { color: var(--ab-primary); }
+    .ed-rates .gi { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; color: #fff; flex-shrink: 0; }
+    .ed-rates .bar { height: 6px; border-radius: 3px; background: var(--ab-border); overflow: hidden; width: 100%; min-width: 60px; }
+    .ed-rates .bar span { display: block; height: 100%; background: var(--ab-primary); border-radius: 3px; }
+    .ed-rates .rate { font-weight: 800; letter-spacing: -.02em; white-space: nowrap; }
+    .ed-rates .rate small { color: var(--ab-muted); font-weight: 500; }
+    .ed-rates td.barc { padding: 0 1.25rem; width: 38%; }
+    @media (max-width: 575.98px) { .ed-rates td.barc, .ed-rates th.barc { display: none; } }
+
+    /* Bills data */
+    .ed-nets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--ab-border); border: 1px solid var(--ab-border); border-radius: 22px; overflow: hidden; margin-bottom: 1.25rem; }
+    .ed-nets a { background: var(--ab-surface); padding: 1.2rem 1rem; color: var(--ab-text); display: flex; flex-direction: column; gap: .7rem; }
+    .ed-nets a:hover { background: var(--ab-surface-2); }
+    .ed-nets img { width: 44px; height: 44px; border-radius: 12px; object-fit: cover; }
+    .ed-nets b { font-size: .95rem; } .ed-nets small { font-size: .75rem; color: var(--ab-muted); display: block; }
+    @media (max-width: 575.98px) { .ed-nets { grid-template-columns: repeat(2, 1fr); } }
+    .ed-airtime { display: flex; gap: .6rem; flex-wrap: wrap; align-items: stretch; border: 1px solid var(--ab-border); border-radius: 18px; padding: .6rem; background: var(--ab-surface); }
+    .ed-airtime input { flex: 1 1 180px; border: 0; background: transparent; color: var(--ab-text); font-weight: 600; padding: .6rem .8rem; min-width: 0; outline: none; }
+    .ed-airtime input.is-invalid { box-shadow: inset 0 -2px 0 var(--ab-danger); }
+    .ed-bill-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.25rem; }
+    .ed-bill-list a { color: var(--ab-text); border-top: 1px solid var(--ab-text); padding-top: .8rem; }
+    .ed-bill-list a:hover b { color: var(--ab-primary); }
+    .ed-bill-list b { display: block; font-size: .95rem; } .ed-bill-list small { color: var(--ab-muted); font-size: .78rem; }
+    @media (max-width: 575.98px) { .ed-bill-list { grid-template-columns: 1fr; } }
+
+    /* ---------- Closing ---------- */
+    .ed-close { padding: clamp(4rem, 10vw, 9rem) 0; text-align: center; }
+    .ed-close h2 { font-size: clamp(2.6rem, 7.5vw, 7rem); font-weight: 800; letter-spacing: -.07em; line-height: .92; margin: 1rem auto 1.5rem; max-width: 14ch; }
+    .ed-close h2 span { color: var(--ab-primary); }
+    .ed-close p { color: var(--ab-muted); max-width: 46ch; margin: 0 auto 2rem; font-size: 1.05rem; }
+    .ed-close .btns { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; align-items: center; }
+
+    /* ---------- Footer ---------- */
+    .ed-foot { border-top: 1px solid var(--ab-text); padding: clamp(2.5rem, 5vw, 4rem) 0 1.5rem; overflow: hidden; }
+    .ed-foot-cols { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 2rem; margin-bottom: clamp(2.5rem, 6vw, 4.5rem); }
+    .ed-foot h3 { margin-bottom: 1rem; }
+    .ed-foot ul { list-style: none; padding: 0; margin: 0; }
+    .ed-foot li { margin-bottom: .55rem; }
+    .ed-foot li a { color: var(--ab-text); font-size: .9rem; }
+    .ed-foot li a:hover { color: var(--ab-primary); }
+    .ed-foot p { color: var(--ab-muted); font-size: .9rem; max-width: 32ch; }
+    .ed-wordmark { font-size: clamp(4.5rem, 21.5vw, 21rem); font-weight: 800; letter-spacing: -.085em; line-height: .78; margin: 0 0 1.5rem -.04em; white-space: nowrap; color: var(--ab-text); user-select: none; }
+    .ed-wordmark span { color: var(--ab-primary); }
+    .ed-foot .base { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-top: 1.25rem; border-top: 1px solid var(--ab-border); }
+    .ed-foot .base a { color: var(--ab-muted); } .ed-foot .base a:hover { color: var(--ab-text); }
+    @media (max-width: 767.98px) { .ed-foot-cols { grid-template-columns: 1fr 1fr; } .ed-foot-cols > div:first-child { grid-column: 1 / -1; } }
+
+    @media (max-width: 991.98px) {
+      .ed-cover-grid { grid-template-columns: 1fr; }
+      .ed-show { aspect-ratio: 5 / 4; max-height: 560px; }
+      .ed-show .disc { width: 38%; }
+    }
+    @media (max-width: 575.98px) {
+      .ed-topline .hide-sm { display: none; } .ed-topline .ed-wrap { justify-content: center; }
+      .ed-h1 { font-size: 21vw; }
+      .ed-show { aspect-ratio: 1 / 1.05; border-radius: 22px; }
+      .ed-show .disc { width: 48%; top: 44%; }
+      .ed-show .tile { width: 26%; } .ed-show .t3 { display: none; }
+      .ed-show .c2 { top: auto; bottom: 26%; left: auto; right: 5%; }
+      .ed-show .cap { padding: 1rem 1.1rem; } .ed-show .cap b { font-size: .92rem; } .ed-show .cap .price { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body class="ed">
+<a class="visually-hidden-focusable position-absolute top-0 start-0 m-2 p-2 bg-body z-3" href="#main">Skip to content</a>
+
+<div class="ed-topline">
+  <div class="ed-wrap">
+    <span class="ed-caps hide-sm">The everyday edition</span>
+    <span class="ed-caps hide-sm" id="edDate"></span>
+    <span class="ed-caps"><a href="./app/marketplace.html">Browse free · pay at checkout</a></span>
+  </div>
+</div>
+
+<header class="ed-head">
+  <nav class="ed-wrap ed-nav" aria-label="Main">
+    <button class="ed-icon-btn ed-burger" type="button" data-bs-toggle="offcanvas" data-bs-target="#edMenu" aria-controls="edMenu" aria-label="Open menu"><i class="bi bi-list"></i></button>
+    <ul>
+      <li><a href="./app/marketplace.html">Shop</a></li>
+      <li><a href="./app/esim.html">eSIM</a></li>
+      <li><a href="./app/flights.html">Flights</a></li>
+      <li><a href="./app/virtual-cards.html">USD cards</a></li>
+      <li><a href="./app/giftcards.html">Gift cards</a></li>
+      <li><a href="./app/bills.html">Bills</a></li>
+    </ul>
+    <a href="./index-v3.html" class="ed-logo" aria-label="AutoBiz home"><img src="./assets/img/logo.svg" alt="">AutoBiz</a>
+    <div class="right">
+      <span class="acct-links d-flex align-items-center gap-3" data-guest><a class="ed-acct" href="./login.html">Log in</a><a class="ed-btn" style="padding:.55rem 1.1rem;font-size:.82rem" href="./register.html">Sign up</a></span>
+      <span class="acct-links" data-member hidden><a class="ed-acct" href="./app/dashboard.html"><i class="bi bi-person-circle me-1"></i>My account</a></span>
+      <a href="./app/cart.html" class="ed-icon-btn" aria-label="Cart"><i class="bi bi-bag"></i><span class="ed-count" data-cart-count hidden></span></a>
+    </div>
+  </nav>
+</header>
+
+<div class="offcanvas offcanvas-start ed-oc" tabindex="-1" id="edMenu" aria-labelledby="edMenuLabel">
+  <div class="offcanvas-header border-bottom">
+    <span class="ed-logo" id="edMenuLabel"><img src="./assets/img/logo.svg" alt="">AutoBiz</span>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close menu"></button>
+  </div>
+  <div class="offcanvas-body d-flex flex-column">
+    <p class="ed-caps mb-1">Contents</p>
+    <a class="big" href="./app/marketplace.html">Shop <small>01</small></a>
+    <a class="big" href="./app/esim.html">Travel eSIM <small>02</small></a>
+    <a class="big" href="./app/flights.html">Flights <small>03</small></a>
+    <a class="big" href="./app/virtual-cards.html">USD cards <small>04</small></a>
+    <a class="big" href="./app/giftcards.html">Gift cards <small>05</small></a>
+    <a class="big" href="./app/bills.html">Bills <small>06</small></a>
+    <div class="mt-auto pt-4 d-flex gap-2 flex-wrap" id="edMenuAcct">
+      <a class="ed-btn" href="./register.html">Sign up</a><a class="ed-link ms-3 align-self-center" href="./login.html">Log in</a>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+  <!-- Cover -->
+  <section class="ed-cover" aria-labelledby="edTitle">
+    <div class="ed-wrap">
+      <div class="ed-cover-grid">
+        <div>
+          <div class="meta"><span class="ed-caps">Cover story</span><span class="ed-caps">Six services · one wallet</span></div>
+          <h1 class="ed-h1" id="edTitle"><span>Shop.</span><span class="outline">Travel.</span><span class="brand">Pay.</span></h1>
+          <p class="ed-dek">The things you buy, the places you go and the bills that never stop — in one place. <em>Browse everything freely; sign in only when it's time to pay.</em></p>
+          <div class="ed-cover-ctas" id="edCoverCtas">
+            <a class="ed-btn" href="./app/marketplace.html">Start shopping <i class="bi bi-arrow-right"></i></a>
+            <a class="ed-link" href="#ch-esim">Plan a trip <i class="bi bi-arrow-down-right"></i></a>
+          </div>
+        </div>
+        <figure class="ed-show m-0" id="edShow" aria-label="Featured: products, travel eSIM and flights on AutoBiz"></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contents -->
+  <nav class="ed-toc" aria-label="In this issue">
+    <div class="ed-wrap px-0 px-sm-auto"><ol id="edToc"></ol></div>
+  </nav>
+
+  <!-- 01 Shop -->
+  <section class="ed-ch" id="ch-shop" aria-labelledby="h-shop">
+    <div class="ed-wrap">
+      <div class="ed-ch-head"><div class="ed-num" aria-hidden="true">01</div><div><div class="ed-caps">Chapter one · Shop</div><h2 class="ed-h2" id="h-shop">The market, <span class="muted">curated.</span></h2></div></div>
+      <div class="ed-ch-body">
+        <div class="ed-ch-text">
+          <p class="lede">Phones, kitchen kit, fashion, groceries and digital goods from named sellers — each listing shows who's selling, the price before and after, and whether delivery is free. Add to cart as a guest; you'll only be asked to sign in at checkout.</p>
+          <blockquote class="ed-quote"><span class="big" id="fShop"></span><span class="cap" id="fShopCap"></span></blockquote>
+          <a class="ed-link" href="./app/marketplace.html">Enter the marketplace <i class="bi bi-arrow-right"></i></a>
+          <div class="ed-cats" id="edCats"></div>
+        </div>
+        <div class="ed-prods" id="edProds"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 eSIM -->
+  <section class="ed-ch alt rev" id="ch-esim" aria-labelledby="h-esim">
+    <div class="ed-wrap">
+      <div class="ed-ch-head"><div class="ed-num" aria-hidden="true">02</div><div><div class="ed-caps">Chapter two · Travel eSIM</div><h2 class="ed-h2" id="h-esim">Land <span class="muted">connected.</span></h2></div></div>
+      <div class="ed-ch-body">
+        <div class="ed-ch-text">
+          <p class="lede">Skip the airport SIM queue and the roaming bill. Buy a data plan for where you're going, scan the QR code before you fly and switch it on when you land.</p>
+          <blockquote class="ed-quote"><span class="big" id="fEsim"></span><span class="cap" id="fEsimCap"></span></blockquote>
+          <a class="ed-link" href="./app/esim.html">See every destination <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <ul class="ed-flags" id="edFlags"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 Flights -->
+  <section class="ed-ch" id="ch-flights" aria-labelledby="h-flights">
+    <div class="ed-wrap">
+      <div class="ed-ch-head"><div class="ed-num" aria-hidden="true">03</div><div><div class="ed-caps">Chapter three · Flights</div><h2 class="ed-h2" id="h-flights">Window seat, <span class="muted">booked.</span></h2></div></div>
+      <div class="ed-ch-body">
+        <div class="ed-ch-text">
+          <p class="lede">Compare fares across local and international carriers, choose your seat and add bags in a few taps. Your e-ticket and trip details stay in your account.</p>
+          <blockquote class="ed-quote"><span class="big" id="fFly"></span><span class="cap" id="fFlyCap"></span></blockquote>
+          <a class="ed-link" href="./app/flights.html">Search all flights <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div class="ed-board" id="edBoard"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 USD card -->
+  <section class="ed-ch alt rev" id="ch-card" aria-labelledby="h-card">
+    <div class="ed-wrap">
+      <div class="ed-ch-head"><div class="ed-num" aria-hidden="true">04</div><div><div class="ed-caps">Chapter four · USD virtual card</div><h2 class="ed-h2" id="h-card">Pay the world <span class="muted">in dollars.</span></h2></div></div>
+      <div class="ed-ch-body">
+        <div class="ed-ch-text">
+          <p class="lede">Create a dollar card in minutes, fund it from your naira wallet and use it for subscriptions, online stores and bookings abroad. Freeze it any time.</p>
+          <blockquote class="ed-quote"><span class="big" id="fUsd"></span><span class="cap">Today's rate for USD services, applied when you fund your card.</span></blockquote>
+          <ul class="ed-ticks">
+            <li><i class="bi bi-check2"></i>Works for subscriptions, apps and online stores</li>
+            <li><i class="bi bi-check2"></i>Fund and withdraw from your AutoBiz wallet</li>
+            <li><i class="bi bi-check2"></i>Freeze, unfreeze and reveal details in-app</li>
+          </ul>
+          <a class="ed-link" href="./app/virtual-cards.html">Get a USD card <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div class="ed-card-wrap">
+          <div class="ed-vcard" role="img" aria-label="Illustration of an AutoBiz USD virtual card">
+            <div class="d-flex justify-content-between align-items-start"><span class="chipx"></span><span class="ed-caps" style="color:rgba(255,255,255,.7)">Virtual · USD</span></div>
+            <div class="num">•••• •••• •••• 4021</div>
+            <div class="row-b"><div><span style="opacity:.7">Balance</span><b>$120.00</b></div><div class="net"><span></span><span></span></div></div>
+          </div>
+          <form class="ed-conv" id="edConv">
+            <label class="ed-caps" for="edUsd">You want</label>
+            <div class="inp"><span>$</span><input id="edUsd" type="number" inputmode="decimal" min="1" value="50" aria-describedby="edNgn"></div>
+            <div class="out" id="edNgn" aria-live="polite"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 Gift cards -->
+  <section class="ed-ch" id="ch-gift" aria-labelledby="h-gift">
+    <div class="ed-wrap">
+      <div class="ed-ch-head"><div class="ed-num" aria-hidden="true">05</div><div><div class="ed-caps">Chapter five · Gift cards</div><h2 class="ed-h2" id="h-gift">Cards in, <span class="muted">naira out.</span></h2></div></div>
+      <div class="ed-ch-body">
+        <div class="ed-ch-text">
+          <p class="lede">Got an unused Apple, Steam or Amazon card? Upload it, see the payout before you submit, and get paid to your wallet once it's verified.</p>
+          <blockquote class="ed-quote"><span class="big" id="fGift"></span><span class="cap" id="fGiftCap"></span></blockquote>
+          <a class="ed-link" href="./app/giftcards.html">Trade a gift card <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <table class="ed-rates">
+          <caption class="visually-hidden">Best gift card rates per dollar</caption>
+          <thead><tr><th class="ed-caps" scope="col">Card</th><th class="ed-caps barc" scope="col"><span class="visually-hidden">Relative rate</span></th><th class="ed-caps" scope="col">Best rate</th></tr></thead>
+          <tbody id="edRates"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 Bills -->
+  <section class="ed-ch alt rev" id="ch-bills" aria-labelledby="h-bills">
+    <div class="ed-wrap">
+      <div class="ed-ch-head"><div class="ed-num" aria-hidden="true">06</div><div><div class="ed-caps">Chapter six · Bills</div><h2 class="ed-h2" id="h-bills">The small stuff, <span class="muted">sorted.</span></h2></div></div>
+      <div class="ed-ch-body">
+        <div class="ed-ch-text">
+          <p class="lede">Airtime and data on every network, electricity tokens, TV subscriptions, betting wallets and exam pins — paid from one wallet, with a receipt every time.</p>
+          <blockquote class="ed-quote"><span class="big" id="fBills"></span><span class="cap" id="fBillsCap"></span></blockquote>
+          <a class="ed-link" href="./app/bills.html">Pay a bill <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div>
+          <div class="ed-nets" id="edNets"></div>
+          <form class="ed-airtime" id="edAirtime" novalidate>
+            <label for="edPhone" class="visually-hidden">Phone number for airtime</label>
+            <input id="edPhone" type="tel" inputmode="numeric" maxlength="11" placeholder="Phone number, e.g. 0803 000 0000" autocomplete="tel">
+            <button class="ed-btn brand" type="submit">Buy airtime <i class="bi bi-arrow-right"></i></button>
+          </form>
+          <div class="ed-bill-list" id="edBillList"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Closing -->
+  <section class="ed-close" aria-labelledby="h-close">
+    <div class="ed-wrap">
+      <div class="ed-caps">Editor's note</div>
+      <h2 id="h-close">Browse freely. <span>Sign in to pay.</span></h2>
+      <p id="edCloseText">Create a free account when you're ready — your wallet, orders, trips, eSIMs and cards will all live in one place.</p>
+      <div class="btns" id="edCloseBtns"><a class="ed-btn brand" href="./register.html">Create free account <i class="bi bi-arrow-right"></i></a><a class="ed-link" href="./login.html">I already have one</a></div>
+    </div>
+  </section>
+</main>
+
+<footer class="ed-foot">
+  <div class="ed-wrap">
+    <div class="ed-foot-cols">
+      <div><h3 class="ed-caps">AutoBiz</h3><p>Shopping, travel and payments for everyday life — priced in naira, with dollars when you need them.</p></div>
+      <div><h3 class="ed-caps">Shop &amp; pay</h3><ul><li><a href="./app/marketplace.html">Marketplace</a></li><li><a href="./app/giftcards.html">Gift cards</a></li><li><a href="./app/bills.html">Airtime &amp; bills</a></li><li><a href="./app/virtual-cards.html">USD cards</a></li></ul></div>
+      <div><h3 class="ed-caps">Travel</h3><ul><li><a href="./app/flights.html">Flights</a></li><li><a href="./app/esim.html">Travel eSIM</a></li><li><a href="./app/flights.html?from=LOS&amp;to=LHR">Lagos → London</a></li><li><a href="./app/esim.html?country=ae">UAE eSIM</a></li></ul></div>
+      <div><h3 class="ed-caps">Account</h3><ul id="edFootAcct"><li><a href="./login.html">Log in</a></li><li><a href="./register.html">Create account</a></li><li><a href="./app/cart.html">Cart</a></li></ul></div>
+    </div>
+    <div class="ed-wordmark" aria-hidden="true">AutoBiz<span>.</span></div>
+    <div class="base ed-caps"><span>© <span id="edYear"></span> AutoBiz</span><span>Prices in ₦ · USD services at today's rate</span><a href="#main">Back to top <i class="bi bi-arrow-up"></i></a></div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/js/data.js"></script>
+<script src="./assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const D = AB_DATA, fmt = AB.fmt, esc = AB.esc, $ = (id) => document.getElementById(id);
+  const P = (id) => D.products.find((p) => p.id === id);
+  const best = (g) => Math.max(...Object.values(g.types));
+  const year = new Date().getFullYear();
+  $("edYear").textContent = year;
+  $("edDate").textContent = new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+
+  /* ---- Cover showcase ---- */
+  const star = P("p2"), uk = D.esimCountries.find((c) => c.code === "gb");
+  $("edShow").innerHTML = `
+    <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+    <div class="disc" aria-hidden="true"><i class="bi ${star.icon}"></i></div>
+    <div class="tile t1" aria-hidden="true">${AB.productArt(P("p5"))}</div>
+    <div class="tile t2" aria-hidden="true">${AB.productArt(P("p10"))}</div>
+    <div class="tile t3" aria-hidden="true">${AB.productArt(P("p21"))}</div>
+    <a class="chip c1" href="./app/esim.html?country=gb"><img src="${AB.flag("gb")}" alt="">UK eSIM from ${fmt.usd(uk.from)}</a>
+    <a class="chip c2" href="./app/flights.html?from=LOS&to=LHR"><i class="bi bi-airplane"></i>LOS → LHR</a>
+    <figcaption class="cap">
+      <div><span class="ed-caps">On the cover</span><a href="./app/product.html?id=${star.id}"><b>${esc(star.name)}</b></a></div>
+      <span class="price">${fmt.naira(star.price)}</span>
+    </figcaption>`;
+
+  /* ---- Contents ---- */
+  const minEsim = D.esimCountries.filter((c) => !c.regional).reduce((a, c) => (c.from < a.from ? c : a));
+  const topGift = D.giftcards.reduce((a, g) => (best(g) > best(a) ? g : a));
+  const toc = [
+    ["#ch-shop", "Shop", `${D.products.length} picks across ${D.categories.length} aisles`],
+    ["#ch-esim", "Travel eSIM", `${D.esimCountries.length} plans, from ${fmt.usd(minEsim.from)}`],
+    ["#ch-flights", "Flights", `${D.airports.length} airports, ${D.airlines.length} airlines`],
+    ["#ch-card", "USD card", `$1 = ${fmt.naira(D.usdRate)} today`],
+    ["#ch-gift", "Gift cards", `${D.giftcards.length} cards, up to ${fmt.naira(best(topGift))}/$`],
+    ["#ch-bills", "Bills", `${D.networks.length} networks, TV &amp; power`]
+  ];
+  $("edToc").innerHTML = toc.map(([h, t, d], i) => `<li><a href="${h}"><span class="n">0${i + 1}</span><b>${t}</b><span class="d">${d}</span></a></li>`).join("");
+
+  /* ---- 01 Shop ---- */
+  const avgSave = Math.round(D.products.filter((p) => p.oldPrice).reduce((a, p) => a + (1 - p.price / p.oldPrice), 0) / D.products.filter((p) => p.oldPrice).length * 100);
+  $("fShop").textContent = `${D.products.length} picks`;
+  $("fShopCap").textContent = `From ${D.categories.length} aisles, with an average of ${avgSave}% off the original price.`;
+  $("edCats").innerHTML = D.categories.map((c) => `<a href="./app/marketplace.html?cat=${c.id}">${esc(c.name)}</a>`).join("");
+  $("edProds").innerHTML = ["p1", "p11", "p6", "p14"].map(P).map((p) => `
+    <article class="ed-prod">
+      ${AB.productArt(p)}
+      <div><a class="name" href="./app/product.html?id=${p.id}">${esc(p.name)}</a><div class="by">${esc(p.seller)} · <i class="bi bi-star-fill" style="color:var(--ab-warning)"></i> ${p.rating}</div></div>
+      <div class="bottom"><div class="price">${fmt.naira(p.price)}${p.oldPrice ? `<span class="old">${fmt.naira(p.oldPrice)}</span>` : ""}</div>
+      <button class="ed-add" type="button" data-add="${p.id}" aria-label="Add ${esc(p.name)} to cart"><i class="bi bi-plus-lg"></i></button></div>
+    </article>`).join("");
+  document.addEventListener("click", (e) => { const b = e.target.closest("[data-add]"); if (b) { e.preventDefault(); AB.cart.add(b.dataset.add, 1); } });
+
+  /* ---- 02 eSIM ---- */
+  $("fEsim").textContent = fmt.usd(minEsim.from);
+  $("fEsimCap").textContent = `The lowest starting plan, in ${minEsim.name} — about ${fmt.naira(Math.round(minEsim.from * D.usdRate))}. Regional and global plans too.`;
+  $("edFlags").innerHTML = ["gb", "us", "ae", "ca", "gh", "tr", "fr", "za", "jp", "gl"].map((code) => D.esimCountries.find((c) => c.code === code)).map((c) => `
+    <li><a href="./app/esim.html?country=${c.code}">
+      ${c.regional ? `<span class="fi"><i class="bi ${c.icon || "bi-globe2"}"></i></span>` : `<img src="${AB.flag(c.code)}" alt="" loading="lazy">`}
+      <span><b>${esc(c.name)}</b><small>${esc(c.speed)} · ${esc(c.networks)}</small></span>
+      <span class="p">${fmt.usd(c.from)}<small>from</small></span>
+    </a></li>`).join("");
+
+  /* ---- 03 Flights ---- */
+  const ap = (c) => D.airports.find((a) => a.code === c);
+  const routes = [["LOS", "ABV"], ["LOS", "LHR"], ["ABV", "DXB"], ["LOS", "ACC"], ["PHC", "LOS"], ["LOS", "JFK"]];
+  const intl = new Set(D.airports.filter((a) => a.country !== "Nigeria").map((a) => a.country)).size;
+  $("fFly").textContent = `${D.airports.length} airports`;
+  $("fFlyCap").textContent = `Six Nigerian cities and ${intl} countries abroad, on ${D.airlines.length} airlines.`;
+  $("edBoard").innerHTML = `<div class="top"><span class="ed-caps">Departures · popular routes</span><i class="bi bi-airplane-engines"></i></div>` +
+    routes.map(([f, t]) => `<a class="row-r" href="./app/flights.html?from=${f}&to=${t}" aria-label="Search flights from ${esc(ap(f).city)} to ${esc(ap(t).city)}">
+      <span><span class="code">${f}</span><span class="city">${esc(ap(f).city)}</span></span>
+      <span class="path" aria-hidden="true"><i class="bi bi-airplane"></i></span>
+      <span class="to"><span class="code">${t}</span><span class="city">${esc(ap(t).city)}</span></span>
+      <span class="go">Search <i class="bi bi-arrow-right"></i></span></a>`).join("");
+
+  /* ---- 04 USD ---- */
+  $("fUsd").textContent = `$1 = ${fmt.naira(D.usdRate)}`;
+  const conv = () => { const v = Math.max(0, Number($("edUsd").value) || 0); $("edNgn").innerHTML = `You'll pay about<b>${fmt.naira(Math.round(v * D.usdRate))}</b>at ${fmt.naira(D.usdRate)} per $1`; };
+  $("edUsd").addEventListener("input", conv); conv();
+  $("edConv").addEventListener("submit", (e) => { e.preventDefault(); location.href = "./app/virtual-cards.html"; });
+
+  /* ---- 05 Gift cards ---- */
+  const topTypes = Object.entries(topGift.types).sort((a, b) => b[1] - a[1])[0];
+  $("fGift").textContent = `${fmt.naira(best(topGift))}/$`;
+  $("fGiftCap").textContent = `Today's top rate: ${topGift.name} (${topTypes[0]}). A $100 card pays ${fmt.naira(best(topGift) * 100)}.`;
+  const ranked = [...D.giftcards].sort((a, b) => best(b) - best(a)).slice(0, 7);
+  const hi = best(ranked[0]), lo = Math.min(...D.giftcards.map(best)) - 100;
+  $("edRates").innerHTML = ranked.map((g) => `<tr>
+    <td><a class="gc" href="./app/giftcards.html?card=${g.id}"><span class="gi" style="background:${g.color}"><i class="bi ${g.icon}"></i></span>${esc(g.name)}</a></td>
+    <td class="barc"><div class="bar" aria-hidden="true"><span style="width:${Math.round((best(g) - lo) / (hi - lo) * 100)}%"></span></div></td>
+    <td class="rate">${fmt.naira(best(g))}<small>/$</small></td></tr>`).join("");
+
+  /* ---- 06 Bills ---- */
+  const cheapest = (id) => Math.min(...D.dataPlans[id].filter((p) => /^1GB$/.test(p.name)).map((p) => p.price));
+  $("fBills").textContent = `${D.networks.length} networks`;
+  $("fBillsCap").textContent = `Plus ${D.discos.length} electricity companies and ${Object.keys(D.cableProviders).length} TV providers, paid from one wallet.`;
+  $("edNets").innerHTML = D.networks.map((n) => `<a href="./app/bills.html?tab=data"><img src="./assets/img/networks/${n.logo}" alt="${esc(n.name)} logo"><span><b>${esc(n.name)}</b><small>1GB from ${fmt.naira(cheapest(n.id))}</small></span></a>`).join("");
+  const cableFrom = Math.min(...Object.values(D.cableProviders).flatMap((c) => c.plans.map((p) => p.price)));
+  $("edBillList").innerHTML = [
+    ["electricity", "Electricity", `${D.discos.length} discos · prepaid &amp; postpaid`],
+    ["cable", "TV subscription", `${Object.values(D.cableProviders).map((c) => c.name).join(", ")} · from ${fmt.naira(cableFrom)}`],
+    ["data", "Data bundles", "Daily, weekly and monthly plans"]
+  ].map(([t, b, s]) => `<a href="./app/bills.html?tab=${t}"><b>${b}</b><small>${s}</small></a>`).join("");
+  $("edAirtime").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const v = $("edPhone").value.replace(/\D/g, "");
+    if (!/^0\d{10}$/.test(v)) { $("edPhone").classList.add("is-invalid"); $("edPhone").setAttribute("aria-invalid", "true"); AB.toast("Enter an 11-digit phone number", "warning"); return; }
+    location.href = `./app/bills.html?tab=airtime&phone=${v}`;
+  });
+  $("edPhone").addEventListener("input", () => { $("edPhone").classList.remove("is-invalid"); $("edPhone").removeAttribute("aria-invalid"); });
+
+  /* ---- Members ---- */
+  if (AB.auth.isAuthed()) {
+    const u = AB.store.get("user") || {};
+    document.querySelectorAll("[data-guest]").forEach((el) => el.remove());
+    document.querySelectorAll("[data-member]").forEach((el) => (el.hidden = false));
+    $("edMenuAcct").innerHTML = `<a class="ed-btn" href="./app/dashboard.html">My account <i class="bi bi-arrow-right"></i></a>`;
+    $("edCloseText").textContent = `Welcome back${u.firstName ? ", " + u.firstName : ""}. Your wallet, orders, trips, eSIMs and cards are waiting in your account.`;
+    $("edCloseBtns").innerHTML = `<a class="ed-btn brand" href="./app/dashboard.html">Go to my account <i class="bi bi-arrow-right"></i></a><a class="ed-link" href="./app/wallet.html">Fund wallet</a>`;
+    $("edFootAcct").innerHTML = `<li><a href="./app/dashboard.html">My account</a></li><li><a href="./app/orders.html">Orders</a></li><li><a href="./app/cart.html">Cart</a></li>`;
+  }
+  AB.refreshShell();
+});
+</script>
+</body>
+</html>

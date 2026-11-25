@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AutoBiz · Everything you need, delivered across Nigeria</title>
+  <meta name="description" content="Shop local and global products delivered to all 36 states and the FCT, pay airtime, data, power and TV bills in seconds, and earn as an AutoBiz reseller.">
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="./assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="./assets/css/app.css" rel="stylesheet">
+  <script src="./assets/js/brand.js"></script>
+  <style>
+    /* Warm neutrals (not brand) — give the page its sun-baked, friendly feel */
+    :root { --v10-warm: #fff6ea; --v10-warm-2: #ffedd5; --v10-sand: #f6e7d3; --v10-ink-warm: #7a4b1c; --v10-sun: #ffb547; --v10-leaf: #2f9e44; }
+    [data-bs-theme="dark"] { --v10-warm: #1d1813; --v10-warm-2: #261e16; --v10-sand: #2c2219; --v10-ink-warm: #f0c08a; --v10-sun: #f59f00; --v10-leaf: #37b24d; }
+    .v10 :focus-visible { outline: 2px solid var(--ab-primary); outline-offset: 2px; }
+    .v10-sec { margin: 0 0 4rem; }
+    .v10-eyebrow { display: inline-flex; align-items: center; gap: .5rem; font-size: .78rem; font-weight: 700; color: var(--v10-ink-warm); background: var(--v10-warm-2); border-radius: 999px; padding: .35rem .8rem .35rem .45rem; }
+    .v10-eyebrow img { width: 22px; height: 15px; border-radius: 3px; object-fit: cover; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+    .v10-h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.15; margin: .75rem 0 .5rem; }
+    .v10-lead { color: var(--ab-muted); font-size: 1rem; max-width: 560px; }
+    .v10-card { background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 22px; }
+
+    /* ---------- Hero ---------- */
+    .v10-hero { background: linear-gradient(160deg, var(--v10-warm) 0%, var(--ab-surface) 70%); border: 1px solid var(--ab-border); border-radius: 30px; padding: clamp(1.5rem, 4vw, 3.25rem); position: relative; overflow: hidden; }
+    .v10-hero::before { content: ""; position: absolute; width: 520px; height: 520px; border-radius: 50%; left: -200px; bottom: -300px; background: radial-gradient(closest-side, rgba(var(--ab-primary-rgb), .10), transparent); pointer-events: none; }
+    .v10-hero h1 { font-size: clamp(2.1rem, 4.6vw, 3.5rem); font-weight: 800; letter-spacing: -.04em; line-height: 1.04; margin: 1.1rem 0 1rem; }
+    .v10-hero h1 em { font-style: normal; color: var(--ab-primary); position: relative; white-space: nowrap; }
+    .v10-hero h1 em::after { content: ""; position: absolute; left: 0; right: 0; bottom: .02em; height: .14em; border-radius: 4px; background: var(--v10-sun); opacity: .55; z-index: -1; }
+    .v10-hero .lead { color: var(--ab-muted); font-size: 1.05rem; max-width: 500px; }
+    .v10-facts { display: flex; flex-wrap: wrap; gap: .6rem 1.4rem; margin-top: 1.75rem; }
+    .v10-facts div { display: flex; align-items: center; gap: .55rem; font-size: .85rem; font-weight: 600; }
+    .v10-facts i { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: var(--ab-surface); border: 1px solid var(--ab-border); color: var(--ab-primary); }
+
+    /* CSS-illustrated city: sky, sun, skyline, lagoon bridge, road with bus + van, palms */
+    .v10-scene { position: relative; aspect-ratio: 6 / 5; border-radius: 26px; overflow: hidden; isolation: isolate;
+      background: linear-gradient(180deg, #ffd8a8 0%, #ffe8cc 45%, #fff4e6 70%); box-shadow: 0 30px 60px -30px rgba(122, 75, 28, .45); }
+    [data-bs-theme="dark"] .v10-scene { background: linear-gradient(180deg, var(--ab-sidebar) 0%, #2a1c12 60%, #3a2616 100%); box-shadow: 0 30px 60px -30px rgba(0,0,0,.7); }
+    .v10-sun { position: absolute; width: 22%; aspect-ratio: 1; border-radius: 50%; right: 14%; top: 10%; background: radial-gradient(circle at 40% 40%, #ffe066, var(--v10-sun)); box-shadow: 0 0 0 18px rgba(255, 181, 71, .18), 0 0 0 40px rgba(255, 181, 71, .08); }
+    [data-bs-theme="dark"] .v10-sun { background: radial-gradient(circle at 35% 35%, #fff9db, #ffe8a1); box-shadow: 0 0 40px rgba(255, 236, 179, .35); width: 14%; }
+    .v10-cloud { position: absolute; height: 5%; border-radius: 99px; background: rgba(255,255,255,.75); }
+    .v10-cloud::before { content: ""; position: absolute; width: 45%; height: 170%; left: 20%; bottom: 30%; border-radius: 50%; background: inherit; }
+    [data-bs-theme="dark"] .v10-cloud { background: rgba(255,255,255,.06); }
+    .v10-sky-line { position: absolute; inset: auto 0 0 0; height: 100%; }
+    .v10-b { position: absolute; bottom: 30%; border-radius: 6px 6px 0 0; }
+    .v10-b.far { background: rgba(var(--ab-primary-rgb), .28); }
+    .v10-b.near { background-image: radial-gradient(circle, rgba(255, 224, 102, .95) 0 2px, transparent 2.6px); background-size: 12px 14px; background-position: 4px 6px; }
+    .v10-b.t1 { background-color: var(--ab-primary-700); }
+    .v10-b.t2 { background-color: var(--ab-primary); }
+    .v10-b.t3 { background-color: var(--ab-primary-600); }
+    .v10-b.t4 { background-color: var(--ab-sidebar); }
+    .v10-b.spire::before { content: ""; position: absolute; left: 50%; bottom: 100%; width: 3px; height: 26px; background: inherit; transform: translateX(-50%); }
+    .v10-b.roof::before { content: ""; position: absolute; left: -4px; right: -4px; top: -8px; height: 8px; border-radius: 6px 6px 0 0; background: var(--v10-sun); opacity: .9; }
+    .v10-water { position: absolute; left: 0; right: 0; bottom: 18%; height: 13%; background: linear-gradient(180deg, rgba(var(--ab-primary-rgb), .35), rgba(var(--ab-primary-rgb), .18)); }
+    .v10-water::after { content: ""; position: absolute; inset: 30% 0 auto; height: 3px; background: repeating-linear-gradient(90deg, rgba(255,255,255,.55) 0 18px, transparent 18px 46px); }
+    .v10-bridge { position: absolute; left: 0; right: 0; bottom: 30%; height: 8px; background: var(--ab-sidebar); opacity: .85; }
+    .v10-bridge i { position: absolute; top: 8px; width: 5px; height: 26px; background: inherit; }
+    .v10-road { position: absolute; left: 0; right: 0; bottom: 0; height: 18%; background: #3b3b3f; }
+    .v10-road::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: var(--v10-sand); }
+    .v10-road::after { content: ""; position: absolute; left: 0; right: 0; top: 52%; height: 3px; background: repeating-linear-gradient(90deg, #ffe066 0 22px, transparent 22px 44px); }
+    .v10-danfo { position: absolute; bottom: 9%; left: 8%; width: 24%; height: 11%; background: #f8c400; border-radius: 10px 14px 4px 4px; z-index: 3;
+      background-image: linear-gradient(180deg, transparent 58%, #111 58% 66%, transparent 66%); }
+    .v10-danfo::before { content: ""; position: absolute; left: 8%; right: 10%; top: 14%; height: 32%; border-radius: 4px; background: repeating-linear-gradient(90deg, #9fd3ff 0 18%, #f8c400 18% 22%); opacity: .95; }
+    .v10-van { position: absolute; bottom: 4%; right: 10%; width: 22%; height: 10%; background: var(--ab-primary); border-radius: 6px 16px 4px 4px; z-index: 3; color: var(--ab-on-primary); display: grid; place-items: center; font-size: clamp(.5rem, 1.1vw, .72rem); font-weight: 800; letter-spacing: .02em; }
+    .v10-van span { transform: translateX(-12%); }
+    .v10-van::before { content: ""; position: absolute; right: 4%; top: 12%; width: 20%; height: 38%; border-radius: 3px 10px 3px 3px; background: #cfe8ff; }
+    .v10-wheel { position: absolute; bottom: -18%; width: 18%; aspect-ratio: 1; border-radius: 50%; background: #1b1b1d; box-shadow: inset 0 0 0 3px #8e8e93; }
+    .v10-palm { position: absolute; bottom: 17%; width: 9%; height: 34%; z-index: 2; }
+    .v10-palm .trunk { position: absolute; left: 46%; bottom: 0; width: 9%; height: 100%; background: linear-gradient(90deg, #8b5e3c, #a9764a); border-radius: 6px; transform: rotate(4deg); transform-origin: bottom; }
+    .v10-palm .leaf { position: absolute; top: -6%; left: 50%; width: 130%; height: 22%; background: var(--v10-leaf); border-radius: 100% 0 100% 0; transform-origin: 0 50%; }
+    .v10-palm .leaf:nth-child(2) { transform: rotate(-20deg); } .v10-palm .leaf:nth-child(3) { transform: rotate(200deg); }
+    .v10-palm .leaf:nth-child(4) { transform: rotate(-70deg) scaleX(.8); } .v10-palm .leaf:nth-child(5) { transform: rotate(250deg) scaleX(.8); }
+    .v10-palm .leaf:nth-child(6) { transform: rotate(160deg); }
+    .v10-float { position: absolute; z-index: 5; background: color-mix(in srgb, var(--ab-surface) 92%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--ab-border); border-radius: 14px; padding: .55rem .75rem; display: flex; gap: .6rem; align-items: center; box-shadow: var(--ab-shadow); font-size: .75rem; max-width: 62%; }
+    .v10-float b { display: block; font-size: .8rem; color: var(--ab-text); }
+    .v10-float small { color: var(--ab-muted); }
+    .v10-float .ab-icon { width: 32px; height: 32px; border-radius: 10px; font-size: .95rem; }
+    .v10-float img.net { width: 32px; height: 32px; border-radius: 10px; object-fit: contain; background: #fff; border: 1px solid var(--ab-border); padding: 3px; }
+    .f1 { left: 5%; top: 7%; animation: v10-bob 6s ease-in-out infinite; }
+    .f2 { right: 4%; top: 40%; animation: v10-bob 7s ease-in-out -2s infinite; }
+    @keyframes v10-bob { 50% { transform: translateY(-6px); } }
+    @keyframes v10-drive { from { transform: translateX(0); } to { transform: translateX(-140%); } }
+    @keyframes v10-drive2 { from { transform: translateX(0); } to { transform: translateX(110%); } }
+    .v10-van { animation: v10-drive 14s ease-in-out infinite alternate; }
+    .v10-danfo { animation: v10-drive2 18s ease-in-out infinite alternate; }
+    @media (max-width: 575.98px) { .v10-float { font-size: .68rem; padding: .4rem .55rem; } .v10-float b { font-size: .72rem; } .v10-float .ab-icon, .v10-float img.net { width: 26px; height: 26px; } }
+
+    /* ---------- Services ---------- */
+    .v10-svc { display: grid; grid-template-columns: repeat(6, 1fr); gap: .9rem; }
+    @media (max-width: 1199.98px) { .v10-svc { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 575.98px) { .v10-svc { grid-template-columns: repeat(2, 1fr); gap: .65rem; } }
+    .v10-svc a { background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 20px; padding: 1.1rem; color: var(--ab-text); display: flex; flex-direction: column; gap: .7rem; transition: transform .2s, box-shadow .2s, border-color .2s; height: 100%; }
+    .v10-svc a:hover { transform: translateY(-3px); box-shadow: var(--ab-shadow); border-color: rgba(var(--ab-primary-rgb), .35); }
+    .v10-svc b { font-size: .95rem; }
+    .v10-svc p { font-size: .8rem; color: var(--ab-muted); margin: 0; }
+
+    /* ---------- Delivery ---------- */
+    .v10-del { display: grid; grid-template-columns: 5fr 7fr; gap: 1.25rem; }
+    @media (max-width: 991.98px) { .v10-del { grid-template-columns: 1fr; } }
+    .v10-picker { padding: 1.5rem; background: linear-gradient(170deg, var(--ab-primary-soft), var(--ab-surface) 60%); }
+    .v10-result { margin-top: 1rem; border-radius: 18px; background: var(--ab-surface); border: 1px dashed rgba(var(--ab-primary-rgb), .4); padding: 1.1rem 1.2rem; }
+    .v10-result .big { font-size: 1.6rem; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
+    .v10-zone-pill { display: inline-flex; gap: .35rem; align-items: center; font-size: .72rem; font-weight: 700; padding: .25rem .6rem; border-radius: 999px; background: var(--ab-primary-soft); color: var(--ab-primary); }
+    .v10-meter { height: 8px; border-radius: 99px; background: var(--ab-surface-2); overflow: hidden; margin: .8rem 0 .3rem; }
+    .v10-meter span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--ab-primary-300), var(--ab-primary)); transition: width .5s ease; }
+    .v10-zones { display: grid; gap: .9rem; }
+    .v10-zone { padding: 1.1rem 1.2rem; }
+    .v10-zone-head { display: flex; align-items: center; gap: .8rem; margin-bottom: .75rem; }
+    .v10-zone-head .meta { margin-left: auto; text-align: right; font-size: .8rem; color: var(--ab-muted); }
+    .v10-zone-head .meta b { display: block; color: var(--ab-text); font-size: .95rem; }
+    .v10-states { display: flex; flex-wrap: wrap; gap: .35rem; }
+    .v10-states button { border: 1px solid var(--ab-border); background: var(--ab-surface); color: var(--ab-text); font-size: .76rem; font-weight: 500; border-radius: 999px; padding: .22rem .6rem; transition: all .15s; }
+    .v10-states button:hover { border-color: var(--ab-primary); color: var(--ab-primary); }
+    .v10-states button[aria-pressed="true"] { background: var(--ab-primary); border-color: var(--ab-primary); color: var(--ab-on-primary); }
+
+    /* ---------- Made in Nigeria ---------- */
+    .v10-shelf { background: var(--v10-warm); border: 1px solid var(--ab-border); border-radius: 28px; padding: clamp(1.25rem, 3vw, 2.25rem); position: relative; overflow: hidden; }
+    .v10-shelf::after { content: ""; position: absolute; right: -60px; top: -60px; width: 220px; height: 220px; opacity: .5; pointer-events: none;
+      background: repeating-conic-gradient(from 0deg, rgba(var(--ab-primary-rgb), .14) 0 15deg, transparent 15deg 30deg); border-radius: 50%; }
+    .v10-shelf > * { position: relative; z-index: 1; }
+    .v10-local { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
+    @media (max-width: 1199.98px) { .v10-local { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 767.98px) { .v10-local { grid-template-columns: repeat(2, 1fr); gap: .7rem; } }
+    .v10-prod { background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 18px; padding: .7rem; display: flex; flex-direction: column; gap: .55rem; height: 100%; }
+    .v10-prod .ab-product-art { font-size: 2.6rem; }
+    .v10-prod .nm { font-weight: 600; font-size: .85rem; color: var(--ab-text); line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.5em; }
+    .v10-prod .sl { font-size: .72rem; color: var(--ab-muted); }
+    .v10-prod .ft { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: .4rem; }
+    .v10-prod .pr { font-weight: 800; font-size: .95rem; font-variant-numeric: tabular-nums; }
+    .v10-tag { position: absolute; top: .55rem; left: .55rem; font-size: .65rem; font-weight: 700; background: var(--ab-surface); color: var(--v10-ink-warm); border-radius: 999px; padding: .18rem .5rem; display: inline-flex; gap: .3rem; align-items: center; box-shadow: var(--ab-shadow-sm); z-index: 2; }
+    .v10-tag img { width: 14px; height: 10px; border-radius: 2px; }
+    .v10-add { width: 34px; height: 34px; border-radius: 10px; border: 0; background: var(--ab-primary); color: var(--ab-on-primary); display: grid; place-items: center; flex-shrink: 0; }
+    .v10-add:hover { background: var(--ab-primary-600); }
+
+    /* ---------- Bills ---------- */
+    .v10-bills { display: grid; grid-template-columns: 1.1fr 1fr; gap: 1.25rem; align-items: stretch; }
+    @media (max-width: 991.98px) { .v10-bills { grid-template-columns: 1fr; } }
+    .v10-nets { display: flex; gap: .6rem; margin: 1.2rem 0; flex-wrap: wrap; }
+    .v10-net { width: 58px; height: 58px; border-radius: 16px; background: #fff; border: 2px solid var(--ab-border); display: grid; place-items: center; padding: 7px; transition: all .2s; position: relative; }
+    .v10-net img { width: 100%; height: 100%; object-fit: contain; }
+    .v10-net.on { border-color: var(--ab-primary); box-shadow: 0 0 0 4px rgba(var(--ab-primary-rgb), .18); transform: translateY(-2px); }
+    .v10-net.on::after { content: "\F26E"; font-family: bootstrap-icons; position: absolute; right: -6px; top: -6px; width: 20px; height: 20px; border-radius: 50%; background: var(--ab-primary); color: var(--ab-on-primary); font-size: .7rem; display: grid; place-items: center; }
+    .v10-amts { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .v10-amts button { border: 1px solid var(--ab-border); background: var(--ab-surface); color: var(--ab-text); border-radius: 10px; padding: .4rem .8rem; font-weight: 600; font-size: .85rem; }
+    .v10-amts button[aria-pressed="true"] { border-color: var(--ab-primary); background: var(--ab-primary-soft); color: var(--ab-primary); }
+    .v10-billlist a { display: flex; align-items: center; gap: .9rem; padding: .95rem 1.1rem; color: var(--ab-text); border-bottom: 1px solid var(--ab-border); transition: background .15s; }
+    .v10-billlist a:last-child { border-bottom: 0; }
+    .v10-billlist a:hover { background: var(--ab-surface-2); }
+    .v10-billlist b { display: block; font-size: .92rem; }
+    .v10-billlist small { color: var(--ab-muted); font-size: .78rem; }
+    .v10-billlist .chev { margin-left: auto; color: var(--ab-muted); }
+
+    /* ---------- Earn ---------- */
+    .v10-earn { background: var(--ab-sidebar); color: #fff; border-radius: 30px; padding: clamp(1.5rem, 4vw, 3rem); position: relative; overflow: hidden; }
+    .v10-earn::before { content: ""; position: absolute; width: 600px; height: 600px; right: -200px; top: -260px; border-radius: 50%; background: radial-gradient(closest-side, rgba(var(--ab-primary-rgb), .55), transparent); pointer-events: none; }
+    .v10-earn::after { content: ""; position: absolute; inset: auto 0 0 0; height: 10px; background: repeating-linear-gradient(90deg, var(--ab-primary) 0 40px, var(--v10-sun) 40px 80px, var(--ab-primary-300) 80px 120px); opacity: .9; }
+    .v10-earn > * { position: relative; z-index: 1; }
+    .v10-earn h2 { color: #fff; }
+    .v10-earn .v10-lead { color: rgba(255,255,255,.75); }
+    .v10-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; counter-reset: s; }
+    @media (max-width: 767.98px) { .v10-steps { grid-template-columns: 1fr; } }
+    .v10-steps li { list-style: none; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 18px; padding: 1.1rem; font-size: .85rem; color: rgba(255,255,255,.75); }
+    .v10-steps li::before { counter-increment: s; content: counter(s); width: 30px; height: 30px; border-radius: 50%; background: var(--ab-primary); color: var(--ab-on-primary); display: grid; place-items: center; font-weight: 800; margin-bottom: .7rem; font-size: .85rem; }
+    .v10-steps b { display: block; color: #fff; font-size: .95rem; margin-bottom: .2rem; }
+    .v10-earn .btn-light { font-weight: 700; color: #111; }
+    .v10-who { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1rem; }
+    .v10-who span { font-size: .76rem; border: 1px solid rgba(255,255,255,.18); color: rgba(255,255,255,.8); border-radius: 999px; padding: .25rem .7rem; }
+
+    /* ---------- Stories ---------- */
+    .v10-stories { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    @media (max-width: 991.98px) { .v10-stories { grid-template-columns: 1fr; } }
+    .v10-story { padding: 1.4rem; display: flex; flex-direction: column; gap: 1rem; position: relative; }
+    .v10-story blockquote { margin: 0; font-size: .95rem; line-height: 1.55; }
+    .v10-story blockquote::before { content: "\201C"; display: block; font-size: 3rem; line-height: .6; color: var(--ab-primary-300); font-weight: 800; margin-bottom: .4rem; }
+    .v10-av { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; flex-shrink: 0; }
+    .v10-story .who b { display: block; font-size: .9rem; }
+    .v10-story .who small { color: var(--ab-muted); }
+    .v10-story .used { margin-top: auto; display: flex; flex-wrap: wrap; gap: .35rem; }
+    .v10-story .used span { font-size: .7rem; font-weight: 600; border-radius: 999px; padding: .2rem .55rem; }
+    .v10-example { display: inline-flex; align-items: center; gap: .4rem; font-size: .75rem; font-weight: 600; color: var(--ab-muted); border: 1px dashed var(--ab-border); border-radius: 999px; padding: .25rem .7rem; }
+
+    /* ---------- FAQ ---------- */
+    .v10-faq .accordion { --bs-accordion-bg: var(--ab-surface); --bs-accordion-border-color: var(--ab-border); --bs-accordion-btn-focus-box-shadow: 0 0 0 .2rem rgba(var(--ab-primary-rgb), .2); --bs-accordion-active-bg: var(--ab-primary-soft); --bs-accordion-active-color: var(--ab-text); --bs-accordion-color: var(--ab-text); --bs-accordion-btn-color: var(--ab-text); --bs-accordion-border-radius: 18px; --bs-accordion-inner-border-radius: 17px; }
+    .v10-faq .accordion-button { font-weight: 600; font-size: .95rem; padding: 1.05rem 1.25rem; }
+    .v10-faq .accordion-body { color: var(--ab-muted); font-size: .9rem; }
+    .v10-help { padding: 1.5rem; background: var(--v10-warm); }
+
+    .v10-cta { text-align: center; padding: clamp(2rem, 5vw, 3.5rem) 1.25rem; border-radius: 30px; background: linear-gradient(135deg, var(--ab-primary-700), var(--ab-primary)); color: var(--ab-on-primary); position: relative; overflow: hidden; }
+    .v10-cta::before { content: ""; position: absolute; inset: 0; background: radial-gradient(400px 200px at 15% 0%, rgba(255,255,255,.18), transparent), radial-gradient(300px 200px at 90% 100%, rgba(255, 181, 71, .3), transparent); }
+    .v10-cta > * { position: relative; }
+    .v10-cta h2 { color: inherit; font-weight: 800; letter-spacing: -.03em; font-size: clamp(1.5rem, 3vw, 2.2rem); }
+    .v10-cta p { opacity: .85; max-width: 520px; margin: .5rem auto 1.5rem; }
+
+    @media (max-width: 575.98px) { .v10-sec { margin-bottom: 2.75rem; } .v10-hero { border-radius: 22px; } }
+    @media (prefers-reduced-motion: reduce) { .v10 *, .v10 *::before, .v10 *::after { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body class="v10" data-page="home" data-title="Home" data-public="true" data-shell="store">
+<main class="ab-content">
+
+  <!-- Hero -->
+  <section class="v10-sec v10-hero" aria-labelledby="heroTitle">
+    <div class="row g-4 g-xl-5 align-items-center">
+      <div class="col-lg-6">
+        <span class="v10-eyebrow"><img src="" alt="" id="ngFlag">Made for Lagos, Kano, Enugu &amp; everywhere in between</span>
+        <h1 id="heroTitle">Everything you need, <em>delivered</em> across Nigeria</h1>
+        <p class="lead">Order from trusted sellers, top up your mum's line, pay the light bill and plan the next trip home — all from one AutoBiz wallet.</p>
+        <div class="d-flex flex-wrap gap-2 mt-4" id="heroCtas">
+          <a href="./app/marketplace.html" class="btn btn-primary btn-lg"><i class="bi bi-bag me-2" aria-hidden="true"></i>Start shopping</a>
+          <a href="#delivery" class="btn btn-lg border bg-body">Check delivery to my state</a>
+        </div>
+        <div class="v10-facts">
+          <div><i class="bi bi-geo-alt" aria-hidden="true"></i>36 states + FCT</div>
+          <div><i class="bi bi-truck" aria-hidden="true"></i>Lagos in 1–2 days</div>
+          <div><i class="bi bi-lightning-charge" aria-hidden="true"></i>Instant airtime &amp; data</div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="v10-scene" role="img" aria-label="Illustration of a Nigerian city at sunset: tall buildings by a lagoon bridge, palm trees, a yellow danfo bus and an AutoBiz delivery van on the road">
+          <div class="v10-sun"></div>
+          <div class="v10-cloud" style="left:10%;top:30%;width:18%"></div>
+          <div class="v10-cloud" style="left:58%;top:22%;width:14%"></div>
+          <div class="v10-sky-line" id="skyline"></div>
+          <div class="v10-bridge" id="bridge"></div>
+          <div class="v10-water"></div>
+          <div class="v10-palm" style="left:2%"><span class="trunk"></span><span class="leaf"></span><span class="leaf"></span><span class="leaf"></span><span class="leaf"></span><span class="leaf"></span></div>
+          <div class="v10-palm" style="left:88%;height:28%"><span class="trunk"></span><span class="leaf"></span><span class="leaf"></span><span class="leaf"></span><span class="leaf"></span><span class="leaf"></span></div>
+          <div class="v10-road"></div>
+          <div class="v10-danfo"><span class="v10-wheel" style="left:12%"></span><span class="v10-wheel" style="right:12%"></span></div>
+          <div class="v10-van"><span>AutoBiz</span><span class="v10-wheel" style="left:12%"></span><span class="v10-wheel" style="right:10%"></span></div>
+          <div class="v10-float f1" aria-hidden="true"><span class="ab-icon tone-primary"><i class="bi bi-box-seam"></i></span><span><b>Out for delivery</b><small>Ikeja → Lekki · today</small></span></div>
+          <div class="v10-float f2" aria-hidden="true"><img class="net" src="./assets/img/networks/mtn.png" alt=""><span><b>₦1,000 airtime sent</b><small>to Mummy · 0803 •••</small></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="v10-sec" aria-labelledby="svcTitle">
+    <span class="v10-eyebrow"><i class="bi bi-house-heart" aria-hidden="true"></i>For home, work and travel</span>
+    <h2 class="v10-h2" id="svcTitle">One app for the everyday things</h2>
+    <div class="v10-svc mt-3" id="svc"></div>
+  </section>
+
+  <!-- Delivery coverage -->
+  <section class="v10-sec" id="delivery" aria-labelledby="delTitle" style="scroll-margin-top: calc(var(--ab-topbar-h) + 16px)">
+    <span class="v10-eyebrow"><i class="bi bi-truck" aria-hidden="true"></i>Delivery coverage</span>
+    <h2 class="v10-h2" id="delTitle">We deliver to every state</h2>
+    <p class="v10-lead mb-4">Fees are flat per zone — no surprises at checkout. Digital goods, top-ups and eSIMs arrive instantly with no delivery fee.</p>
+    <div class="v10-del">
+      <div class="v10-card v10-picker">
+        <label for="stateSel" class="fw-bold mb-2 d-block">Where should we deliver?</label>
+        <select id="stateSel" class="form-select form-select-lg"></select>
+        <div class="v10-result" aria-live="polite" id="delResult"></div>
+      </div>
+      <div class="v10-zones" id="zones"></div>
+    </div>
+  </section>
+
+  <!-- Made in Nigeria -->
+  <section class="v10-sec v10-shelf" aria-labelledby="localTitle">
+    <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-3">
+      <div>
+        <span class="v10-eyebrow" style="background:var(--ab-surface)"><img src="" alt="" class="ng-flag">Made in Nigeria</span>
+        <h2 class="v10-h2" id="localTitle">Proudly local, on the same shelf</h2>
+        <p class="v10-lead mb-0">Ankara from Lagos tailors, shea butter skincare, rice and kitchen staples from local sellers.</p>
+      </div>
+      <div class="ab-chips" role="group" aria-label="Filter local products" id="localFilters"></div>
+    </div>
+    <div class="v10-local" id="localGrid"></div>
+  </section>
+
+  <!-- Bills -->
+  <section class="v10-sec" aria-labelledby="billsTitle">
+    <div class="v10-bills">
+      <div class="v10-card p-4 p-lg-5">
+        <span class="v10-eyebrow"><i class="bi bi-lightning-charge" aria-hidden="true"></i>Airtime, data &amp; bills</span>
+        <h2 class="v10-h2" id="billsTitle">Pay your bills in seconds</h2>
+        <p class="v10-lead mb-0">Type a number — we'll spot the network for you.</p>
+        <div class="v10-nets" id="nets" role="group" aria-label="Supported networks"></div>
+        <form id="airForm" class="row g-2" novalidate>
+          <div class="col-12">
+            <label for="airPhone" class="form-label fs-7 text-muted mb-1">Phone number</label>
+            <input id="airPhone" class="form-control form-control-lg" inputmode="numeric" autocomplete="tel" maxlength="14" placeholder="0803 123 4567" aria-describedby="airHint">
+            <div id="airHint" class="fs-8 text-muted mt-1">We detect MTN, Airtel, Glo and 9mobile numbers automatically.</div>
+          </div>
+          <div class="col-12 mt-3">
+            <span class="form-label fs-7 text-muted mb-1 d-block" id="amtLbl">Amount</span>
+            <div class="v10-amts" role="group" aria-labelledby="amtLbl" id="amts"></div>
+          </div>
+          <div class="col-12 mt-3"><button class="btn btn-primary btn-lg w-100" type="submit" id="airGo">Continue to top-up</button></div>
+        </form>
+      </div>
+      <nav class="v10-card v10-billlist overflow-hidden" aria-label="Bill types" id="billList"></nav>
+    </div>
+  </section>
+
+  <!-- Earn -->
+  <section class="v10-sec v10-earn" aria-labelledby="earnTitle">
+    <div class="row g-4 align-items-end">
+      <div class="col-lg-8">
+        <span class="v10-eyebrow" style="background:rgba(255,255,255,.1);color:#fff"><i class="bi bi-cash-coin" aria-hidden="true"></i>Earn with AutoBiz</span>
+        <h2 class="v10-h2" id="earnTitle">Turn your shop, kiosk or WhatsApp into a top-up business</h2>
+        <p class="v10-lead mb-0">Resellers buy airtime, data and exam PINs at discounted rates and sell to their customers. Your earnings land in your wallet.</p>
+      </div>
+      <div class="col-lg-4 text-lg-end" id="earnCta">
+        <a href="./register.html?plan=reseller" class="btn btn-light btn-lg">Become a reseller <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></a>
+      </div>
+    </div>
+    <ol class="v10-steps p-0">
+      <li><b>Sign up as a reseller</b>Create a free account and verify your details.</li>
+      <li><b>Fund your wallet</b>Top up by bank transfer or card — one balance for everything.</li>
+      <li><b>Sell &amp; keep the margin</b>Sell airtime, data, power tokens and PINs at your own price.</li>
+    </ol>
+    <div class="v10-who" aria-label="Good for"><span>POS agents</span><span>Provision stores</span><span>Campus vendors</span><span>Phone accessory shops</span><span>WhatsApp sellers</span></div>
+  </section>
+
+  <!-- Stories -->
+  <section class="v10-sec" aria-labelledby="storyTitle">
+    <div class="d-flex flex-wrap align-items-end justify-content-between gap-2">
+      <div>
+        <span class="v10-eyebrow"><i class="bi bi-people" aria-hidden="true"></i>How people use AutoBiz</span>
+        <h2 class="v10-h2" id="storyTitle">Everyday stories, from every corner</h2>
+      </div>
+      <span class="v10-example mb-2"><i class="bi bi-info-circle" aria-hidden="true"></i>Illustrative examples — not real customer reviews</span>
+    </div>
+    <div class="v10-stories mt-3" id="stories"></div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="v10-sec v10-faq" aria-labelledby="faqTitle">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <span class="v10-eyebrow"><i class="bi bi-chat-heart" aria-hidden="true"></i>FAQ</span>
+        <h2 class="v10-h2" id="faqTitle">Questions we hear a lot</h2>
+        <div class="v10-card v10-help mt-3">
+          <b class="d-block mb-1">Still unsure?</b>
+          <p class="fs-7 text-muted mb-3">Browse freely — you'll only be asked to log in when you pay.</p>
+          <a href="./app/marketplace.html" class="btn btn-primary btn-sm">Browse the shop</a>
+        </div>
+      </div>
+      <div class="col-lg-8"><div class="accordion" id="faq"></div></div>
+    </div>
+  </section>
+
+  <!-- Closing CTA -->
+  <section class="v10-cta" aria-labelledby="ctaTitle">
+    <h2 id="ctaTitle">Join your neighbours on AutoBiz</h2>
+    <p id="ctaText">Create a free account in a minute. Shop, pay bills and travel — all from one wallet.</p>
+    <div class="d-flex flex-wrap justify-content-center gap-2" id="ctaBtns">
+      <a href="./register.html" class="btn btn-light btn-lg fw-bold">Create free account</a>
+      <a href="./app/marketplace.html" class="btn btn-lg text-white border border-light border-opacity-50">Just browsing</a>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/js/data.js"></script>
+<script src="./assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  "use strict";
+  const D = AB_DATA, { esc, fmt } = AB;
+  const $ = (id) => document.getElementById(id);
+  const authed = AB.auth.isAuthed();
+  $("ngFlag").src = AB.flag("ng", 40);
+  document.querySelectorAll(".ng-flag").forEach((i) => (i.src = AB.flag("ng", 40)));
+
+  /* ---------------- Skyline (generated so it's easy to tune) ---------------- */
+  const far = [[4, 8, 30], [13, 6, 38], [20, 9, 26], [33, 7, 44], [43, 10, 30], [56, 6, 36], [66, 9, 28], [78, 8, 40], [90, 8, 26]];
+  const near = [[8, 9, 36, "t1", ""], [18, 7, 50, "t2", "spire"], [26, 10, 30, "t4", "roof"], [38, 8, 58, "t1", "spire"], [47, 11, 40, "t3", ""], [60, 7, 48, "t2", "roof"], [69, 10, 34, "t1", ""], [80, 8, 44, "t3", "spire"]];
+  $("skyline").innerHTML = far.map(([l, w, h]) => `<span class="v10-b far" style="left:${l}%;width:${w}%;height:${h}%"></span>`).join("")
+    + near.map(([l, w, h, t, x]) => `<span class="v10-b near ${t} ${x}" style="left:${l}%;width:${w}%;height:${h - 8}%"></span>`).join("");
+  $("bridge").innerHTML = [6, 20, 34, 48, 62, 76, 90].map((l) => `<i style="left:${l}%"></i>`).join("");
+
+  /* ---------------- Services ---------------- */
+  const SVC = [
+    { label: "Shop", desc: "Phones, fashion, groceries & more from verified sellers", icon: "bi-bag-heart", tone: "primary", href: "./app/marketplace.html" },
+    { label: "Airtime & bills", desc: "Data, power tokens, DStv/GOtv, exam PINs", icon: "bi-lightning-charge", tone: "warning", href: "./app/bills.html" },
+    { label: "Flights", desc: "Visit family in Abuja or fly out from Lagos", icon: "bi-airplane", tone: "cyan", href: "./app/flights.html" },
+    { label: "Travel eSIM", desc: "Land abroad already connected — no roaming", icon: "bi-sim", tone: "violet", href: "./app/esim.html" },
+    { label: "Gift cards", desc: `Sell ${D.giftcards.length} brands for naira, paid to your wallet`, icon: "bi-gift", tone: "pink", href: "./app/giftcards.html" },
+    { label: "USD cards", desc: "Pay Netflix, Spotify & online stores in dollars", icon: "bi-credit-card-2-front", tone: "success", href: "./app/virtual-cards.html" }
+  ];
+  $("svc").innerHTML = SVC.map((s) => `<a href="${s.href}"><span class="ab-icon tone-${s.tone}"><i class="bi ${s.icon}" aria-hidden="true"></i></span><b>${s.label}</b><p>${esc(s.desc)}</p></a>`).join("");
+
+  /* ---------------- Delivery (mirrors assets/js/shop.js zones) ---------------- */
+  const STATES = ["Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "FCT - Abuja", "Gombe", "Imo", "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara", "Lagos", "Nasarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara"];
+  const ZONE = { Lagos: 1, Ogun: 2, Oyo: 2, Osun: 2, Ondo: 2, Ekiti: 2, "FCT - Abuja": 2, Rivers: 2, Edo: 2, Delta: 2, Anambra: 2, Enugu: 2 };
+  const ZONES = {
+    1: { name: "Lagos", label: "Same-city delivery", fee: 2000, days: [1, 2], icon: "bi-lightning-charge", tone: "primary", hubs: ["AutoBiz Hub — Ikeja City Mall", "AutoBiz Hub — Lekki Phase 1", "AutoBiz Hub — Yaba Tech Plaza"] },
+    2: { name: "Major hubs", label: "South-West, Abuja, PH & key cities", fee: 3000, days: [2, 4], icon: "bi-buildings", tone: "cyan", hubs: ["AutoBiz Hub — City Centre", "Partner Pickup — Shoprite Mall"] },
+    3: { name: "Everywhere else", label: "Nationwide partner network", fee: 4500, days: [3, 6], icon: "bi-globe-europe-africa", tone: "orange", hubs: ["Partner Pickup — GIG Logistics office"] }
+  };
+  const zoneOf = (s) => ZONE[s] || 3;
+  $("stateSel").innerHTML = STATES.map((s) => `<option value="${esc(s)}">${esc(s === "FCT - Abuja" ? "FCT (Abuja)" : s)}</option>`).join("");
+  $("zones").innerHTML = [1, 2, 3].map((z) => {
+    const Z = ZONES[z], list = STATES.filter((s) => zoneOf(s) === z);
+    return `<div class="v10-card v10-zone">
+      <div class="v10-zone-head"><span class="ab-icon ab-icon-sm tone-${Z.tone}"><i class="bi ${Z.icon}" aria-hidden="true"></i></span>
+        <div><b class="d-block">${Z.name}</b><small class="text-muted">${Z.label}</small></div>
+        <div class="meta"><b>${Z.days[0]}–${Z.days[1]} days</b>${fmt.naira(Z.fee)} standard</div></div>
+      <div class="v10-states" role="group" aria-label="${Z.name} states">${list.map((s) => `<button type="button" data-state="${esc(s)}" aria-pressed="false">${esc(s === "FCT - Abuja" ? "FCT (Abuja)" : s)}</button>`).join("")}</div>
+    </div>`;
+  }).join("");
+  const addDays = (n) => { const d = new Date(); let c = 0; while (c < n) { d.setDate(d.getDate() + 1); if (d.getDay() !== 0) c++; } return d; };
+  const dayFmt = (d) => d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+  function setState(s, fromChip) {
+    const z = zoneOf(s), Z = ZONES[z];
+    $("stateSel").value = s;
+    document.querySelectorAll("[data-state]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.state === s)));
+    $("delResult").innerHTML = `
+      <div class="d-flex justify-content-between align-items-start gap-2">
+        <span class="v10-zone-pill"><i class="bi ${Z.icon}" aria-hidden="true"></i>${Z.name}</span>
+        <span class="fs-7 text-muted">Standard</span>
+      </div>
+      <div class="d-flex justify-content-between align-items-end gap-2 mt-2">
+        <div><div class="big">${Z.days[0]}–${Z.days[1]} working days</div><div class="fs-7 text-muted">Order today, arrives ${dayFmt(addDays(Z.days[0]))} – ${dayFmt(addDays(Z.days[1]))}</div></div>
+        <div class="text-end"><div class="big tabular">${fmt.naira(Z.fee)}</div><div class="fs-8 text-muted">flat fee</div></div>
+      </div>
+      <div class="v10-meter" aria-hidden="true"><span style="width:${[0, 34, 64, 100][z]}%"></span></div>
+      <div class="fs-8 text-muted d-flex justify-content-between" aria-hidden="true"><span>Fastest</span><span>Furthest</span></div>
+      <hr class="my-3">
+      <div class="fs-7"><b class="d-block mb-1"><i class="bi bi-shop me-1 text-primary" aria-hidden="true"></i>Pickup points</b>${Z.hubs.map((h) => `<div class="text-muted">${esc(h)}</div>`).join("")}</div>
+      <div class="fs-8 text-muted mt-2"><i class="bi bi-rocket-takeoff me-1" aria-hidden="true"></i>Express delivery can be chosen at checkout.</div>`;
+    try { localStorage.setItem("v10_state", s); } catch (e) { /* ignore */ }
+    if (fromChip && matchMedia("(max-width: 991.98px)").matches) $("stateSel").scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  }
+  let saved = "Lagos"; try { const v = localStorage.getItem("v10_state"); if (STATES.includes(v)) saved = v; } catch (e) { /* ignore */ }
+  setState(saved);
+  $("stateSel").addEventListener("change", (e) => setState(e.target.value));
+  $("zones").addEventListener("click", (e) => { const b = e.target.closest("[data-state]"); if (b) setState(b.dataset.state, true); });
+
+  /* ---------------- Made in Nigeria ---------------- */
+  const LOCAL_RE = /ankara|rice|shea|groundnut|leather|naija|lagos thread|kicks ng/i;
+  const local = D.products.filter((p) => p.badge === "Local" || LOCAL_RE.test(`${p.name} ${p.brand} ${p.seller}`));
+  const cats = [...new Set(local.map((p) => p.category))].map((id) => D.categories.find((c) => c.id === id));
+  let lf = "all";
+  $("localFilters").innerHTML = [{ id: "all", name: "All local" }, ...cats].map((c) => `<button type="button" class="ab-chip${c.id === "all" ? " active" : ""}" data-lf="${c.id}" aria-pressed="${c.id === "all"}">${esc(c.name)}</button>`).join("");
+  const renderLocal = () => {
+    $("localGrid").innerHTML = local.filter((p) => lf === "all" || p.category === lf).map((p) => `
+      <article class="v10-prod">
+        <a href="./app/product.html?id=${p.id}" class="position-relative d-block" aria-label="${esc(p.name)}"><span class="v10-tag"><img src="${AB.flag("ng", 20)}" alt="">Local</span>${AB.productArt(p)}</a>
+        <a href="./app/product.html?id=${p.id}" class="nm">${esc(p.name)}</a>
+        <span class="sl"><i class="bi bi-patch-check-fill text-primary me-1" aria-hidden="true"></i>${esc(p.seller)}</span>
+        <div class="ft"><span class="pr">${fmt.naira(p.price)}</span><button type="button" class="v10-add" data-add="${p.id}" aria-label="Add ${esc(p.name)} to cart"><i class="bi bi-plus-lg"></i></button></div>
+      </article>`).join("");
+  };
+  renderLocal();
+  $("localFilters").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-lf]"); if (!b) return;
+    lf = b.dataset.lf;
+    document.querySelectorAll("[data-lf]").forEach((x) => { const on = x === b; x.classList.toggle("active", on); x.setAttribute("aria-pressed", String(on)); });
+    renderLocal();
+  });
+  $("localGrid").addEventListener("click", (e) => { const b = e.target.closest("[data-add]"); if (b) AB.cart.add(b.dataset.add, 1); });
+
+  /* ---------------- Bills ---------------- */
+  const PREFIX = {
+    mtn: ["0803", "0806", "0703", "0706", "0810", "0813", "0814", "0816", "0903", "0906", "0913", "0916", "0704"],
+    airtel: ["0802", "0808", "0708", "0701", "0812", "0901", "0902", "0904", "0907", "0912", "0911"],
+    glo: ["0805", "0807", "0705", "0811", "0815", "0905", "0915"],
+    "9mobile": ["0809", "0817", "0818", "0908", "0909"]
+  };
+  $("nets").innerHTML = D.networks.map((n) => `<span class="v10-net" data-net="${n.id}" title="${esc(n.name)}"><img src="./assets/img/networks/${n.logo}" alt="${esc(n.name)}"></span>`).join("");
+  const AMTS = [100, 200, 500, 1000, 2000];
+  let amt = 500;
+  $("amts").innerHTML = AMTS.map((a) => `<button type="button" data-amt="${a}" aria-pressed="${a === amt}">${fmt.naira(a)}</button>`).join("");
+  $("amts").addEventListener("click", (e) => { const b = e.target.closest("[data-amt]"); if (!b) return; amt = Number(b.dataset.amt); document.querySelectorAll("[data-amt]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); syncAir(); });
+  const digits = () => $("airPhone").value.replace(/^\+?234/, "0").replace(/\D/g, "");
+  function syncAir() {
+    const d = digits(), id = Object.keys(PREFIX).find((k) => PREFIX[k].some((p) => d.startsWith(p)));
+    document.querySelectorAll("[data-net]").forEach((el) => el.classList.toggle("on", el.dataset.net === id));
+    const n = D.networks.find((x) => x.id === id);
+    $("airHint").textContent = n ? `${n.name} number detected${d.length === 11 ? "" : " — keep typing"}` : "We detect MTN, Airtel, Glo and 9mobile numbers automatically.";
+    $("airGo").textContent = `Continue · ${fmt.naira(amt)}${n ? " " + n.name : ""} airtime`;
+  }
+  $("airPhone").addEventListener("input", syncAir); syncAir();
+  $("airForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const d = digits();
+    if (d && !/^0[789][01]\d{8}$/.test(d)) { $("airPhone").classList.add("is-invalid"); $("airHint").textContent = "Enter an 11-digit Nigerian number, e.g. 0803 123 4567"; $("airPhone").focus(); return; }
+    location.href = `./app/bills.html?tab=airtime${d ? "&phone=" + d : ""}`;
+  });
+  $("airPhone").addEventListener("input", () => $("airPhone").classList.remove("is-invalid"));
+  const cheapestData = Math.min(...Object.values(D.dataPlans).flat().map((p) => p.price));
+  const BILLS = [
+    { tab: "data", icon: "bi-wifi", tone: "primary", t: "Data bundles", s: `All 4 networks · from ${fmt.naira(cheapestData)}` },
+    { tab: "electricity", icon: "bi-lightbulb", tone: "orange", t: "Electricity", s: `${D.discos.length} discos · prepaid & postpaid` },
+    { tab: "cable", icon: "bi-tv", tone: "cyan", t: "Cable TV", s: Object.values(D.cableProviders).map((c) => c.name).join(", ") },
+    { tab: "betting", icon: "bi-trophy", tone: "success", t: "Betting wallets", s: "Fund your account instantly" },
+    { tab: "education", icon: "bi-mortarboard", tone: "violet", t: "Exam PINs", s: "WAEC, NECO & JAMB" }
+  ];
+  $("billList").innerHTML = `<div class="px-4 pt-4 pb-2"><b>Other bills</b><div class="fs-7 text-muted">Saved to your history for next time</div></div>`
+    + BILLS.map((b) => `<a href="./app/bills.html?tab=${b.tab}"><span class="ab-icon tone-${b.tone}"><i class="bi ${b.icon}" aria-hidden="true"></i></span><span><b>${b.t}</b><small>${esc(b.s)}</small></span><i class="bi bi-chevron-right chev" aria-hidden="true"></i></a>`).join("");
+
+  /* ---------------- Stories (illustrative) ---------------- */
+  const STORIES = [
+    { name: "Chiamaka", place: "Enugu", role: "Salon owner", tone: "pink", text: "I restock shea butter kits for my salon and pay the shop's light bill from the same wallet. Delivery to Enugu takes a few days.", used: [["Shop", "primary"], ["Electricity", "orange"]] },
+    { name: "Halima", place: "Kano", role: "Going on Umrah", tone: "violet", text: "Before my trip I set up a Saudi eSIM, then topped up my mum's MTN line back home in Kano from abroad.", used: [["eSIM", "violet"], ["Airtime", "warning"]] },
+    { name: "Emeka", place: "Lagos", role: "Campus reseller", tone: "cyan", text: "I sell data bundles to students in my hostel. Reseller rates mean I keep a small margin on every sale.", used: [["Reseller", "success"], ["Data", "primary"]] }
+  ];
+  $("stories").innerHTML = STORIES.map((s) => `
+    <figure class="v10-card v10-story m-0">
+      <blockquote>${esc(s.text)}</blockquote>
+      <figcaption class="d-flex align-items-center gap-3 who"><span class="v10-av tone-${s.tone}" aria-hidden="true">${s.name[0]}</span><span><b>${s.name} · ${s.place}</b><small>${s.role} — example</small></span></figcaption>
+      <div class="used">${s.used.map(([u, t]) => `<span class="tone-${t}">${u}</span>`).join("")}</div>
+    </figure>`).join("");
+
+  /* ---------------- FAQ ---------------- */
+  const FAQ = [
+    ["How much is delivery?", `Delivery is a flat fee per zone: ${fmt.naira(2000)} within Lagos (1–2 days), ${fmt.naira(3000)} to major hubs like Abuja, Port Harcourt, Ibadan and Benin (2–4 days), and ${fmt.naira(4500)} everywhere else (3–6 days). Some items ship free — look for the free delivery tag.`],
+    ["Do I need an account to look around?", "No. You can browse the shop, check eSIM plans, search flights and see gift card rates without signing up. We only ask you to log in when you're ready to pay."],
+    ["Can I pick up my order instead?", "Yes. Choose a pickup point at checkout — AutoBiz hubs in Lagos (Ikeja, Lekki, Yaba), city-centre hubs in major cities, and partner pickup offices elsewhere."],
+    ["How fast is airtime and data?", "Airtime, data, electricity tokens and exam PINs are delivered instantly after payment. Your electricity token is also saved in your transaction history."],
+    ["How do I become a reseller?", "Sign up with the reseller plan, verify your account and fund your wallet. You'll then buy airtime, data and PINs at reseller rates and sell to your own customers."],
+    ["How do I sell a gift card?", `Pick the card, choose the type and amount, then upload the card or code. Rates are shown up front (e.g. Steam up to ${fmt.naira(Math.max(...Object.values(D.giftcards.find((g) => g.id === "steam").types)))}/$) and payouts go to your naira wallet.`]
+  ];
+  $("faq").innerHTML = FAQ.map(([q, a], i) => `
+    <div class="accordion-item">
+      <h3 class="accordion-header"><button class="accordion-button ${i ? "collapsed" : ""}" type="button" data-bs-toggle="collapse" data-bs-target="#faq${i}" aria-expanded="${!i}" aria-controls="faq${i}">${esc(q)}</button></h3>
+      <div id="faq${i}" class="accordion-collapse collapse ${i ? "" : "show"}" data-bs-parent="#faq"><div class="accordion-body">${esc(a)}</div></div>
+    </div>`).join("");
+
+  /* ---------------- Members ---------------- */
+  if (authed) {
+    const u = AB.store.get("user");
+    $("ctaTitle").textContent = `Welcome back, ${u.firstName}`;
+    $("ctaText").textContent = "Your wallet, orders, bills and trips are waiting in your account.";
+    $("ctaBtns").innerHTML = `<a href="./app/dashboard.html" class="btn btn-light btn-lg fw-bold">Go to my account</a><a href="./app/wallet.html" class="btn btn-lg text-white border border-light border-opacity-50">Fund wallet</a>`;
+    $("earnCta").innerHTML = `<a href="./app/settings.html#upgrade" class="btn btn-light btn-lg">Upgrade to reseller <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></a>`;
+    $("heroCtas").insertAdjacentHTML("beforeend", `<a href="./app/dashboard.html" class="btn btn-lg btn-link fw-semibold">Go to my account</a>`);
+  }
+  AB.refreshShell();
+});
+</script>
+</body>
+</html>

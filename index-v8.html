@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AutoBiz · Black Friday deals on phones, gadgets, travel &amp; more</title>
+  <meta name="description" content="Black Friday on AutoBiz: marked-down phones, gadgets, fashion and home goods, plus 10% off with code AUTOBIZ10 — and travel eSIMs, flights, USD cards, gift cards and bills in one wallet.">
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="./assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="./assets/css/app.css" rel="stylesheet">
+  <script src="./assets/js/brand.js"></script>
+  <style>
+    .bf-sec { margin-top: 3rem; }
+    .bf-head { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1.1rem; flex-wrap: wrap; }
+    .bf-head h2 { font-size: clamp(1.35rem, 2.6vw, 1.85rem); font-weight: 800; letter-spacing: -.03em; margin: 0; display: flex; align-items: center; gap: .6rem; }
+    .bf-head p { margin: .2rem 0 0; color: var(--ab-muted); font-size: .875rem; }
+    .bf-head a { font-weight: 700; font-size: .875rem; white-space: nowrap; }
+    .bf-tag { display: inline-flex; align-items: center; gap: .35rem; font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: .3rem .6rem; border-radius: 8px; background: var(--ab-danger); color: #fff; }
+    .bf-tag.warn { background: var(--ab-warning); color: #1a1200; }
+    :focus-visible { outline: 3px solid var(--ab-warning); outline-offset: 2px; }
+
+    /* ---------- Hero ---------- */
+    .bf-hero { position: relative; overflow: hidden; border-radius: 28px; color: #fff; padding: 3rem 2.75rem 2.5rem; isolation: isolate;
+      background: radial-gradient(700px 420px at 90% 0%, rgba(var(--ab-primary-rgb), .55), transparent 65%), radial-gradient(500px 360px at 0% 110%, rgba(240, 62, 62, .35), transparent 70%), #08080a; }
+    .bf-hero::before { content: ""; position: absolute; inset: 0; z-index: -1; opacity: .5;
+      background: repeating-linear-gradient(-45deg, rgba(255,255,255,.035) 0 2px, transparent 2px 14px); }
+    .bf-hero .stamp { display: inline-flex; align-items: center; gap: .5rem; padding: .4rem .85rem; border-radius: 999px; background: var(--ab-warning); color: #1a1200; font-weight: 800; font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; }
+    .bf-hero .stamp .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ab-danger); }
+    .bf-giant { font-size: clamp(3.2rem, 10.5vw, 9.5rem); font-weight: 800; line-height: .86; letter-spacing: -.055em; margin: 1.1rem 0 .4rem; color: #fff; text-transform: uppercase; }
+    .bf-giant .o { color: transparent; -webkit-text-stroke: 2px rgba(255,255,255,.9); }
+    .bf-giant .b { color: var(--ab-primary-300); }
+    .bf-hero .sub { font-size: clamp(1rem, 1.6vw, 1.2rem); color: rgba(255,255,255,.78); max-width: 560px; }
+    .bf-hero .sub b { color: #fff; }
+    .bf-cd-label { font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; color: var(--ab-warning); margin-bottom: .6rem; }
+    .bf-cd { display: flex; gap: .6rem; }
+    .bf-cd .u { min-width: 92px; text-align: center; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); border-radius: 18px; padding: .8rem .5rem .6rem; backdrop-filter: blur(6px); }
+    .bf-cd .u b { display: block; font-size: clamp(2rem, 4.2vw, 3.4rem); font-weight: 800; line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+    .bf-cd .u span { font-size: .66rem; text-transform: uppercase; letter-spacing: .14em; color: rgba(255,255,255,.6); font-weight: 700; }
+    .bf-cd .sep { align-self: center; font-size: 2rem; font-weight: 800; color: rgba(255,255,255,.35); }
+    .bf-hero .btn-bf { background: var(--ab-warning); color: #1a1200; font-weight: 800; border: 0; }
+    .bf-hero .btn-bf:hover { background: #ffb31a; color: #1a1200; transform: translateY(-1px); }
+    .bf-hero .btn-code { color: #fff; border: 1.5px dashed rgba(255,255,255,.5); background: rgba(255,255,255,.04); font-weight: 700; }
+    .bf-hero .btn-code:hover { border-color: #fff; background: rgba(255,255,255,.1); color: #fff; }
+    .bf-hero .btn-code code { color: var(--ab-warning); font-size: .95em; font-weight: 800; letter-spacing: .04em; }
+    .bf-hstats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 2.25rem; border-radius: 16px; overflow: hidden; background: rgba(255,255,255,.12); }
+    .bf-hstats div { background: #0d0d10; padding: .9rem 1.1rem; }
+    .bf-hstats b { display: block; font-size: 1.35rem; font-weight: 800; letter-spacing: -.02em; }
+    .bf-hstats span { font-size: .75rem; color: rgba(255,255,255,.6); }
+    .bf-burst { position: absolute; right: 3%; top: 2.2rem; width: 150px; height: 150px; display: grid; place-items: center; text-align: center; color: #fff; font-weight: 800; line-height: 1; z-index: 1;
+      background: var(--ab-danger); clip-path: polygon(50% 0%, 61% 12%, 75% 6%, 79% 21%, 94% 25%, 89% 39%, 100% 50%, 89% 61%, 94% 75%, 79% 79%, 75% 94%, 61% 88%, 50% 100%, 39% 88%, 25% 94%, 21% 79%, 6% 75%, 11% 61%, 0% 50%, 11% 39%, 6% 25%, 21% 21%, 25% 6%, 39% 12%); }
+    .bf-burst small { display: block; font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; }
+    .bf-burst b { font-size: 2.6rem; letter-spacing: -.04em; }
+    @media (prefers-reduced-motion: no-preference) { .bf-burst { animation: bfspin 24s linear infinite; } .bf-burst > div { animation: bfspin 24s linear infinite reverse; } }
+    @keyframes bfspin { to { transform: rotate(360deg); } }
+    @media (max-width: 991.98px) { .bf-burst { width: 110px; height: 110px; top: 1.2rem; right: 1rem; } .bf-burst b { font-size: 1.9rem; } }
+    @media (max-width: 575.98px) {
+      .bf-hero { padding: 1.75rem 1.1rem 1.4rem; border-radius: 22px; }
+      .bf-burst { width: 84px; height: 84px; top: .9rem; right: .8rem; } .bf-burst b { font-size: 1.4rem; } .bf-burst small { font-size: .5rem; }
+      .bf-cd { gap: .35rem; } .bf-cd .u { min-width: 0; flex: 1; padding: .6rem .2rem .45rem; border-radius: 14px; } .bf-cd .sep { display: none; }
+      .bf-cd .u span { font-size: .56rem; letter-spacing: .08em; }
+      .bf-hstats { grid-template-columns: 1fr 1fr 1fr; } .bf-hstats div { padding: .7rem .6rem; } .bf-hstats b { font-size: 1.05rem; } .bf-hstats span { font-size: .66rem; }
+      .bf-giant .o { -webkit-text-stroke-width: 1.5px; }
+    }
+
+    /* ---------- Ticker ---------- */
+    .bf-ticker { margin-top: 1rem; border-radius: 16px; background: var(--ab-warning); color: #1a1200; overflow: hidden; position: relative; }
+    .bf-ticker .track { display: flex; width: max-content; }
+    .bf-ticker .grp { display: flex; flex-shrink: 0; }
+    .bf-ticker a { display: inline-flex; align-items: center; gap: .55rem; padding: .8rem 1.4rem; color: #1a1200; font-weight: 700; font-size: .875rem; white-space: nowrap; border-right: 2px solid rgba(26,18,0,.15); }
+    .bf-ticker a:hover { background: rgba(0,0,0,.06); }
+    .bf-ticker a b { background: #1a1200; color: var(--ab-warning); padding: .1rem .45rem; border-radius: 6px; font-size: .75rem; }
+    @media (prefers-reduced-motion: no-preference) {
+      .bf-ticker .track { animation: bfmarq 48s linear infinite; }
+      .bf-ticker:hover .track, .bf-ticker:focus-within .track, .bf-ticker.paused .track { animation-play-state: paused; }
+    }
+    @media (prefers-reduced-motion: reduce) { .bf-ticker { overflow-x: auto; } .bf-ticker .grp[aria-hidden] { display: none; } }
+    @keyframes bfmarq { to { transform: translateX(-50%); } }
+    .bf-ticker::after { content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 64px; background: linear-gradient(90deg, transparent, var(--ab-warning) 60%); pointer-events: none; z-index: 1; }
+    .bf-ticker .pause { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 50%; border: 0; background: #1a1200; color: var(--ab-warning); display: grid; place-items: center; z-index: 2; }
+
+    /* ---------- Coupons ---------- */
+    .bf-coupons { display: grid; grid-template-columns: 1.35fr 1fr 1fr; gap: 1rem; }
+    @media (max-width: 1399.98px) { .bf-coupons { grid-template-columns: 1fr 1fr; } .bf-coupon.main { grid-column: 1 / -1; } }
+    @media (max-width: 575.98px) { .bf-coupons { grid-template-columns: 1fr; } }
+    .bf-coupon { position: relative; display: flex; border-radius: 20px; background: var(--ab-surface); border: 1px solid var(--ab-border); overflow: hidden; }
+    .bf-coupon .l { flex: 1; padding: 1.3rem 1.4rem; min-width: 0; }
+    .bf-coupon .r { width: 108px; flex-shrink: 0; display: grid; place-items: center; text-align: center; padding: 1rem .5rem; border-left: 2px dashed var(--ab-border); position: relative; }
+    .bf-coupon .r::before, .bf-coupon .r::after { content: ""; position: absolute; left: -11px; width: 20px; height: 20px; border-radius: 50%; background: var(--ab-bg); border: 1px solid var(--ab-border); }
+    .bf-coupon .r::before { top: -11px; } .bf-coupon .r::after { bottom: -11px; }
+    .bf-coupon .big { font-size: clamp(1.7rem, 2.2vw, 2.3rem); font-weight: 800; letter-spacing: -.05em; line-height: 1; }
+    .bf-coupon .big small { font-size: .9rem; letter-spacing: 0; display: block; }
+    .bf-coupon h3 { font-size: 1.05rem; font-weight: 800; margin: .5rem 0 .25rem; }
+    .bf-coupon p { font-size: .82rem; color: var(--ab-muted); margin: 0 0 .9rem; }
+    .bf-coupon.main { background: linear-gradient(120deg, var(--ab-primary-700), var(--ab-primary)); color: var(--ab-on-primary); border: 0; }
+    .bf-coupon.main h3, .bf-coupon.main .big { color: var(--ab-on-primary); }
+    .bf-coupon.main p { color: rgba(255,255,255,.82); }
+    .bf-coupon.main .r { border-left-color: rgba(255,255,255,.4); }
+    .bf-code { display: inline-flex; align-items: center; gap: .5rem; padding: .25rem .25rem .25rem .85rem; border-radius: 12px; background: rgba(255,255,255,.16); border: 1.5px dashed rgba(255,255,255,.6); }
+    .bf-code code { color: #fff; font-weight: 800; letter-spacing: .1em; font-size: 1rem; }
+    .bf-code .btn { background: #fff; color: var(--ab-primary-700); font-weight: 800; padding: .4rem .8rem; border-radius: 9px; }
+    .bf-code .btn:hover { background: var(--ab-warning); color: #1a1200; }
+
+    /* ---------- Lightning deals ---------- */
+    .bf-ld { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
+    @media (max-width: 1199.98px) { .bf-ld { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 991.98px) { .bf-ld { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 575.98px) { .bf-ld { grid-template-columns: 1fr 1fr; gap: .7rem; } }
+    .bf-card { position: relative; background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 20px; padding: .75rem; display: flex; flex-direction: column; transition: transform .2s, box-shadow .2s, border-color .2s; }
+    .bf-card:hover { transform: translateY(-3px); box-shadow: var(--ab-shadow); border-color: rgba(240, 62, 62, .35); }
+    .bf-card .art { position: relative; display: block; }
+    .bf-card .off { position: absolute; z-index: 2; top: 8px; left: 8px; background: var(--ab-danger); color: #fff; font-weight: 800; font-size: .78rem; padding: .2rem .5rem; border-radius: 8px; }
+    .bf-card .timer { position: absolute; z-index: 2; bottom: 8px; left: 8px; right: 8px; display: flex; align-items: center; justify-content: center; gap: .35rem; background: rgba(8,8,10,.82); color: #fff; font-size: .72rem; font-weight: 700; padding: .3rem .4rem; border-radius: 9px; font-variant-numeric: tabular-nums; }
+    .bf-card .timer i { color: var(--ab-warning); }
+    .bf-card .nm { color: var(--ab-text); font-weight: 600; font-size: .85rem; margin-top: .65rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.5em; }
+    .bf-card .nm:hover { color: var(--ab-primary); }
+    .bf-card .pr { font-weight: 800; font-size: 1.05rem; color: var(--ab-danger); }
+    .bf-card .old { font-size: .74rem; color: var(--ab-muted); text-decoration: line-through; }
+    .bf-claim { margin-top: .55rem; }
+    .bf-claim .bar { height: 8px; border-radius: 8px; background: var(--ab-danger-soft); overflow: hidden; }
+    .bf-claim .bar i { display: block; height: 100%; border-radius: 8px; background: linear-gradient(90deg, var(--ab-warning), var(--ab-danger)); }
+    .bf-claim small { display: flex; justify-content: space-between; font-size: .68rem; color: var(--ab-muted); font-weight: 600; margin-top: .25rem; }
+    .bf-card .add { margin-top: .6rem; }
+    .bf-btn-add { background: var(--ab-text); color: var(--ab-bg); font-weight: 700; border-radius: 11px; padding: .45rem .5rem; font-size: .82rem; }
+    .bf-btn-add:hover { background: var(--ab-primary); color: var(--ab-on-primary); }
+
+    /* ---------- Shelves ---------- */
+    .bf-shelf { display: grid; grid-auto-flow: column; grid-auto-columns: 196px; gap: .85rem; overflow-x: auto; scroll-snap-type: x mandatory; padding: .2rem .2rem .9rem; scrollbar-width: thin; }
+    .bf-shelf > * { scroll-snap-align: start; }
+    @media (max-width: 575.98px) { .bf-shelf { grid-auto-columns: 158px; } }
+    .bf-shelfbox { border-radius: 24px; padding: 1.4rem; border: 1px solid var(--ab-border); background: var(--ab-surface-2); }
+    .bf-shelfbox .price-tag { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 800; letter-spacing: -.04em; line-height: 1; }
+    .bf-shelfbox .price-tag span { color: var(--ab-danger); }
+    @media (max-width: 575.98px) { .bf-shelfbox { padding: 1rem .85rem; border-radius: 20px; } }
+
+    /* ---------- Category tiles ---------- */
+    .bf-cats { display: grid; grid-template-columns: repeat(4, 1fr); gap: .85rem; }
+    @media (max-width: 767.98px) { .bf-cats { grid-template-columns: 1fr 1fr; gap: .6rem; } }
+    .bf-cat { position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; min-height: 150px; padding: 1.1rem; border-radius: 20px; background: var(--ab-surface); border: 1px solid var(--ab-border); color: var(--ab-text); transition: transform .2s, border-color .2s; }
+    .bf-cat:hover { transform: translateY(-3px); border-color: var(--ab-danger); }
+    .bf-cat .bg { position: absolute; right: -14px; bottom: -22px; font-size: 6rem; opacity: .14; }
+    .bf-cat .pct { font-size: 1.85rem; font-weight: 800; letter-spacing: -.04em; line-height: 1; }
+    .bf-cat .pct small { font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ab-muted); display: block; margin-bottom: .2rem; }
+    .bf-cat .nm { font-weight: 700; font-size: .9rem; }
+    .bf-cat .ct { font-size: .74rem; color: var(--ab-muted); }
+
+    /* ---------- Service promos ---------- */
+    .bf-svc { display: grid; grid-template-columns: repeat(5, 1fr); gap: .85rem; }
+    @media (max-width: 1199.98px) { .bf-svc { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 575.98px) { .bf-svc { grid-template-columns: 1fr; gap: .6rem; } }
+    .bf-promo { display: flex; flex-direction: column; gap: .5rem; padding: 1.15rem; border-radius: 20px; border: 1px solid var(--ab-border); background: var(--ab-surface); color: var(--ab-text); transition: transform .2s, box-shadow .2s; }
+    .bf-promo:hover { transform: translateY(-3px); box-shadow: var(--ab-shadow); }
+    .bf-promo .k { font-size: .68rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--ab-muted); }
+    .bf-promo h3 { font-size: 1.1rem; font-weight: 800; letter-spacing: -.02em; margin: 0; }
+    .bf-promo p { font-size: .8rem; color: var(--ab-muted); margin: 0; }
+    .bf-promo .go { margin-top: auto; font-weight: 700; font-size: .82rem; color: var(--ab-primary); }
+    .bf-promo .flags { display: flex; }
+    .bf-promo .flags img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 2px solid var(--ab-surface); margin-right: -8px; }
+    .bf-promo .nets img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; margin-right: 4px; }
+    @media (max-width: 575.98px) { .bf-promo { flex-direction: row; align-items: center; flex-wrap: wrap; } .bf-promo > .top { width: 100%; } }
+
+    /* ---------- Final ---------- */
+    .bf-final { border-radius: 28px; padding: 2.5rem; background: #08080a; color: #fff; position: relative; overflow: hidden; }
+    .bf-final::after { content: "SALE"; position: absolute; right: -1rem; bottom: -3.2rem; font-size: 11rem; font-weight: 800; letter-spacing: -.06em; color: transparent; -webkit-text-stroke: 2px rgba(var(--ab-primary-rgb), .45); pointer-events: none; line-height: 1; }
+    .bf-final > * { position: relative; z-index: 1; }
+    .bf-final h2 { color: #fff; font-weight: 800; letter-spacing: -.03em; }
+    .bf-final .btn-bf { background: var(--ab-warning); color: #1a1200; font-weight: 800; }
+    .bf-final .btn-bf:hover { background: #ffb31a; color: #1a1200; }
+    .bf-final .btn-line { color: #fff; border: 1px solid rgba(255,255,255,.35); }
+    .bf-final .btn-line:hover { background: rgba(255,255,255,.1); color: #fff; }
+    @media (max-width: 575.98px) { .bf-final { padding: 1.75rem 1.25rem; border-radius: 22px; } .bf-final::after { font-size: 6rem; bottom: -1.6rem; } }
+    .bf-fine { font-size: .74rem; color: var(--ab-muted); }
+  </style>
+</head>
+<body data-page="home" data-title="Home" data-public="true" data-shell="store">
+
+<main class="ab-content">
+
+  <!-- ============ Hero ============ -->
+  <section class="bf-hero" aria-labelledby="bfTitle">
+    <div class="bf-burst" aria-hidden="true"><div><small>Up to</small><b id="burstPct">-30%</b><small>off</small></div></div>
+    <span class="stamp"><span class="dot"></span><span id="stampTxt">Limited time</span></span>
+    <h1 class="bf-giant" id="bfTitle"><span class="o">Black</span><br>Friday<span class="b">.</span></h1>
+    <p class="sub" id="heroSub">Prices cut across phones, gadgets, fashion and home — plus <b>10% off your order</b> with code <b>AUTOBIZ10</b>.</p>
+    <div class="row g-4 align-items-end mt-1">
+      <div class="col-xl-7">
+        <div class="bf-cd-label" id="cdLabel">Sale ends in</div>
+        <div class="bf-cd" id="cd" role="timer" aria-live="off" aria-label="Time left in the sale">
+          <div class="u"><b data-u="d">00</b><span>Days</span></div><span class="sep" aria-hidden="true">:</span>
+          <div class="u"><b data-u="h">00</b><span>Hours</span></div><span class="sep" aria-hidden="true">:</span>
+          <div class="u"><b data-u="m">00</b><span>Mins</span></div><span class="sep" aria-hidden="true">:</span>
+          <div class="u"><b data-u="s">00</b><span>Secs</span></div>
+        </div>
+      </div>
+      <div class="col-xl-5 d-flex flex-wrap gap-2 justify-content-xl-end">
+        <a href="#lightning" class="btn btn-bf btn-lg px-4"><i class="bi bi-lightning-charge-fill me-1"></i>Shop lightning deals</a>
+        <button class="btn btn-code btn-lg" data-copy-code="AUTOBIZ10" aria-label="Copy coupon code AUTOBIZ10"><i class="bi bi-copy me-1"></i>Copy <code>AUTOBIZ10</code></button>
+      </div>
+    </div>
+    <div class="bf-hstats" id="hstats"></div>
+  </section>
+
+  <!-- ============ Ticker ============ -->
+  <div class="bf-ticker" id="ticker" aria-label="Deal ticker">
+    <div class="track" id="tickerTrack"></div>
+    <button class="pause" id="tickerPause" aria-label="Pause deal ticker" aria-pressed="false"><i class="bi bi-pause-fill"></i></button>
+  </div>
+
+  <!-- ============ Coupons ============ -->
+  <section class="bf-sec" aria-labelledby="cpTitle">
+    <div class="bf-head"><div><h2 id="cpTitle"><span class="bf-tag warn"><i class="bi bi-ticket-perforated"></i>Save more</span>Codes &amp; savings</h2><p>One code that really works at checkout — and savings that need no code at all.</p></div></div>
+    <div class="bf-coupons" id="coupons"></div>
+  </section>
+
+  <!-- ============ Lightning deals ============ -->
+  <section class="bf-sec" id="lightning" aria-labelledby="ldTitle" style="scroll-margin-top: calc(var(--ab-topbar-h) + 16px)">
+    <div class="bf-head"><div><h2 id="ldTitle"><span class="bf-tag"><i class="bi bi-lightning-charge-fill"></i>Lightning</span>Biggest markdowns</h2><p>Deepest cuts in the catalogue, ending at the times shown.</p></div><a href="./app/marketplace.html">All deals <i class="bi bi-arrow-right"></i></a></div>
+    <div class="bf-ld" id="ld"></div>
+    <p class="bf-fine mt-2 mb-0"><i class="bi bi-info-circle me-1"></i>“Claimed” bars are illustrative in this preview. Prices and discounts are from the live catalogue.</p>
+  </section>
+
+  <!-- ============ Shelves ============ -->
+  <section class="bf-sec" aria-labelledby="u20Title">
+    <div class="row g-3">
+      <div class="col-xl-6">
+        <div class="bf-shelfbox h-100">
+          <div class="bf-head mb-3"><div><div class="small-label">Budget picks</div><h2 class="price-tag" id="u20Title">Under <span>₦20k</span></h2></div><a href="./app/marketplace.html">See more</a></div>
+          <div class="bf-shelf" id="u20" tabindex="0" aria-label="Products under ₦20,000"></div>
+        </div>
+      </div>
+      <div class="col-xl-6">
+        <div class="bf-shelfbox h-100">
+          <div class="bf-head mb-3"><div><div class="small-label">Gift-worthy</div><h2 class="price-tag" id="u50Title">Under <span>₦50k</span></h2></div><a href="./app/marketplace.html">See more</a></div>
+          <div class="bf-shelf" id="u50" tabindex="0" aria-label="Products under ₦50,000"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Categories ============ -->
+  <section class="bf-sec" aria-labelledby="catTitle">
+    <div class="bf-head"><div><h2 id="catTitle">Deals by category</h2><p>The deepest markdown in each aisle.</p></div></div>
+    <div class="bf-cats" id="cats"></div>
+  </section>
+
+  <!-- ============ Services ============ -->
+  <section class="bf-sec" aria-labelledby="svcTitle">
+    <div class="bf-head"><div><h2 id="svcTitle"><span class="bf-tag" style="background:var(--ab-primary);color:var(--ab-on-primary)"><i class="bi bi-grid-fill"></i>Beyond shopping</span>Worth checking this week</h2><p>Travel, cards and bills from the same wallet. Prices from today's catalogue — check the page for current offers.</p></div></div>
+    <div class="bf-svc" id="svc"></div>
+  </section>
+
+  <!-- ============ Final CTA ============ -->
+  <section class="bf-sec" aria-labelledby="finTitle">
+    <div class="bf-final">
+      <div class="row g-4 align-items-center">
+        <div class="col-lg-7">
+          <span class="bf-tag warn mb-3"><i class="bi bi-alarm"></i><span id="finCd">Ends soon</span></span>
+          <h2 class="h1 mb-2" id="finTitle">Fill your cart before the clock hits zero.</h2>
+          <p class="mb-0" style="color:rgba(255,255,255,.75)" id="finText">Browse and add to cart as a guest. Sign up when you're ready to pay — then apply <b class="text-white">AUTOBIZ10</b> in your cart.</p>
+        </div>
+        <div class="col-lg-5 d-flex flex-wrap gap-2 justify-content-lg-end" id="finBtns">
+          <a href="./app/cart.html" class="btn btn-bf btn-lg px-4"><i class="bi bi-bag me-1"></i>Go to cart</a>
+          <a href="./register.html" class="btn btn-line btn-lg px-4">Create free account</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/js/data.js"></script>
+<script src="./assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const D = AB_DATA, { fmt, esc } = AB;
+  const $ = (id) => document.getElementById(id);
+  const disc = (p) => Math.round((1 - p.price / p.oldPrice) * 100);
+  const best = (g) => Math.max(...Object.values(g.types));
+  const pad = (n) => String(n).padStart(2, "0");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const byDisc = [...D.products].sort((a, b) => disc(b) - disc(a));
+  const maxDisc = disc(byDisc[0]);
+
+  /* ---- Countdown: to the end of Nov 30 this year, or end of today once that has passed ---- */
+  const now = new Date();
+  const saleEnd = new Date(now.getFullYear(), 10, 30, 23, 59, 59, 999);
+  const dayEnd = () => { const e = new Date(); e.setHours(23, 59, 59, 999); return e; };
+  const isSale = now < saleEnd;
+  const target = isSale ? saleEnd : dayEnd();
+  $("cdLabel").textContent = isSale ? `Sale ends ${saleEnd.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short" })}, midnight` : "Today's deals end at midnight";
+  $("stampTxt").textContent = isSale ? "Black Friday · limited time" : "Daily deals · today only";
+  $("burstPct").textContent = `-${maxDisc}%`;
+  const split = (ms) => { const s = Math.max(0, Math.floor(ms / 1000)); return { d: Math.floor(s / 86400), h: Math.floor(s / 3600) % 24, m: Math.floor(s / 60) % 60, s: s % 60, total: s }; };
+  const cdEls = {}; document.querySelectorAll("#cd [data-u]").forEach((b) => (cdEls[b.dataset.u] = b));
+
+  /* ---- Lightning deal end times: staggered hour slots, never past midnight ---- */
+  const vw = window.innerWidth, ld = byDisc.slice(0, vw >= 1200 ? 10 : vw >= 576 && vw < 992 ? 9 : 8);
+  const slotEnd = (i) => { const e = new Date(); e.setMinutes(0, 0, 0); e.setHours(e.getHours() + 1 + (i % 4) * 2); return Math.min(e.getTime(), dayEnd().getTime()); };
+  const ends = ld.map((_, i) => slotEnd(i));
+  const claimed = (p) => 38 + ((p.reviews * 7 + p.stock * 3) % 55); // illustrative only
+
+  const tick = () => {
+    const t = split(target - Date.now());
+    Object.keys(cdEls).forEach((k) => (cdEls[k].textContent = pad(t[k])));
+    $("cd").setAttribute("aria-label", `Time left: ${t.d} days ${t.h} hours ${t.m} minutes`);
+    $("finCd").textContent = `Ends in ${t.d ? t.d + "d " : ""}${pad(t.h)}h ${pad(t.m)}m`;
+    document.querySelectorAll("[data-end]").forEach((el) => {
+      const r = split(Number(el.dataset.end) - Date.now());
+      el.textContent = r.total > 0 ? `${pad(r.h)}:${pad(r.m)}:${pad(r.s)}` : "Ending soon";
+    });
+  };
+
+  /* ---- Hero stats (from data) ---- */
+  const freeShip = D.products.filter((p) => p.freeShipping).length;
+  $("hstats").innerHTML = [
+    [`${D.products.filter((p) => p.oldPrice > p.price).length}`, "products marked down"],
+    [`-${maxDisc}%`, "deepest cut today"],
+    [`${freeShip}`, "with free delivery"]
+  ].map(([b, s]) => `<div><b>${b}</b><span>${s}</span></div>`).join("");
+
+  /* ---- Ticker ---- */
+  const tItems = byDisc.slice(0, 12).map((p) => `<a href="./app/product.html?id=${p.id}"><i class="bi ${p.icon}"></i>${esc(p.name)} <b>-${disc(p)}%</b> ${fmt.naira(p.price)}</a>`).join("");
+  $("tickerTrack").innerHTML = `<div class="grp">${tItems}</div><div class="grp" aria-hidden="true">${tItems.replace(/<a /g, '<a tabindex="-1" ')}</div>`;
+  $("tickerPause").addEventListener("click", (e) => {
+    const t = $("ticker"), on = !t.classList.contains("paused");
+    t.classList.toggle("paused", on);
+    e.currentTarget.setAttribute("aria-pressed", on);
+    e.currentTarget.setAttribute("aria-label", on ? "Play deal ticker" : "Pause deal ticker");
+    e.currentTarget.innerHTML = `<i class="bi ${on ? "bi-play-fill" : "bi-pause-fill"}"></i>`;
+  });
+  if (reduce) $("tickerPause").hidden = true;
+
+  /* ---- Coupons ---- */
+  const digital = D.products.filter((p) => p.digital);
+  $("coupons").innerHTML = `
+    <article class="bf-coupon main">
+      <div class="l">
+        <span class="bf-tag warn">Works at checkout</span>
+        <h3>10% off your order</h3>
+        <p>Add anything from the marketplace to your cart, then enter the code in the cart's coupon box.</p>
+        <div class="bf-code"><code>AUTOBIZ10</code><button class="btn btn-sm" data-copy-code="AUTOBIZ10" aria-label="Copy coupon code AUTOBIZ10"><i class="bi bi-copy me-1"></i>Copy</button></div>
+      </div>
+      <div class="r"><div class="big">10%<small>OFF</small></div></div>
+    </article>
+    <article class="bf-coupon">
+      <div class="l">
+        <span class="bf-tag">No code needed</span>
+        <h3>Already marked down</h3>
+        <p>Every item below shows its old price — the cut is applied automatically, up to ${maxDisc}% off.</p>
+        <a href="#lightning" class="btn btn-sm btn-soft">See markdowns</a>
+      </div>
+      <div class="r"><div class="big text-danger">-${maxDisc}%<small class="text-muted">max</small></div></div>
+    </article>
+    <article class="bf-coupon">
+      <div class="l">
+        <span class="bf-tag" style="background:var(--ab-accent)">No code needed</span>
+        <h3>Free delivery items</h3>
+        <p>${freeShip} catalogue items ship free, including ${digital.length} instant digital goods.</p>
+        <a href="./app/marketplace.html" class="btn btn-sm btn-soft">Browse</a>
+      </div>
+      <div class="r"><div class="big">${freeShip}<small class="text-muted">items</small></div></div>
+    </article>`;
+  document.addEventListener("click", (e) => { const b = e.target.closest("[data-copy-code]"); if (b) AB.copy(b.dataset.copyCode, `${b.dataset.copyCode} copied — apply it in your cart`); });
+
+  /* ---- Lightning deals ---- */
+  $("ld").innerHTML = ld.map((p, i) => { const c = claimed(p); return `
+    <article class="bf-card">
+      <a href="./app/product.html?id=${p.id}" class="art" aria-label="${esc(p.name)}"><span class="off">-${disc(p)}%</span>${AB.productArt(p)}<span class="timer"><i class="bi bi-stopwatch"></i>Ends in <span data-end="${ends[i]}">--:--:--</span></span></a>
+      <a href="./app/product.html?id=${p.id}" class="nm">${esc(p.name)}</a>
+      <div class="d-flex align-items-baseline gap-2 flex-wrap"><span class="pr tabular">${fmt.naira(p.price)}</span><span class="old tabular">${fmt.naira(p.oldPrice)}</span></div>
+      <div class="bf-claim"><div class="bar" role="progressbar" aria-label="Claimed" aria-valuenow="${c}" aria-valuemin="0" aria-valuemax="100"><i style="width:${c}%"></i></div><small><span>${c}% claimed</span><span>${p.stock < 25 ? `Only ${p.stock} left` : "In stock"}</span></small></div>
+      <button class="btn bf-btn-add add w-100" data-add="${p.id}" aria-label="Add ${esc(p.name)} to cart"><i class="bi bi-cart-plus me-1"></i>Add to cart</button>
+    </article>`; }).join("");
+
+  /* ---- Shelves ---- */
+  const mini = (p) => `
+    <article class="bf-card">
+      <a href="./app/product.html?id=${p.id}" class="art" aria-label="${esc(p.name)}">${p.oldPrice > p.price ? `<span class="off">-${disc(p)}%</span>` : ""}${AB.productArt(p)}</a>
+      <a href="./app/product.html?id=${p.id}" class="nm">${esc(p.name)}</a>
+      <div class="d-flex align-items-end justify-content-between gap-1 mt-auto">
+        <div class="min-w-0"><div class="pr tabular text-truncate" style="font-size:.95rem">${fmt.naira(p.price)}</div><div class="old tabular">${fmt.naira(p.oldPrice)}</div></div>
+        <button class="btn btn-soft btn-icon btn-sm flex-shrink-0" data-add="${p.id}" aria-label="Add ${esc(p.name)} to cart"><i class="bi bi-cart-plus"></i></button>
+      </div>
+    </article>`;
+  $("u20").innerHTML = D.products.filter((p) => p.price < 20000).sort((a, b) => a.price - b.price).map(mini).join("");
+  $("u50").innerHTML = D.products.filter((p) => p.price >= 20000 && p.price < 50000).sort((a, b) => disc(b) - disc(a)).map(mini).join("");
+
+  /* ---- Categories ---- */
+  $("cats").innerHTML = D.categories.map((c) => {
+    const ps = D.products.filter((p) => p.category === c.id); const top = Math.max(0, ...ps.map(disc));
+    return `<a class="bf-cat" href="./app/marketplace.html?cat=${c.id}"><i class="bi ${c.icon} bg text-${c.tone === "primary" ? "primary" : ""}" style="${c.tone !== "primary" ? `color:var(--ab-${c.tone === "success" ? "accent" : c.tone})` : ""}" aria-hidden="true"></i>
+      <div class="pct"><small>Up to</small><span class="text-danger">-${top}%</span></div>
+      <div><div class="nm">${esc(c.name)}</div><div class="ct">${ps.length} deal${ps.length === 1 ? "" : "s"}</div></div></a>`;
+  }).join("");
+
+  /* ---- Service promos ---- */
+  const minE = [...D.esimCountries].sort((a, b) => a.from - b.from);
+  const gb = D.esimCountries.find((c) => c.code === "gb");
+  const steam = D.giftcards.find((g) => g.id === "steam");
+  const mtn1 = D.dataPlans.mtn.find((p) => p.id === "m2");
+  $("svc").innerHTML = [
+    { k: "Travel eSIM", tone: "violet", icon: "bi-sim", h: `Travel eSIMs from ${fmt.usd(minE[0].from)}`, p: `UK from ${fmt.usd(gb.from)} (${fmt.naira(Math.round(gb.from * D.usdRate))}). Plans for ${D.esimCountries.length} destinations.`, extra: `<div class="flags">${["gb", "us", "ae", "gh", "fr"].map((c) => `<img src="${AB.flag(c)}" alt="" loading="lazy">`).join("")}</div>`, href: "./app/esim.html?country=gb", go: "Check plans" },
+    { k: "Flights", tone: "cyan", icon: "bi-airplane", h: "Lagos → Dubai", p: `Compare ${D.airlines.length} airlines and see today's fares before you commit.`, href: "./app/flights.html?from=LOS&to=DXB", go: "Check fares" },
+    { k: "Gift cards", tone: "pink", icon: "bi-gift", h: `Steam up to ${fmt.naira(best(steam))}/$`, p: `Rates listed per card type for ${D.giftcards.length} brands — check before you trade.`, href: "./app/giftcards.html?card=steam", go: "See rates" },
+    { k: "USD card", tone: "success", icon: "bi-credit-card-2-front", h: "A dollar card for $2", p: `For holiday shopping abroad online. Funded in Naira at ₦${fmt.num(D.usdRate)}/$, 1% funding fee.`, href: "./app/virtual-cards.html", go: "Create a card" },
+    { k: "Data & airtime", tone: "warning", icon: "bi-lightning-charge", h: `MTN 1GB for ${fmt.naira(mtn1.price)}`, p: `${mtn1.validity} validity. Airtime and data on all four networks.`, extra: `<div class="nets">${D.networks.map((n) => `<img src="./assets/img/networks/${n.logo}" alt="${esc(n.name)}">`).join("")}</div>`, href: "./app/bills.html?tab=data", go: "Buy data" }
+  ].map((s) => `
+    <a class="bf-promo" href="${s.href}">
+      <div class="top d-flex align-items-center justify-content-between"><span class="k">${s.k}</span><span class="ab-icon ab-icon-sm tone-${s.tone}"><i class="bi ${s.icon}"></i></span></div>
+      <h3>${s.h}</h3><p>${s.p}</p>${s.extra || ""}
+      <span class="go">${s.go} <i class="bi bi-arrow-right"></i></span>
+    </a>`).join("");
+
+  /* ---- Cart buttons ---- */
+  document.querySelector("main").addEventListener("click", (e) => { const b = e.target.closest("[data-add]"); if (b) AB.cart.add(b.dataset.add, 1); });
+
+  /* ---- Members ---- */
+  if (AB.auth.isAuthed()) {
+    const u = AB.store.get("user");
+    $("finText").innerHTML = `${esc(u.firstName)}, your wallet is ready — apply <b class="text-white">AUTOBIZ10</b> in your cart before the sale ends.`;
+    $("finBtns").innerHTML = `<a href="./app/cart.html" class="btn btn-bf btn-lg px-4"><i class="bi bi-bag me-1"></i>Go to cart</a><a href="./app/dashboard.html" class="btn btn-line btn-lg px-4">Go to my account</a>`;
+  }
+
+  tick(); setInterval(tick, 1000);
+});
+</script>
+</body>
+</html>

@@ -72,6 +72,18 @@
     .contrast { font-size: .75rem; font-weight: 600; display: inline-flex; align-items: center; gap: .35rem; padding: .25rem .6rem; border-radius: 999px; }
     .contrast.ok { background: var(--ab-accent-soft); color: var(--ab-accent); }
     .contrast.warn { background: var(--ab-warning-soft); color: #b07400; }
+    /* Homepage design picker */
+    .home-opt { border: 1.5px solid var(--ab-border); border-radius: 10px; padding: .55rem .7rem; background: var(--ab-surface); width: 100%; text-align: left; color: var(--ab-text); display: flex; gap: .6rem; align-items: center; transition: all .15s; }
+    .home-opt:hover { border-color: rgba(var(--ab-primary-rgb), .5); }
+    .home-opt.active { border-color: var(--ab-primary); background: var(--ab-primary-soft); }
+    .home-opt .num { width: 30px; height: 30px; border-radius: 8px; background: var(--ab-surface-2); display: grid; place-items: center; font-weight: 800; font-size: .75rem; flex-shrink: 0; }
+    .home-opt.active .num { background: var(--ab-primary); color: var(--ab-on-primary); }
+    .home-opt .t { font-weight: 700; font-size: .8rem; line-height: 1.2; }
+    .home-opt .d { font-size: .68rem; color: var(--ab-muted); }
+    .home-opt .live { font-size: .6rem; font-weight: 800; color: var(--ab-accent); text-transform: uppercase; letter-spacing: .05em; }
+    .home-pv { position: relative; border: 1px solid var(--ab-border); border-radius: 12px; overflow: hidden; aspect-ratio: 16 / 10; background: var(--ab-surface-2); }
+    .home-pv iframe { position: absolute; top: 0; left: 0; width: 1440px; height: 900px; border: 0; transform-origin: 0 0; pointer-events: none; }
+    .home-pv .loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--ab-muted); font-size: .8rem; }
     .savebar { position: sticky; bottom: 0; z-index: 10; background: var(--ab-surface); border-top: 1px solid var(--ab-border); box-shadow: 0 -10px 24px -16px rgba(0, 0, 0, .25); }
     .savebar .inner { max-width: 1320px; margin: 0 auto; padding: .8rem 1.5rem calc(.8rem + env(safe-area-inset-bottom)); display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
   </style>
@@ -90,14 +102,28 @@
   <main class="adm-wrap">
     <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../app/dashboard.html">Admin</a></li><li class="breadcrumb-item active" aria-current="page">Brand &amp; theme</li></ol></nav>
     <div class="ab-page-head">
-      <div><h1>Brand &amp; theme</h1><p>Choose the colours for the whole platform. Changes apply to the website, the shop and the member dashboard.</p></div>
+      <div><h1>Brand &amp; theme</h1><p>Choose the homepage design and the colours for the whole platform. Changes apply to the website, the shop and the member dashboard.</p></div>
       <span class="ab-status neutral" id="lastSaved"></span>
     </div>
+
+    <div class="card mb-4" id="homepage"><div class="card-body">
+      <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+        <div><h6 class="card-title mb-1">Homepage design</h6><p class="fs-7 text-muted mb-0">Pick which design visitors see at the home page. Every design follows the colours below.</p></div>
+        <a href="../home-versions.html" class="btn btn-light-subtle btn-sm" target="_blank" rel="noopener"><i class="bi bi-grid-3x3-gap me-1"></i>Compare all designs</a>
+      </div>
+      <div class="row g-3">
+        <div class="col-lg-5"><div class="row g-2" id="homes" role="radiogroup" aria-label="Homepage design"></div></div>
+        <div class="col-lg-7">
+          <div class="home-pv" id="homePv"><span class="loading"><span class="spinner-border spinner-border-sm me-2"></span>Loading preview…</span></div>
+          <div class="d-flex justify-content-between align-items-center mt-2 fs-8 text-muted"><span id="homePvName"></span><a href="#" target="_blank" rel="noopener" id="homePvOpen">Open full page <i class="bi bi-box-arrow-up-right"></i></a></div>
+        </div>
+      </div>
+    </div></div>
 
     <div class="row g-4">
       <div class="col-lg-7">
         <div class="card mb-4"><div class="card-body">
-          <h6 class="card-title mb-1">Presets</h6>
+          <h6 class="card-title mb-1">Colour presets</h6>
           <p class="fs-7 text-muted mb-3">Start from a ready-made palette, then fine-tune below.</p>
           <div class="row g-2" id="presets"></div>
         </div></div>
@@ -176,6 +202,36 @@
   let draft = { ...saved };
   const showErr = (k, on) => { $(k + "Err").style.display = on ? "block" : "none"; $(k + "Hex").closest(".cfield").style.borderColor = on ? "var(--ab-danger)" : ""; };
   const same = (a, b) => a.primary.toLowerCase() === b.primary.toLowerCase() && a.panel.toLowerCase() === b.panel.toLowerCase();
+  const sameAll = (a, b) => same(a, b) && (a.home || "index.html") === (b.home || "index.html");
+
+  /* ---- Homepage design ---- */
+  const homeUrl = (f) => "../" + f + (f === "index.html" ? "?classic=1" : "");
+  let pvFile = null;
+  function renderHomes() {
+    $("homes").innerHTML = B.HOMES.map((h, i) => `
+      <div class="col-sm-6 col-lg-12 col-xl-6"><button class="home-opt ${draft.home === h.file ? "active" : ""}" role="radio" aria-checked="${draft.home === h.file}" data-home="${h.file}">
+        <span class="num">${i === 0 ? '<i class="bi bi-house"></i>' : i}</span>
+        <span class="min-w-0"><span class="t d-block text-truncate">${AB.esc(h.name)}</span><span class="d d-block text-truncate">${AB.esc(h.desc)}</span>${saved.home === h.file ? '<span class="live">● Live</span>' : ""}</span>
+      </button></div>`).join("");
+    const h = B.HOMES.find((x) => x.file === draft.home) || B.HOMES[0];
+    $("homePvName").textContent = `${h.name} · ${h.file}`;
+    $("homePvOpen").href = homeUrl(h.file);
+    if (pvFile !== h.file) {
+      pvFile = h.file;
+      const box = $("homePv");
+      box.innerHTML = `<span class="loading"><span class="spinner-border spinner-border-sm me-2"></span>Loading preview…</span>`;
+      fetch(homeUrl(h.file), { method: "HEAD" }).then((r) => {
+        if (!r.ok) throw 0;
+        const f = document.createElement("iframe");
+        f.title = h.name + " preview"; f.tabIndex = -1; f.src = homeUrl(h.file);
+        f.addEventListener("load", () => { const l = box.querySelector(".loading"); l && l.remove(); });
+        box.appendChild(f); scalePv();
+      }).catch(() => { box.innerHTML = `<span class="loading">${AB.esc(h.file)} isn't available yet</span>`; });
+    }
+  }
+  function scalePv() { const f = $("homePv").querySelector("iframe"); if (f) f.style.transform = `scale(${$("homePv").clientWidth / 1440})`; }
+  window.addEventListener("resize", AB.debounce(scalePv, 120));
+  $("homes").addEventListener("click", (e) => { const b = e.target.closest("[data-home]"); if (!b) return; draft = { ...draft, home: b.dataset.home }; sync(); });
 
   function renderPresets() {
     $("presets").innerHTML = B.PRESETS.map((p) => `
@@ -201,7 +257,8 @@
     // Live: the whole admin page (incl. preview) uses the draft
     B.apply(draft);
     renderPresets();
-    const dirty = !same(draft, saved);
+    renderHomes();
+    const dirty = !sameAll(draft, saved);
     $("saveBtn").disabled = !dirty;
     $("discardBtn").disabled = !dirty;
     $("dirtyNote").innerHTML = dirty ? `<i class="bi bi-circle-fill text-warning me-1" style="font-size:.5rem;vertical-align:middle"></i>Unsaved changes — preview only` : `<i class="bi bi-check-circle text-success me-1"></i>All changes saved`;
@@ -211,7 +268,7 @@
   $("presets").addEventListener("click", (e) => {
     const b = e.target.closest("[data-id]"); if (!b) return;
     const p = B.PRESETS.find((x) => x.id === b.dataset.id);
-    draft = { primary: p.primary, panel: p.panel, preset: p.id };
+    draft = { ...draft, primary: p.primary, panel: p.panel, preset: p.id };
     ["p", "k"].forEach((k) => showErr(k, false));
     sync();
   });
@@ -230,14 +287,14 @@
     AB.loading(e.currentTarget, 500).then(() => {
       saved = B.save(draft); draft = { ...saved };
       sync();
-      AB.toast("Theme published. The website and dashboard now use the new colours.", "success");
+      AB.toast("Published. The homepage design and colours are now live.", "success");
     });
   });
   $("discardBtn").addEventListener("click", () => { draft = { ...saved }; sync(); });
   $("resetBtn").addEventListener("click", () => {
     const m = AB.modal(`
       <div class="modal-body text-center pt-4"><span class="ab-icon ab-icon-xl tone-warning mb-3"><i class="bi bi-arrow-counterclockwise"></i></span>
-        <h5>Reset to the default theme?</h5><p class="text-muted fs-7 mb-0">The platform goes back to Teal with a charcoal panel.</p></div>
+        <h5>Reset to the default theme?</h5><p class="text-muted fs-7 mb-0">The platform goes back to the Classic homepage with Teal and a charcoal panel.</p></div>
       <div class="modal-footer"><button class="btn btn-light-subtle flex-fill" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary flex-fill" id="doReset">Reset</button></div>`);
     m.el.querySelector("#doReset").addEventListener("click", () => { saved = B.reset(); draft = { ...saved }; m.close(); sync(); AB.toast("Theme reset to default", "success"); });
   });
@@ -250,7 +307,7 @@
   const cur = document.documentElement.getAttribute("data-bs-theme");
   document.querySelectorAll("#pvMode button").forEach((x) => x.classList.toggle("active", x.dataset.m === cur));
 
-  window.addEventListener("beforeunload", (e) => { if (!same(draft, saved)) { e.preventDefault(); e.returnValue = ""; } });
+  window.addEventListener("beforeunload", (e) => { if (!sameAll(draft, saved)) { e.preventDefault(); e.returnValue = ""; } });
   sync();
 })();
 </script>

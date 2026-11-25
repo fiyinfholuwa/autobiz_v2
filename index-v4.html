@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AutoBiz · Book flights, travel eSIMs &amp; more</title>
+  <meta name="description" content="Shop from verified sellers, buy travel eSIMs, book flights, get a USD virtual card, sell gift cards and pay for airtime, data and bills — all on AutoBiz.">
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="./assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="./assets/css/app.css" rel="stylesheet">
+  <script src="./assets/js/brand.js"></script>
+  <style>
+    /* ================= Travel-led booking engine homepage (v4) ================= */
+    body.tv { background: var(--ab-bg); color: var(--ab-text); overflow-x: hidden; }
+    .tv-wrap { max-width: 1280px; margin: 0 auto; padding: 0 clamp(16px, 3.5vw, 40px); }
+    .tv a:focus-visible, .tv button:focus-visible, .tv input:focus-visible, .tv select:focus-visible, .tv label:focus-within { outline: 2px solid var(--ab-primary); outline-offset: 2px; }
+    .tv-eyebrow { font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--ab-primary); }
+    .tv-h2 { font-size: clamp(1.6rem, 3vw, 2.3rem); font-weight: 800; letter-spacing: -.035em; line-height: 1.1; margin: .35rem 0 0; }
+    .tv-sub { color: var(--ab-muted); margin: .5rem 0 0; }
+    .tv-sec { padding: clamp(3rem, 6vw, 5rem) 0 0; }
+    .tv-sec-head { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .tv-more { font-weight: 700; font-size: .9rem; color: var(--ab-primary); white-space: nowrap; }
+    .tv-more:hover { color: var(--ab-primary-700); }
+
+    /* ---------- Header ---------- */
+    .tv-head { position: fixed; inset: 0 0 auto; z-index: 1030; transition: background .25s, box-shadow .25s, color .25s; color: #fff; }
+    .tv-head.solid { background: var(--ab-surface); color: var(--ab-text); box-shadow: 0 1px 0 var(--ab-border), 0 10px 30px -20px rgba(0,0,0,.3); }
+    .tv-nav { display: flex; align-items: center; height: 72px; gap: 1.5rem; }
+    .tv-logo { display: inline-flex; align-items: center; gap: .55rem; font-weight: 800; font-size: 1.2rem; letter-spacing: -.03em; color: inherit; }
+    .tv-logo:hover { color: inherit; }
+    .tv-logo img { width: 32px; height: 32px; }
+    .tv-links { display: flex; gap: .25rem; list-style: none; margin: 0 auto 0 1rem; padding: 0; }
+    .tv-links a { color: inherit; opacity: .88; font-weight: 600; font-size: .88rem; padding: .5rem .75rem; border-radius: 999px; display: inline-flex; gap: .4rem; align-items: center; }
+    .tv-links a:hover { opacity: 1; background: rgba(255,255,255,.12); }
+    .tv-head.solid .tv-links a:hover { background: var(--ab-surface-2); }
+    .tv-actions { display: flex; align-items: center; gap: .6rem; margin-left: auto; }
+    .tv-ibtn { width: 42px; height: 42px; border-radius: 50%; display: inline-grid; place-items: center; color: inherit; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); position: relative; font-size: 1.1rem; }
+    .tv-head.solid .tv-ibtn { background: var(--ab-surface-2); border-color: var(--ab-border); }
+    .tv-ibtn:hover { color: inherit; }
+    .tv-count { position: absolute; top: -3px; right: -3px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: #fff; color: var(--ab-primary-700); font-size: .65rem; font-weight: 800; display: grid; place-items: center; }
+    .tv-head.solid .tv-count { background: var(--ab-primary); color: var(--ab-on-primary); }
+    .tv-count[hidden] { display: none; }
+    .tv-login { color: inherit; font-weight: 700; font-size: .88rem; padding: .5rem .6rem; }
+    .tv-login:hover { color: inherit; opacity: .8; }
+    .tv-signup { background: #fff; color: var(--ab-primary-700); font-weight: 800; font-size: .88rem; border-radius: 999px; padding: .6rem 1.1rem; }
+    .tv-signup:hover { background: var(--ab-primary-soft); color: var(--ab-primary-700); }
+    .tv-head.solid .tv-signup { background: var(--ab-primary); color: var(--ab-on-primary); }
+    .tv-burger { display: none; }
+    @media (max-width: 1199.98px) { .tv-links { display: none; } }
+    @media (max-width: 767.98px) { .tv-acct { display: none !important; } .tv-burger { display: inline-grid; } .tv-nav { height: 64px; } }
+    .tv-oc { background: var(--ab-surface); color: var(--ab-text); }
+    .tv-oc a.l { display: flex; align-items: center; gap: .9rem; padding: .8rem .25rem; color: var(--ab-text); font-weight: 700; border-bottom: 1px solid var(--ab-border); }
+    .tv-oc a.l .ab-icon { width: 38px; height: 38px; }
+
+    /* ---------- Hero ---------- */
+    .tv-hero { position: relative; color: #fff; padding: 128px 0 0; isolation: isolate;
+      background: linear-gradient(175deg, var(--ab-sidebar) 0%, var(--ab-primary-700) 45%, var(--ab-primary) 78%, var(--ab-primary-300) 100%); }
+    .tv-sky { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; }
+    .tv-hero h1 { color: #fff; font-size: clamp(2.4rem, 6vw, 4.6rem); font-weight: 800; letter-spacing: -.05em; line-height: 1; margin: 0 0 1rem; max-width: 13ch; }
+    .tv-hero .lead { font-size: clamp(1rem, 1.4vw, 1.15rem); opacity: .88; max-width: 46ch; margin: 0 0 2rem; }
+    .tv-hero .pill { display: inline-flex; align-items: center; gap: .5rem; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.25); border-radius: 999px; padding: .35rem .85rem; font-size: .78rem; font-weight: 700; margin-bottom: 1.25rem; backdrop-filter: blur(6px); }
+
+    /* Booking widget */
+    .tv-book { background: var(--ab-surface); color: var(--ab-text); border-radius: 24px; box-shadow: 0 40px 80px -30px rgba(0,0,0,.55); position: relative; margin-bottom: -96px; z-index: 2; }
+    .tv-tabs { display: flex; gap: .25rem; padding: .6rem .6rem 0; border-bottom: 1px solid var(--ab-border); overflow-x: auto; scrollbar-width: none; }
+    .tv-tabs::-webkit-scrollbar { display: none; }
+    .tv-tab { border: 0; background: transparent; color: var(--ab-muted); font-weight: 700; font-size: .92rem; padding: .85rem 1.1rem 1rem; display: inline-flex; align-items: center; gap: .5rem; position: relative; white-space: nowrap; border-radius: 12px 12px 0 0; }
+    .tv-tab i { font-size: 1.1rem; }
+    .tv-tab:hover { color: var(--ab-text); }
+    .tv-tab[aria-selected="true"] { color: var(--ab-primary); }
+    .tv-tab[aria-selected="true"]::after { content: ""; position: absolute; left: .8rem; right: .8rem; bottom: -1px; height: 3px; border-radius: 3px 3px 0 0; background: var(--ab-primary); }
+    .tv-panel { padding: 1.25rem clamp(1rem, 2vw, 1.5rem) 1.5rem; }
+    .tv-panel[hidden] { display: none; }
+    .tv-seg { display: inline-flex; background: var(--ab-surface-2); border-radius: 999px; padding: 4px; margin-bottom: 1rem; gap: 2px; }
+    .tv-seg label { margin: 0; }
+    .tv-seg input { position: absolute; opacity: 0; pointer-events: none; }
+    .tv-seg span { display: inline-block; padding: .45rem 1rem; border-radius: 999px; font-size: .82rem; font-weight: 700; color: var(--ab-muted); cursor: pointer; }
+    .tv-seg input:checked + span { background: var(--ab-surface); color: var(--ab-text); box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+    .tv-seg input:focus-visible + span { outline: 2px solid var(--ab-primary); }
+    .tv-field { position: relative; background: var(--ab-surface-2); border: 1.5px solid transparent; border-radius: 16px; padding: .55rem .9rem .5rem; transition: border-color .2s, background .2s; min-width: 0; }
+    .tv-field:focus-within { border-color: var(--ab-primary); background: var(--ab-surface); }
+    .tv-field > label { display: block; font-size: .7rem; font-weight: 700; color: var(--ab-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .1rem; }
+    .tv-field select, .tv-field input { width: 100%; border: 0; background: transparent; color: var(--ab-text); font-weight: 700; font-size: .98rem; padding: 0; outline: none; appearance: none; -webkit-appearance: none; min-width: 0; }
+    .tv-field select { cursor: pointer; padding-right: 1rem; background-image: none; }
+    .tv-field .sub { display: block; font-size: .74rem; color: var(--ab-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tv-field.invalid { border-color: var(--ab-danger); }
+    .tv-field option { color: #191919; }
+    .tv-row { display: grid; gap: .6rem; align-items: stretch; }
+    .tv-row.flights { grid-template-columns: minmax(0, 1.25fr) 0 minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, .8fr) auto; }
+    .tv-row.flights .wide { display: contents; }
+    .tv-swap { position: relative; width: 0; z-index: 2; }
+    .tv-swap button { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--ab-border); background: var(--ab-surface); color: var(--ab-primary); display: grid; place-items: center; box-shadow: 0 6px 14px -6px rgba(0,0,0,.25); transition: transform .3s; }
+    .tv-swap button:hover { transform: translate(-50%, -50%) rotate(180deg); }
+    .tv-go { border: 0; border-radius: 16px; background: var(--ab-primary); color: var(--ab-on-primary); font-weight: 800; padding: 0 1.6rem; display: inline-flex; align-items: center; justify-content: center; gap: .55rem; min-height: 58px; font-size: 1rem; transition: background .2s, transform .2s; white-space: nowrap; }
+    .tv-go:hover { background: var(--ab-primary-700); transform: translateY(-1px); }
+    .tv-row.ret-off .ret { opacity: .45; }
+    .tv-row.esim { grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr) auto; }
+    .tv-row.gift { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1.2fr) auto; }
+    .tv-row.air { grid-template-columns: auto minmax(0, 1.2fr) minmax(0, .9fr) auto; }
+    .tv-flagsel { display: flex; align-items: center; gap: .6rem; }
+    .tv-flagsel img { width: 30px; height: 21px; border-radius: 4px; object-fit: cover; box-shadow: 0 0 0 1px var(--ab-border); flex-shrink: 0; }
+    .tv-plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+    .tv-plans a { border: 1.5px solid var(--ab-border); border-radius: 14px; padding: .55rem .75rem; color: var(--ab-text); display: block; }
+    .tv-plans a:hover { border-color: var(--ab-primary); }
+    .tv-plans b { display: block; font-size: .92rem; } .tv-plans small { color: var(--ab-muted); font-size: .72rem; }
+    .tv-plans .pr { color: var(--ab-primary); font-weight: 800; font-size: .88rem; }
+    .tv-payout { background: var(--ab-primary-soft); border-radius: 16px; padding: .55rem .9rem; display: flex; flex-direction: column; justify-content: center; }
+    .tv-payout small { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--ab-primary); }
+    .tv-payout b { font-size: 1.2rem; color: var(--ab-text); letter-spacing: -.02em; }
+    .tv-nets { display: flex; gap: .4rem; align-items: center; }
+    .tv-nets label { cursor: pointer; margin: 0; }
+    .tv-nets input { position: absolute; opacity: 0; pointer-events: none; }
+    .tv-nets img { width: 48px; height: 48px; border-radius: 14px; object-fit: cover; border: 2.5px solid transparent; transition: border-color .2s, transform .2s; display: block; }
+    .tv-nets input:checked + img { border-color: var(--ab-primary); transform: translateY(-2px); }
+    .tv-nets input:focus-visible + img { outline: 2px solid var(--ab-primary); outline-offset: 2px; }
+    .tv-note { font-size: .78rem; color: var(--ab-muted); margin-top: .85rem; display: flex; gap: .4rem; align-items: center; }
+    @media (max-width: 1099.98px) {
+      .tv-row.flights { grid-template-columns: minmax(0, 1fr) 0 minmax(0, 1fr); }
+      .tv-row.flights .dt, .tv-row.flights .px { grid-column: span 1; }
+      .tv-row.flights .wide { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr .8fr auto; gap: .6rem; }
+    }
+    @media (max-width: 767.98px) {
+      .tv-row.esim, .tv-row.gift, .tv-row.air { grid-template-columns: 1fr; }
+      .tv-row.flights .wide { grid-template-columns: 1fr 1fr; }
+      .tv-row.flights .wide .px { grid-column: 1 / -1; }
+      .tv-row.flights .wide .tv-go { grid-column: 1 / -1; }
+      .tv-row.flights { grid-template-columns: 1fr; }
+      .tv-swap { width: auto; height: 0; }
+      .tv-swap button { transform: translate(-50%, -50%) rotate(90deg); left: auto; right: 1.25rem; }
+      .tv-swap button:hover { transform: translate(-50%, -50%) rotate(270deg); }
+      .tv-plans { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .tv-tab { padding: .75rem .8rem .85rem; font-size: .85rem; }
+      .tv-hero { padding-top: 96px; }
+    }
+    .tv-hero-foot { height: 140px; }
+
+    /* Facts strip */
+    .tv-facts { padding-top: 128px; }
+    .tv-facts ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .tv-facts li { display: flex; gap: .8rem; align-items: center; }
+    .tv-facts b { display: block; font-size: .95rem; } .tv-facts small { color: var(--ab-muted); font-size: .8rem; }
+    @media (max-width: 991.98px) { .tv-facts ul { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 575.98px) { .tv-facts { padding-top: 120px; } .tv-facts ul { gap: .9rem .6rem; } .tv-facts .ab-icon { display: none; } }
+
+    /* Destinations */
+    .tv-dest { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .tv-dcard { position: relative; border-radius: 22px; overflow: hidden; aspect-ratio: 4 / 5; color: #fff; display: flex; flex-direction: column; justify-content: flex-end; padding: 1.1rem; isolation: isolate; background: var(--ab-sidebar); transition: transform .3s, box-shadow .3s; }
+    .tv-dcard:hover { color: #fff; transform: translateY(-4px); box-shadow: var(--ab-shadow-lg); }
+    .tv-dcard img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; transform: scale(1.35) rotate(-6deg); filter: saturate(1.05); transition: transform .6s; }
+    .tv-dcard:hover img.bg { transform: scale(1.45) rotate(-6deg); }
+    .tv-dcard::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(0,0,0,0) 25%, rgba(var(--ab-primary-rgb), .35) 55%, var(--ab-sidebar) 100%); }
+    .tv-dcard .tag { position: absolute; top: .9rem; left: .9rem; background: rgba(0,0,0,.45); backdrop-filter: blur(6px); border-radius: 999px; padding: .3rem .7rem; font-size: .7rem; font-weight: 800; letter-spacing: .04em; }
+    .tv-dcard h3 { font-size: 1.3rem; font-weight: 800; letter-spacing: -.03em; margin: 0 0 .25rem; color: #fff; }
+    .tv-dcard .from { font-size: .82rem; opacity: .85; }
+    .tv-dcard .from b { font-size: 1.05rem; opacity: 1; color: #fff; }
+    .tv-dcard .arrow { position: absolute; top: .9rem; right: .9rem; width: 36px; height: 36px; border-radius: 50%; background: #fff; color: #191919; display: grid; place-items: center; transition: transform .3s; }
+    .tv-dcard:hover .arrow { transform: rotate(-45deg); }
+    .tv-dest .wide { grid-column: span 2; aspect-ratio: auto; }
+    @media (max-width: 991.98px) { .tv-dest { grid-template-columns: repeat(2, 1fr); } .tv-dest .wide { grid-column: span 2; aspect-ratio: 2 / 1.1; } }
+    @media (max-width: 575.98px) { .tv-dest { gap: .7rem; } .tv-dcard { aspect-ratio: 3 / 4; padding: .9rem; border-radius: 18px; } .tv-dcard h3 { font-size: 1.05rem; } }
+
+    /* Routes */
+    .tv-routes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .tv-route { background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 20px; padding: 1.1rem 1.2rem; color: var(--ab-text); display: block; transition: border-color .2s, transform .2s, box-shadow .2s; position: relative; overflow: hidden; }
+    .tv-route:hover { color: var(--ab-text); border-color: rgba(var(--ab-primary-rgb), .45); transform: translateY(-3px); box-shadow: var(--ab-shadow); }
+    .tv-route .ends { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .8rem; }
+    .tv-route .code { font-size: 1.6rem; font-weight: 800; letter-spacing: -.02em; line-height: 1; }
+    .tv-route .city { font-size: .78rem; color: var(--ab-muted); display: block; margin-top: .2rem; }
+    .tv-route .line { position: relative; height: 2px; background-image: linear-gradient(90deg, var(--ab-border) 50%, transparent 0); background-size: 8px 2px; }
+    .tv-route .line i { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(90deg); color: var(--ab-primary); background: var(--ab-surface); padding: 0 .3rem; font-size: 1rem; }
+    .tv-route .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: .85rem; border-top: 1px dashed var(--ab-border); font-size: .8rem; color: var(--ab-muted); }
+    .tv-route .foot img { width: 22px; height: 15px; object-fit: cover; border-radius: 3px; margin-right: .4rem; vertical-align: -2px; }
+    .tv-route .foot b { color: var(--ab-primary); }
+    @media (max-width: 991.98px) { .tv-routes { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 575.98px) { .tv-routes { grid-template-columns: 1fr; gap: .7rem; } }
+
+    /* Pack products */
+    .tv-pack { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; }
+    .tv-prod { background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 20px; padding: .7rem; display: flex; flex-direction: column; position: relative; transition: transform .2s, box-shadow .2s; }
+    .tv-prod:hover { transform: translateY(-3px); box-shadow: var(--ab-shadow); }
+    .tv-prod .ab-product-art { font-size: 2.6rem; }
+    .tv-prod .why { position: absolute; top: 1.1rem; left: 1.1rem; font-size: .66rem; font-weight: 800; background: var(--ab-surface); color: var(--ab-text); border-radius: 999px; padding: .2rem .55rem; box-shadow: 0 2px 6px rgba(0,0,0,.08); z-index: 1; }
+    .tv-prod a.name { color: var(--ab-text); font-weight: 700; font-size: .85rem; line-height: 1.3; margin: .7rem .2rem .15rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.6em; }
+    .tv-prod a.name::after { content: ""; position: absolute; inset: 0; }
+    .tv-prod .meta { font-size: .72rem; color: var(--ab-muted); margin: 0 .2rem; }
+    .tv-prod .bot { display: flex; justify-content: space-between; align-items: center; margin: .6rem .2rem .1rem; gap: .4rem; }
+    .tv-prod .price { font-weight: 800; font-size: .95rem; letter-spacing: -.02em; }
+    .tv-add { position: relative; z-index: 2; border: 0; width: 36px; height: 36px; border-radius: 12px; background: var(--ab-primary-soft); color: var(--ab-primary); display: grid; place-items: center; flex-shrink: 0; transition: all .2s; }
+    .tv-add:hover { background: var(--ab-primary); color: var(--ab-on-primary); }
+    @media (max-width: 1199.98px) { .tv-pack { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 575.98px) { .tv-pack { grid-template-columns: repeat(2, 1fr); gap: .7rem; } }
+
+    /* USD band */
+    .tv-usd { border-radius: 28px; overflow: hidden; position: relative; color: #fff; padding: clamp(1.75rem, 4vw, 3.5rem); display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 2.5rem; align-items: center; isolation: isolate;
+      background: radial-gradient(70% 90% at 100% 0%, rgba(var(--ab-primary-rgb), .55), transparent 60%), var(--ab-sidebar); }
+    .tv-usd::after { content: ""; position: absolute; inset: auto -10% -60% auto; width: 60%; aspect-ratio: 1; border-radius: 50%; border: 1px dashed rgba(255,255,255,.12); z-index: -1; }
+    .tv-usd h2 { color: #fff; }
+    .tv-usd .tv-eyebrow { color: var(--ab-primary-300); }
+    .tv-usd ul { list-style: none; padding: 0; margin: 1.25rem 0 1.75rem; display: grid; grid-template-columns: 1fr 1fr; gap: .6rem 1.2rem; }
+    .tv-usd li { display: flex; gap: .55rem; font-size: .9rem; opacity: .9; }
+    .tv-usd li i { color: var(--ab-primary-300); }
+    .tv-usd .rate { display: inline-flex; align-items: center; gap: .6rem; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); border-radius: 14px; padding: .6rem .9rem; font-size: .85rem; margin-left: .75rem; }
+    .tv-usd .rate b { font-size: 1.05rem; }
+    .tv-btn-w { background: #fff; color: #191919; font-weight: 800; border-radius: 14px; padding: .8rem 1.3rem; display: inline-flex; gap: .5rem; align-items: center; }
+    .tv-btn-w:hover { background: var(--ab-primary-soft); color: #191919; }
+    .tv-cards { position: relative; height: 300px; }
+    .tv-vc { position: absolute; width: min(340px, 82%); aspect-ratio: 1.586; border-radius: 20px; padding: 1.2rem; display: flex; flex-direction: column; justify-content: space-between; color: #fff; box-shadow: 0 30px 60px -20px rgba(0,0,0,.6); }
+    .tv-vc.a { right: 4%; top: 0; transform: rotate(8deg); background: linear-gradient(135deg, var(--ab-primary-300), var(--ab-primary-700)); opacity: .55; }
+    .tv-vc.b { left: 4%; bottom: 0; transform: rotate(-6deg); background: linear-gradient(135deg, var(--ab-primary), var(--ab-primary-700) 60%, var(--ab-sidebar)); border: 1px solid rgba(255,255,255,.15); }
+    .tv-vc .chipx { width: 40px; height: 30px; border-radius: 7px; background: linear-gradient(135deg, #f3d98b, #c9a24a); }
+    .tv-vc .num { letter-spacing: .16em; font-weight: 600; font-size: 1rem; }
+    .tv-vc .r { display: flex; justify-content: space-between; align-items: end; font-size: .72rem; }
+    .tv-vc .r b { display: block; font-size: 1.3rem; }
+    .tv-vc .spend { position: absolute; right: -12px; top: -16px; background: var(--ab-surface); color: var(--ab-text); border-radius: 14px; padding: .5rem .75rem; font-size: .75rem; font-weight: 700; display: flex; gap: .5rem; align-items: center; box-shadow: var(--ab-shadow); }
+    .tv-vc .spend i { color: var(--ab-accent); font-size: 1rem; }
+    @media (max-width: 991.98px) { .tv-usd { grid-template-columns: 1fr; } .tv-cards { height: 240px; } }
+    @media (max-width: 575.98px) { .tv-usd ul { grid-template-columns: 1fr; } .tv-usd .rate { margin: .9rem 0 0; } .tv-cards { height: 210px; } .tv-vc .spend { right: 0; } }
+
+    /* Checklist */
+    .tv-check { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.6fr); gap: clamp(1.5rem, 4vw, 3.5rem); align-items: start; }
+    .tv-progress { margin-top: 1.5rem; background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 18px; padding: 1rem 1.1rem; }
+    .tv-progress .bar { height: 8px; background: var(--ab-surface-2); border-radius: 4px; overflow: hidden; margin-top: .6rem; }
+    .tv-progress .bar span { display: block; height: 100%; background: var(--ab-primary); width: 0; border-radius: 4px; transition: width .4s; }
+    .tv-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .75rem; }
+    .tv-item { display: grid; grid-template-columns: auto auto 1fr auto; gap: 1rem; align-items: center; background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 20px; padding: 1rem 1.1rem; transition: border-color .2s; }
+    .tv-item.done { border-color: rgba(var(--ab-primary-rgb), .45); }
+    .tv-tick { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--ab-border); background: transparent; display: grid; place-items: center; color: transparent; font-size: .95rem; transition: all .2s; }
+    .tv-item.done .tv-tick { background: var(--ab-primary); border-color: var(--ab-primary); color: var(--ab-on-primary); }
+    .tv-item.done .t b { text-decoration: line-through; text-decoration-color: var(--ab-muted); }
+    .tv-item .t b { display: block; font-size: .98rem; } .tv-item .t small { color: var(--ab-muted); font-size: .82rem; }
+    .tv-item .act { font-weight: 700; font-size: .85rem; color: var(--ab-primary); white-space: nowrap; border: 1px solid rgba(var(--ab-primary-rgb), .35); border-radius: 12px; padding: .5rem .8rem; }
+    .tv-item .act:hover { background: var(--ab-primary); color: var(--ab-on-primary); }
+    @media (max-width: 991.98px) { .tv-check { grid-template-columns: 1fr; } }
+    @media (max-width: 575.98px) { .tv-item { grid-template-columns: auto 1fr; gap: .75rem; } .tv-item .ab-icon { display: none; } .tv-item .act { grid-column: 2; justify-self: start; } }
+
+    /* More on AutoBiz */
+    .tv-more-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .tv-mcard { background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 20px; padding: 1.2rem; color: var(--ab-text); display: flex; flex-direction: column; gap: .8rem; transition: transform .2s, border-color .2s; }
+    .tv-mcard:hover { color: var(--ab-text); transform: translateY(-3px); border-color: rgba(var(--ab-primary-rgb), .4); }
+    .tv-mcard b { font-size: 1rem; display: block; } .tv-mcard small { color: var(--ab-muted); font-size: .82rem; }
+    @media (max-width: 991.98px) { .tv-more-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 575.98px) { .tv-more-grid { gap: .7rem; } .tv-mcard { padding: 1rem; } }
+
+    /* CTA + footer */
+    .tv-cta { margin-top: clamp(3rem, 6vw, 5rem); border-radius: 28px; padding: clamp(2rem, 5vw, 3.5rem); text-align: center; color: #fff; position: relative; overflow: hidden; isolation: isolate;
+      background: linear-gradient(120deg, var(--ab-primary-700), var(--ab-primary) 70%, var(--ab-primary-300)); }
+    .tv-cta svg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; opacity: .5; }
+    .tv-cta h2 { color: #fff; font-size: clamp(1.7rem, 3.5vw, 2.6rem); font-weight: 800; letter-spacing: -.04em; margin-bottom: .6rem; }
+    .tv-cta p { opacity: .88; max-width: 48ch; margin: 0 auto 1.5rem; }
+    .tv-cta .btns { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+    .tv-btn-o { color: #fff; border: 1.5px solid rgba(255,255,255,.55); font-weight: 700; border-radius: 14px; padding: .8rem 1.3rem; }
+    .tv-btn-o:hover { color: #fff; background: rgba(255,255,255,.12); }
+    .tv-foot { margin-top: clamp(3rem, 6vw, 5rem); background: var(--ab-sidebar); color: rgba(255,255,255,.7); padding: 3.5rem 0 1.5rem; }
+    .tv-foot .cols { display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 2rem; }
+    .tv-foot h3 { color: #fff; font-size: .8rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 1rem; }
+    .tv-foot ul { list-style: none; padding: 0; margin: 0; }
+    .tv-foot li { margin-bottom: .5rem; }
+    .tv-foot a { color: rgba(255,255,255,.7); font-size: .9rem; }
+    .tv-foot a:hover { color: #fff; }
+    .tv-foot .tv-logo { color: #fff; margin-bottom: .9rem; }
+    .tv-foot p { font-size: .88rem; max-width: 34ch; }
+    .tv-foot .base { border-top: 1px solid rgba(255,255,255,.1); margin-top: 2.5rem; padding-top: 1.25rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: .75rem; font-size: .8rem; }
+    @media (max-width: 767.98px) { .tv-foot .cols { grid-template-columns: 1fr 1fr; } .tv-foot .cols > div:first-child { grid-column: 1 / -1; } }
+
+    @media (prefers-reduced-motion: reduce) { .tv-dcard img.bg, .tv-dcard, .tv-swap button { transition: none !important; } }
+  </style>
+</head>
+<body class="tv">
+<a class="visually-hidden-focusable position-absolute top-0 start-0 m-2 p-2 bg-body z-3" href="#main" style="z-index:1100!important">Skip to content</a>
+
+<header class="tv-head" id="tvHead">
+  <nav class="tv-wrap tv-nav" aria-label="Main">
+    <a href="./index-v4.html" class="tv-logo" aria-label="AutoBiz home"><img src="./assets/img/logo.svg" alt="">AutoBiz</a>
+    <ul class="tv-links">
+      <li><a href="./app/flights.html"><i class="bi bi-airplane"></i>Flights</a></li>
+      <li><a href="./app/esim.html"><i class="bi bi-sim"></i>eSIM</a></li>
+      <li><a href="./app/marketplace.html"><i class="bi bi-bag"></i>Shop</a></li>
+      <li><a href="./app/virtual-cards.html"><i class="bi bi-credit-card"></i>USD cards</a></li>
+      <li><a href="./app/giftcards.html"><i class="bi bi-gift"></i>Gift cards</a></li>
+      <li><a href="./app/bills.html"><i class="bi bi-lightning-charge"></i>Bills</a></li>
+    </ul>
+    <div class="tv-actions">
+      <span class="tv-acct d-flex align-items-center gap-1" id="tvAcct"><a class="tv-login" href="./login.html">Log in</a><a class="tv-signup" href="./register.html">Sign up</a></span>
+      <a href="./app/cart.html" class="tv-ibtn" aria-label="Cart"><i class="bi bi-bag"></i><span class="tv-count" data-cart-count hidden></span></a>
+      <button class="tv-ibtn tv-burger" type="button" data-bs-toggle="offcanvas" data-bs-target="#tvMenu" aria-controls="tvMenu" aria-label="Open menu"><i class="bi bi-list"></i></button>
+    </div>
+  </nav>
+</header>
+
+<div class="offcanvas offcanvas-end tv-oc" tabindex="-1" id="tvMenu" aria-labelledby="tvMenuLabel">
+  <div class="offcanvas-header border-bottom">
+    <span class="tv-logo" id="tvMenuLabel"><img src="./assets/img/logo.svg" alt="">AutoBiz</span>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close menu"></button>
+  </div>
+  <div class="offcanvas-body d-flex flex-column">
+    <a class="l" href="./app/flights.html"><span class="ab-icon tone-primary"><i class="bi bi-airplane"></i></span>Flights</a>
+    <a class="l" href="./app/esim.html"><span class="ab-icon tone-cyan"><i class="bi bi-sim"></i></span>Travel eSIM</a>
+    <a class="l" href="./app/marketplace.html"><span class="ab-icon tone-orange"><i class="bi bi-bag"></i></span>Shop</a>
+    <a class="l" href="./app/virtual-cards.html"><span class="ab-icon tone-violet"><i class="bi bi-credit-card"></i></span>USD cards</a>
+    <a class="l" href="./app/giftcards.html"><span class="ab-icon tone-pink"><i class="bi bi-gift"></i></span>Gift cards</a>
+    <a class="l" href="./app/bills.html"><span class="ab-icon tone-success"><i class="bi bi-lightning-charge"></i></span>Airtime &amp; bills</a>
+    <div class="mt-auto pt-4 d-grid gap-2" id="tvMenuAcct"><a class="btn btn-primary btn-lg" href="./register.html">Sign up free</a><a class="btn btn-outline-secondary btn-lg" href="./login.html">Log in</a></div>
+  </div>
+</div>
+
+<main id="main">
+  <!-- Hero -->
+  <section class="tv-hero" aria-labelledby="tvTitle">
+    <svg class="tv-sky" viewBox="0 0 1440 760" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+      <defs>
+        <radialGradient id="tvSun" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+        <filter id="tvBlur" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>
+      </defs>
+      <circle cx="1130" cy="250" r="230" fill="url(#tvSun)"/>
+      <circle cx="1130" cy="250" r="70" fill="#fff" opacity=".18"/>
+      <g fill="#fff" filter="url(#tvBlur)">
+        <ellipse cx="220" cy="190" rx="190" ry="34" opacity=".16"/>
+        <ellipse cx="980" cy="420" rx="260" ry="40" opacity=".14"/>
+        <ellipse cx="560" cy="110" rx="150" ry="24" opacity=".12"/>
+        <ellipse cx="1340" cy="520" rx="200" ry="34" opacity=".14"/>
+      </g>
+      <path id="tvFlight" d="M -40 640 C 260 520, 520 300, 820 330 S 1260 180, 1500 80" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="2" stroke-dasharray="2 10" stroke-linecap="round"/>
+      <g id="tvPlane">
+        <path d="M-16 0 L-6 -3 L4 -15 L9 -15 L4 -3 L14 -3 L18 -8 L21 -8 L19 0 L21 8 L18 8 L14 3 L4 3 L9 15 L4 15 L-6 3 Z" fill="#fff" transform="rotate(180) scale(1.1)"/>
+        <animateMotion id="tvMotion" dur="18s" repeatCount="indefinite" rotate="auto"><mpath href="#tvFlight"/></animateMotion>
+      </g>
+      <g fill="#fff" opacity=".07">
+        <path d="M0 760 V640 h60 v-40 h40 v60 h50 v-110 h30 v-20 h20 v20 h30 v130 h40 v-70 h70 v90 h40 v-150 h14 v-30 h12 v30 h14 v150 h50 v-60 h60 v-40 h50 v100 h40 v-180 l30 -30 l30 30 v180 h40 v-90 h70 v60 h40 v-120 h50 v140 h40 v-70 h80 v-50 h30 v120 h50 v-160 h20 v-26 h10 v26 h20 v160 h40 v-80 h70 v100 h50 v-60 h60 v-40 h40 v80 h70 V760 Z"/>
+      </g>
+      <g fill="#fff" opacity=".1">
+        <path d="M0 760 V700 h90 v-30 h70 v50 h60 v-60 h80 v80 h50 v-40 h90 v30 h70 v-70 h40 v90 h80 v-50 h60 v40 h90 v-80 h60 v100 h70 v-60 h90 v40 h70 v-30 h60 v50 h90 v-70 h60 v80 h60 V760 Z"/>
+      </g>
+    </svg>
+    <div class="tv-wrap">
+      <span class="pill"><i class="bi bi-globe2"></i>Flights · eSIM · USD card · Shop</span>
+      <h1 id="tvTitle">Where are you off to next?</h1>
+      <p class="lead">Book the flight, get data before you land, pay abroad in dollars and pack what you need — then top up home on the way out.</p>
+
+      <div class="tv-book" id="tvBook">
+        <div class="tv-tabs" role="tablist" aria-label="What would you like to book?">
+          <button class="tv-tab" role="tab" id="tab-fl" aria-controls="pn-fl" aria-selected="true"><i class="bi bi-airplane"></i>Flights</button>
+          <button class="tv-tab" role="tab" id="tab-es" aria-controls="pn-es" aria-selected="false" tabindex="-1"><i class="bi bi-sim"></i>eSIM</button>
+          <button class="tv-tab" role="tab" id="tab-gc" aria-controls="pn-gc" aria-selected="false" tabindex="-1"><i class="bi bi-gift"></i>Gift cards</button>
+          <button class="tv-tab" role="tab" id="tab-at" aria-controls="pn-at" aria-selected="false" tabindex="-1"><i class="bi bi-phone"></i>Airtime</button>
+        </div>
+
+        <!-- Flights -->
+        <form class="tv-panel" role="tabpanel" id="pn-fl" aria-labelledby="tab-fl" novalidate>
+          <div class="tv-seg" role="radiogroup" aria-label="Trip type">
+            <label><input type="radio" name="trip" value="oneway"><span>One way</span></label>
+            <label><input type="radio" name="trip" value="return" checked><span>Round trip</span></label>
+          </div>
+          <div class="tv-row flights" id="flRow">
+            <div class="tv-field" id="fFromF"><label for="fFrom">From</label><select id="fFrom"></select><span class="sub" id="fFromSub"></span></div>
+            <div class="tv-swap"><button type="button" id="fSwap" aria-label="Swap origin and destination"><i class="bi bi-arrow-left-right"></i></button></div>
+            <div class="tv-field" id="fToF"><label for="fTo">To</label><select id="fTo"></select><span class="sub" id="fToSub"></span></div>
+            <div class="wide">
+              <div class="tv-field dt"><label for="fDep">Depart</label><input type="date" id="fDep"></div>
+              <div class="tv-field dt ret"><label for="fRet">Return</label><input type="date" id="fRet"></div>
+              <div class="tv-field px"><label for="fPax">Travellers</label><select id="fPax"><option value="1">1 adult</option><option value="2">2 adults</option><option value="3">3 adults</option><option value="4">4 adults</option><option value="5">5 adults</option><option value="6">6 adults</option></select></div>
+              <button class="tv-go" type="submit"><i class="bi bi-search"></i>Search flights</button>
+            </div>
+          </div>
+          <p class="tv-note"><i class="bi bi-info-circle"></i>Browse fares freely — you'll only be asked to sign in when you pay.</p>
+        </form>
+
+        <!-- eSIM -->
+        <form class="tv-panel" role="tabpanel" id="pn-es" aria-labelledby="tab-es" hidden>
+          <div class="tv-row esim">
+            <div class="tv-field"><label for="eCountry">Destination</label><div class="tv-flagsel"><img id="eFlag" src="" alt=""><select id="eCountry"></select></div><span class="sub" id="eSub"></span></div>
+            <div class="tv-plans" id="ePlans" aria-label="Sample plans"></div>
+            <button class="tv-go" type="submit">View plans <i class="bi bi-arrow-right"></i></button>
+          </div>
+          <p class="tv-note"><i class="bi bi-qr-code"></i>Install by QR before you fly; your eSIM activates when you land.</p>
+        </form>
+
+        <!-- Gift cards -->
+        <form class="tv-panel" role="tabpanel" id="pn-gc" aria-labelledby="tab-gc" hidden>
+          <div class="tv-row gift">
+            <div class="tv-field"><label for="gCard">Gift card</label><select id="gCard"></select><span class="sub" id="gSub"></span></div>
+            <div class="tv-field"><label for="gUsd">Card value ($)</label><input type="number" id="gUsd" min="1" value="100" inputmode="decimal"></div>
+            <div class="tv-payout" aria-live="polite"><small>You'll get about</small><b id="gOut"></b></div>
+            <button class="tv-go" type="submit">Trade card <i class="bi bi-arrow-right"></i></button>
+          </div>
+          <p class="tv-note"><i class="bi bi-wallet2"></i>Turn unused cards into travel money — paid to your wallet once verified.</p>
+        </form>
+
+        <!-- Airtime -->
+        <form class="tv-panel" role="tabpanel" id="pn-at" aria-labelledby="tab-at" hidden novalidate>
+          <div class="tv-row air">
+            <fieldset class="tv-nets m-0 p-0 border-0" id="aNets"><legend class="visually-hidden">Network</legend></fieldset>
+            <div class="tv-field" id="aPhoneF"><label for="aPhone">Phone number</label><input type="tel" id="aPhone" inputmode="numeric" maxlength="11" placeholder="0803 000 0000" autocomplete="tel"></div>
+            <div class="tv-field"><label for="aAmt">Amount</label><select id="aAmt"><option>₦500</option><option selected>₦1,000</option><option>₦2,000</option><option>₦5,000</option></select></div>
+            <button class="tv-go" type="submit">Top up <i class="bi bi-arrow-right"></i></button>
+          </div>
+          <p class="tv-note"><i class="bi bi-lightning-charge"></i>Top up home before you go — data, electricity and TV are in Bills too.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Facts -->
+  <section class="tv-facts" aria-label="What you can do">
+    <div class="tv-wrap"><ul id="tvFacts"></ul></div>
+  </section>
+
+  <!-- Trending destinations -->
+  <section class="tv-sec" aria-labelledby="h-dest">
+    <div class="tv-wrap">
+      <div class="tv-sec-head"><div><span class="tv-eyebrow">Trending destinations</span><h2 class="tv-h2" id="h-dest">Land connected, wherever you go</h2><p class="tv-sub">Travel eSIM prices — pick a destination to see every plan.</p></div><a class="tv-more" href="./app/esim.html">All destinations <i class="bi bi-arrow-right"></i></a></div>
+      <div class="tv-dest" id="tvDest"></div>
+    </div>
+  </section>
+
+  <!-- Popular routes -->
+  <section class="tv-sec" aria-labelledby="h-routes">
+    <div class="tv-wrap">
+      <div class="tv-sec-head"><div><span class="tv-eyebrow">Popular routes</span><h2 class="tv-h2" id="h-routes">Fly local, fly far</h2><p class="tv-sub">One tap to live fares on routes people search most.</p></div><a class="tv-more" href="./app/flights.html">Search any route <i class="bi bi-arrow-right"></i></a></div>
+      <div class="tv-routes" id="tvRoutes"></div>
+    </div>
+  </section>
+
+  <!-- Pack -->
+  <section class="tv-sec" aria-labelledby="h-pack">
+    <div class="tv-wrap">
+      <div class="tv-sec-head"><div><span class="tv-eyebrow">Pack for your trip</span><h2 class="tv-h2" id="h-pack">Travel essentials from the marketplace</h2><p class="tv-sub">Charged, connected and comfortable — delivered before you fly.</p></div><a class="tv-more" href="./app/marketplace.html?cat=electronics">Shop electronics <i class="bi bi-arrow-right"></i></a></div>
+      <div class="tv-pack" id="tvPack"></div>
+    </div>
+  </section>
+
+  <!-- USD card -->
+  <section class="tv-sec" aria-labelledby="h-usd">
+    <div class="tv-wrap">
+      <div class="tv-usd">
+        <div>
+          <span class="tv-eyebrow">USD virtual card</span>
+          <h2 class="tv-h2" id="h-usd">Pay abroad like a local</h2>
+          <p class="mt-2 mb-0" style="opacity:.82;max-width:44ch">Hotels, rides, tickets and subscriptions — pay in dollars with a virtual card you fund from your naira wallet.</p>
+          <ul>
+            <li><i class="bi bi-check-circle-fill"></i>Create in minutes, in-app</li>
+            <li><i class="bi bi-check-circle-fill"></i>Fund from your wallet</li>
+            <li><i class="bi bi-check-circle-fill"></i>Freeze or unfreeze any time</li>
+            <li><i class="bi bi-check-circle-fill"></i>Reveal card details securely</li>
+          </ul>
+          <div class="d-flex flex-wrap align-items-center"><a class="tv-btn-w" href="./app/virtual-cards.html">Get a USD card <i class="bi bi-arrow-right"></i></a><span class="rate">Today <b id="tvRate"></b></span></div>
+        </div>
+        <div class="tv-cards" aria-hidden="true">
+          <div class="tv-vc a"></div>
+          <div class="tv-vc b">
+            <div class="spend"><i class="bi bi-check-circle-fill"></i>Paid abroad</div>
+            <div class="d-flex justify-content-between"><span class="chipx"></span><span style="font-size:.7rem;font-weight:800;letter-spacing:.12em;opacity:.75">VIRTUAL · USD</span></div>
+            <div class="num">•••• •••• •••• 4021</div>
+            <div class="r"><div><span style="opacity:.7">Balance</span><b>$120.00</b></div><i class="bi bi-wifi" style="font-size:1.4rem;transform:rotate(90deg)"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Before you fly -->
+  <section class="tv-sec" aria-labelledby="h-check">
+    <div class="tv-wrap">
+      <div class="tv-check">
+        <div>
+          <span class="tv-eyebrow">Before you fly</span>
+          <h2 class="tv-h2" id="h-check">Your pre-departure checklist</h2>
+          <p class="tv-sub">Four things travellers sort out the night before. Tick them off as you go.</p>
+          <div class="tv-progress" aria-live="polite"><div class="d-flex justify-content-between fw-bold" style="font-size:.88rem"><span>Trip readiness</span><span id="tvProg">0 of 4</span></div><div class="bar"><span id="tvBar"></span></div></div>
+        </div>
+        <ul class="tv-list" id="tvList"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- More -->
+  <section class="tv-sec" aria-labelledby="h-more">
+    <div class="tv-wrap">
+      <div class="tv-sec-head"><div><span class="tv-eyebrow">Back home</span><h2 class="tv-h2" id="h-more">Everything else, sorted on AutoBiz</h2></div></div>
+      <div class="tv-more-grid" id="tvMore"></div>
+
+      <div class="tv-cta">
+        <svg viewBox="0 0 800 300" preserveAspectRatio="none" aria-hidden="true"><path d="M-20 260 C 200 160, 380 260, 560 120 S 760 40, 840 20" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="2" stroke-dasharray="2 9" stroke-linecap="round"/></svg>
+        <h2 id="tvCtaTitle">Your next trip starts here</h2>
+        <p id="tvCtaText">Browse flights, eSIMs and the marketplace freely. Create a free account when you're ready to pay.</p>
+        <div class="btns" id="tvCtaBtns"><a class="tv-btn-w" href="./register.html">Create free account</a><a class="tv-btn-o" href="./login.html">Log in</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="tv-foot">
+  <div class="tv-wrap">
+    <div class="cols">
+      <div><a href="./index-v4.html" class="tv-logo"><img src="./assets/img/logo.svg" alt="">AutoBiz</a><p>Flights, travel eSIMs, USD cards and a marketplace — plus gift cards, airtime and bills at home.</p></div>
+      <div><h3>Travel</h3><ul><li><a href="./app/flights.html">Flights</a></li><li><a href="./app/esim.html">Travel eSIM</a></li><li><a href="./app/virtual-cards.html">USD cards</a></li></ul></div>
+      <div><h3>Shop &amp; pay</h3><ul><li><a href="./app/marketplace.html">Marketplace</a></li><li><a href="./app/giftcards.html">Gift cards</a></li><li><a href="./app/bills.html">Airtime &amp; bills</a></li></ul></div>
+      <div><h3>Account</h3><ul id="tvFootAcct"><li><a href="./login.html">Log in</a></li><li><a href="./register.html">Sign up</a></li><li><a href="./app/cart.html">Cart</a></li></ul></div>
+    </div>
+    <div class="base"><span>© <span id="tvYear"></span> AutoBiz</span><span>Prices in ₦ · USD services at today's rate</span></div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/js/data.js"></script>
+<script src="./assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const D = AB_DATA, fmt = AB.fmt, esc = AB.esc, $ = (id) => document.getElementById(id);
+  const P = (id) => D.products.find((p) => p.id === id);
+  const ap = (c) => D.airports.find((a) => a.code === c);
+  const esimBy = (c) => D.esimCountries.find((x) => x.code === c);
+  const best = (g) => Math.max(...Object.values(g.types));
+  const ngn = (usd) => fmt.naira(Math.round(usd * D.usdRate));
+  const FLAG = { Nigeria: "ng", Ghana: "gh", Kenya: "ke", "South Africa": "za", UAE: "ae", "United Kingdom": "gb", "United States": "us", Canada: "ca", France: "fr", Turkey: "tr" };
+  $("tvYear").textContent = new Date().getFullYear();
+
+  /* ---- Header turns solid on scroll ---- */
+  const head = $("tvHead");
+  const onScroll = () => head.classList.toggle("solid", window.scrollY > 40);
+  window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
+
+  /* ---- Plane: static when reduced motion ---- */
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { $("tvMotion").remove(); $("tvPlane").setAttribute("transform", "translate(1180 150) rotate(-22)"); }
+
+  /* ---- Tabs ---- */
+  const tabs = [...document.querySelectorAll(".tv-tab")];
+  const select = (t, focus) => {
+    tabs.forEach((x) => { const on = x === t; x.setAttribute("aria-selected", on); x.tabIndex = on ? 0 : -1; $(x.getAttribute("aria-controls")).hidden = !on; });
+    if (focus) t.focus();
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener("click", () => select(t));
+    t.addEventListener("keydown", (e) => {
+      const k = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+      if (k) { e.preventDefault(); select(tabs[(i + k + tabs.length) % tabs.length], true); }
+    });
+  });
+
+  /* ---- Flights ---- */
+  const opts = D.airports.map((a) => `<option value="${a.code}">${esc(a.city)} (${a.code})</option>`).join("");
+  $("fFrom").innerHTML = opts; $("fTo").innerHTML = opts;
+  $("fFrom").value = "LOS"; $("fTo").value = "LHR";
+  const syncAp = () => {
+    $("fFromSub").textContent = ap($("fFrom").value).name; $("fToSub").textContent = ap($("fTo").value).name;
+    $("fToF").classList.remove("invalid");
+  };
+  ["fFrom", "fTo"].forEach((id) => $(id).addEventListener("change", syncAp)); syncAp();
+  $("fSwap").addEventListener("click", () => { const f = $("fFrom").value; $("fFrom").value = $("fTo").value; $("fTo").value = f; syncAp(); });
+  const iso = (d) => d.toISOString().slice(0, 10);
+  const today = new Date(), dep = new Date(Date.now() + 7 * 864e5), ret = new Date(Date.now() + 14 * 864e5);
+  $("fDep").min = iso(today); $("fDep").value = iso(dep); $("fRet").min = iso(dep); $("fRet").value = iso(ret);
+  $("fDep").addEventListener("change", () => { $("fRet").min = $("fDep").value; if ($("fRet").value < $("fDep").value) $("fRet").value = $("fDep").value; });
+  document.querySelectorAll('input[name="trip"]').forEach((r) => r.addEventListener("change", () => {
+    const one = document.querySelector('input[name="trip"]:checked').value === "oneway";
+    $("fRet").disabled = one; $("flRow").classList.toggle("ret-off", one);
+  }));
+  $("pn-fl").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if ($("fFrom").value === $("fTo").value) { $("fToF").classList.add("invalid"); AB.toast("Choose a different destination", "warning"); $("fTo").focus(); return; }
+    const q = new URLSearchParams({ from: $("fFrom").value, to: $("fTo").value, date: $("fDep").value, pax: $("fPax").value });
+    if (!$("fRet").disabled) q.set("return", $("fRet").value);
+    location.href = `./app/flights.html?${q}`;
+  });
+
+  /* ---- eSIM ---- */
+  $("eCountry").innerHTML = D.esimCountries.map((c) => `<option value="${c.code}">${esc(c.name)}</option>`).join("");
+  $("eCountry").value = "gb";
+  const tpl = [0, 2, 5].map((i) => D.esimPlanTemplates[i]);
+  const syncE = () => {
+    const c = esimBy($("eCountry").value);
+    $("eFlag").src = AB.flag(c.regional ? "un" : c.code);
+    $("eSub").textContent = `${c.speed} · ${c.networks}`;
+    $("ePlans").innerHTML = tpl.map((t) => `<a href="./app/esim.html?country=${c.code}"><b>${t.data}</b><small>${t.days} days</small><div class="pr">${fmt.usd(c.from * t.mult)}</div></a>`).join("");
+  };
+  $("eCountry").addEventListener("change", syncE); syncE();
+  $("pn-es").addEventListener("submit", (e) => { e.preventDefault(); location.href = `./app/esim.html?country=${$("eCountry").value}`; });
+
+  /* ---- Gift cards ---- */
+  $("gCard").innerHTML = D.giftcards.map((g) => `<option value="${g.id}">${esc(g.name)}</option>`).join("");
+  $("gCard").value = "steam";
+  const syncG = () => {
+    const g = D.giftcards.find((x) => x.id === $("gCard").value), usd = Math.max(0, Number($("gUsd").value) || 0);
+    $("gSub").textContent = `Best rate ${fmt.naira(best(g))}/$ · $${g.range[0]}–$${g.range[1]}`;
+    $("gOut").textContent = fmt.naira(usd * best(g));
+  };
+  ["input", "change"].forEach((ev) => { $("gCard").addEventListener(ev, syncG); $("gUsd").addEventListener(ev, syncG); }); syncG();
+  $("pn-gc").addEventListener("submit", (e) => { e.preventDefault(); location.href = `./app/giftcards.html?card=${$("gCard").value}`; });
+
+  /* ---- Airtime ---- */
+  $("aNets").insertAdjacentHTML("beforeend", D.networks.map((n, i) => `<label title="${esc(n.name)}"><input type="radio" name="net" value="${n.id}" ${i === 0 ? "checked" : ""} aria-label="${esc(n.name)}"><img src="./assets/img/networks/${n.logo}" alt=""></label>`).join(""));
+  $("aPhone").addEventListener("input", () => $("aPhoneF").classList.remove("invalid"));
+  $("pn-at").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const v = $("aPhone").value.replace(/\D/g, "");
+    if (!/^0\d{10}$/.test(v)) { $("aPhoneF").classList.add("invalid"); AB.toast("Enter an 11-digit phone number", "warning"); $("aPhone").focus(); return; }
+    location.href = `./app/bills.html?tab=airtime&phone=${v}`;
+  });
+
+  /* ---- Facts ---- */
+  const minE = D.esimCountries.filter((c) => !c.regional).reduce((a, c) => (c.from < a.from ? c : a));
+  $("tvFacts").innerHTML = [
+    ["bi-airplane", "primary", `${D.airports.length} airports`, `${D.airlines.length} airlines to compare`],
+    ["bi-sim", "cyan", `eSIM from ${fmt.usd(minE.from)}`, "Countries, regions or global"],
+    ["bi-credit-card", "violet", `$1 = ${fmt.naira(D.usdRate)}`, "USD card for paying abroad"],
+    ["bi-shield-check", "success", "Browse without an account", "Sign in only when you pay"]
+  ].map(([i, t, b, s]) => `<li><span class="ab-icon tone-${t}"><i class="bi ${i}"></i></span><span><b>${b}</b><small>${s}</small></span></li>`).join("");
+
+  /* ---- Destinations ---- */
+  const dest = ["gb", "ae", "us", "gh", "ca", "tr", "fr"];
+  $("tvDest").innerHTML = dest.map((code, i) => {
+    const c = esimBy(code);
+    return `<a class="tv-dcard ${i === 0 ? "wide" : ""}" href="./app/esim.html?country=${c.code}" aria-label="${esc(c.name)} eSIM from ${fmt.usd(c.from)}">
+      <img class="bg" src="${AB.flag(c.code, 640)}" alt="" loading="lazy">
+      <span class="tag">${esc(c.speed)} · ${esc(c.networks.split(",")[0])}</span>
+      <span class="arrow" aria-hidden="true"><i class="bi bi-arrow-up-right"></i></span>
+      <h3>${esc(c.name)}</h3>
+      <span class="from">eSIM from <b>${fmt.usd(c.from)}</b> · ${ngn(c.from)}</span>
+    </a>`;
+  }).join("");
+
+  /* ---- Routes ---- */
+  const routes = [["LOS", "ABV"], ["LOS", "LHR"], ["ABV", "DXB"], ["LOS", "ACC"], ["PHC", "IAH"], ["LOS", "YYZ"]];
+  $("tvRoutes").innerHTML = routes.map(([f, t]) => {
+    const A = ap(f), B = ap(t), local = B.country === "Nigeria";
+    return `<a class="tv-route" href="./app/flights.html?from=${f}&to=${t}" aria-label="Search flights ${esc(A.city)} to ${esc(B.city)}">
+      <div class="ends"><span><span class="code">${f}</span><span class="city">${esc(A.city)}</span></span><span class="line" aria-hidden="true"><i class="bi bi-airplane-fill"></i></span><span class="text-end"><span class="code">${t}</span><span class="city">${esc(B.city)}</span></span></div>
+      <div class="foot"><span><img src="${AB.flag(FLAG[B.country] || "un")}" alt="">${local ? "Domestic" : esc(B.country)}</span><b>Search fares <i class="bi bi-arrow-right"></i></b></div>
+    </a>`;
+  }).join("");
+
+  /* ---- Pack ---- */
+  const pack = [["p21", "Long layovers"], ["p5", "Noise cancelling"], ["p6", "Carry-on size"], ["p10", "Tracks steps"], ["p9", "City walks"], ["p14", "Travel scent"]];
+  $("tvPack").innerHTML = pack.map(([id, why]) => { const p = P(id); return `
+    <article class="tv-prod">
+      <span class="why">${why}</span>
+      ${AB.productArt(p)}
+      <a class="name" href="./app/product.html?id=${p.id}">${esc(p.name)}</a>
+      <div class="meta"><i class="bi bi-star-fill" style="color:var(--ab-warning)"></i> ${p.rating} · ${esc(p.seller)}</div>
+      <div class="bot"><span class="price">${fmt.naira(p.price)}</span><button class="tv-add" type="button" data-add="${p.id}" aria-label="Add ${esc(p.name)} to cart"><i class="bi bi-bag-plus"></i></button></div>
+    </article>`; }).join("");
+  document.addEventListener("click", (e) => { const b = e.target.closest("[data-add]"); if (b) { e.preventDefault(); AB.cart.add(b.dataset.add, 1); } });
+
+  /* ---- USD ---- */
+  $("tvRate").textContent = `$1 = ${fmt.naira(D.usdRate)}`;
+
+  /* ---- Checklist ---- */
+  const items = [
+    ["bi-sim", "cyan", "Get a travel eSIM", `Data from ${fmt.usd(minE.from)} — install before you board`, "./app/esim.html", "Buy eSIM"],
+    ["bi-credit-card", "violet", "Set up a USD card", "For hotels, rides and bookings abroad", "./app/virtual-cards.html", "Get card"],
+    ["bi-phone", "success", "Top up your line", "Airtime and data so you're reachable on return", "./app/bills.html?tab=airtime", "Top up"],
+    ["bi-plug", "orange", "Pack a power bank", `${esc(P("p21").name)} · ${fmt.naira(P("p21").price)}`, "./app/product.html?id=p21", "View"]
+  ];
+  $("tvList").innerHTML = items.map(([i, t, b, s, h, a], n) => `<li class="tv-item">
+    <button class="tv-tick" type="button" aria-pressed="false" aria-label="Mark “${b}” as done" data-tick="${n}"><i class="bi bi-check-lg"></i></button>
+    <span class="ab-icon tone-${t}"><i class="bi ${i}"></i></span>
+    <span class="t"><b>${b}</b><small>${s}</small></span>
+    <a class="act" href="${h}">${a} <i class="bi bi-arrow-right"></i></a></li>`).join("");
+  const prog = () => { const d = document.querySelectorAll(".tv-item.done").length; $("tvProg").textContent = `${d} of ${items.length}`; $("tvBar").style.width = `${d / items.length * 100}%`; };
+  $("tvList").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-tick]"); if (!b) return;
+    const li = b.closest(".tv-item"), on = !li.classList.contains("done");
+    li.classList.toggle("done", on); b.setAttribute("aria-pressed", on); prog();
+  });
+  prog();
+
+  /* ---- More ---- */
+  const cableFrom = Math.min(...Object.values(D.cableProviders).flatMap((c) => c.plans.map((p) => p.price)));
+  $("tvMore").innerHTML = [
+    ["bi-bag", "orange", "Marketplace", `${D.products.length} picks across ${D.categories.length} categories`, "./app/marketplace.html"],
+    ["bi-gift", "pink", "Gift cards", `Up to ${fmt.naira(Math.max(...D.giftcards.map(best)))}/$ on ${D.giftcards.length} cards`, "./app/giftcards.html"],
+    ["bi-lightning-charge", "warning", "Electricity", `${D.discos.length} discos, instant tokens`, "./app/bills.html?tab=electricity"],
+    ["bi-tv", "primary", "TV subscriptions", `${Object.values(D.cableProviders).map((c) => c.name).join(", ")} from ${fmt.naira(cableFrom)}`, "./app/bills.html?tab=cable"]
+  ].map(([i, t, b, s, h]) => `<a class="tv-mcard" href="${h}"><span class="ab-icon tone-${t}"><i class="bi ${i}"></i></span><span><b>${b}</b><small>${s}</small></span></a>`).join("");
+
+  /* ---- Members ---- */
+  if (AB.auth.isAuthed()) {
+    const u = AB.store.get("user") || {};
+    $("tvAcct").innerHTML = `<a class="tv-signup" href="./app/dashboard.html"><i class="bi bi-person-circle me-1"></i>My account</a>`;
+    $("tvMenuAcct").innerHTML = `<a class="btn btn-primary btn-lg" href="./app/dashboard.html">My account</a>`;
+    $("tvCtaTitle").textContent = `Welcome back${u.firstName ? ", " + u.firstName : ""}`;
+    $("tvCtaText").textContent = "Your trips, eSIMs, cards, orders and wallet are all in your account.";
+    $("tvCtaBtns").innerHTML = `<a class="tv-btn-w" href="./app/dashboard.html">Go to my account</a><a class="tv-btn-o" href="./app/wallet.html">Fund wallet</a>`;
+    $("tvFootAcct").innerHTML = `<li><a href="./app/dashboard.html">My account</a></li><li><a href="./app/orders.html">Orders</a></li><li><a href="./app/cart.html">Cart</a></li>`;
+  }
+  AB.refreshShell();
+});
+</script>
+</body>
+</html>

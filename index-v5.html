@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AutoBiz · Spend, shop &amp; connect — anywhere</title>
+  <meta name="description" content="A USD virtual card, travel eSIMs, flights, gift card trading, bills and a marketplace of verified sellers — one premium wallet for spending and shopping globally.">
+  <meta name="theme-color" content="#0b1230">
+  <link rel="icon" href="./assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="./assets/css/app.css" rel="stylesheet">
+  <script src="./assets/js/brand.js"></script>
+  <style>
+    /* ===== Dark premium — this page is always dark; every colour derives from the brand tokens ===== */
+    body.v5 {
+      --v5-bg: color-mix(in srgb, var(--ab-sidebar) 62%, #000);
+      --v5-bg-2: color-mix(in srgb, var(--ab-sidebar) 85%, #000);
+      --v5-glass: rgba(255, 255, 255, .045);
+      --v5-glass-2: rgba(255, 255, 255, .08);
+      --v5-line: rgba(255, 255, 255, .1);
+      --v5-line-2: rgba(255, 255, 255, .18);
+      --v5-text: #f3f5fa;
+      --v5-muted: rgba(232, 236, 248, .7);
+      --v5-accent: color-mix(in srgb, var(--ab-primary) 55%, #fff);
+      --v5-cta: linear-gradient(135deg, var(--ab-primary-700), color-mix(in srgb, var(--ab-primary-700) 65%, var(--ab-primary)));
+      --v5-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+      background: var(--v5-bg); color: var(--v5-text); overflow-x: clip;
+    }
+    body.v5 a { text-decoration: none; }
+    body.v5 > main { overflow-x: clip; }
+    body.v5 :focus-visible { outline: 2px solid var(--v5-accent); outline-offset: 3px; border-radius: 8px; }
+    .v5-wrap { width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 1.5rem; }
+    @media (max-width: 575.98px) { .v5-wrap { padding: 0 1rem; } }
+    .v5-sec { padding: 5rem 0; position: relative; }
+    @media (max-width: 767.98px) { .v5-sec { padding: 3.25rem 0; } }
+    .v5-eyebrow { display: inline-flex; align-items: center; gap: .5rem; font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--v5-accent); }
+    .v5-eyebrow::before { content: ""; width: 18px; height: 1px; background: currentColor; }
+    .v5-h2 { font-size: clamp(1.7rem, 3.4vw, 2.6rem); font-weight: 800; letter-spacing: -.035em; line-height: 1.1; margin: .6rem 0 .75rem; color: var(--v5-text); }
+    .v5-lead { color: var(--v5-muted); max-width: 560px; }
+    .v5-grad-text { background: linear-gradient(100deg, #fff 10%, var(--v5-accent) 60%, var(--ab-primary-300)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+    /* Buttons */
+    .v5-btn { display: inline-flex; align-items: center; gap: .5rem; padding: .8rem 1.35rem; border-radius: 999px; font-weight: 700; font-size: .95rem; border: 1px solid transparent; transition: transform .2s, box-shadow .2s, background .2s; white-space: nowrap; }
+    .v5-btn-primary { background: var(--v5-cta); color: #fff; border-color: rgba(255, 255, 255, .16); box-shadow: 0 10px 30px -8px rgba(var(--ab-primary-rgb), .65), inset 0 1px 0 rgba(255, 255, 255, .18); }
+    .v5-btn-primary:hover { color: #fff; transform: translateY(-2px); box-shadow: 0 16px 40px -8px rgba(var(--ab-primary-rgb), .8), inset 0 1px 0 rgba(255, 255, 255, .25); }
+    .v5-btn-ghost { background: var(--v5-glass); color: var(--v5-text); border-color: var(--v5-line-2); backdrop-filter: blur(10px); }
+    .v5-btn-ghost:hover { background: var(--v5-glass-2); color: #fff; }
+    .v5-btn-sm { padding: .5rem 1rem; font-size: .85rem; }
+
+    /* ===== Header ===== */
+    .v5-nav { position: sticky; top: 0; z-index: 1030; padding: .75rem 0; transition: background .25s, border-color .25s; border-bottom: 1px solid transparent; }
+    .v5-nav.scrolled { background: color-mix(in srgb, var(--v5-bg) 72%, transparent); backdrop-filter: blur(18px) saturate(140%); -webkit-backdrop-filter: blur(18px) saturate(140%); border-bottom-color: var(--v5-line); }
+    .v5-nav .bar { display: flex; align-items: center; gap: 1rem; }
+    .v5-logo { display: flex; align-items: center; gap: .6rem; color: #fff; font-weight: 800; font-size: 1.15rem; letter-spacing: -.02em; }
+    .v5-logo img { width: 34px; height: 34px; border-radius: 10px; box-shadow: 0 0 24px rgba(var(--ab-primary-rgb), .55); }
+    .v5-logo:hover { color: #fff; }
+    .v5-links { display: flex; gap: .15rem; margin: 0 auto; padding: .3rem; border-radius: 999px; background: var(--v5-glass); border: 1px solid var(--v5-line); backdrop-filter: blur(14px); }
+    .v5-links a { color: var(--v5-muted); font-size: .85rem; font-weight: 600; padding: .45rem .85rem; border-radius: 999px; transition: all .2s; }
+    .v5-links a:hover { color: #fff; background: var(--v5-glass-2); }
+    .v5-actions { display: flex; align-items: center; gap: .5rem; margin-left: auto; }
+    @media (min-width: 1200px) { .v5-actions { margin-left: 0; } }
+    .v5-icon-btn { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: var(--v5-glass); border: 1px solid var(--v5-line); color: #fff; position: relative; font-size: 1.1rem; transition: background .2s; }
+    .v5-icon-btn:hover { background: var(--v5-glass-2); color: #fff; }
+    .v5-icon-btn .ab-dot-badge, .v5-count { position: absolute; top: -4px; right: -4px; min-width: 19px; height: 19px; padding: 0 5px; border-radius: 99px; background: var(--ab-primary-700); color: #fff; font-size: .68rem; font-weight: 800; display: grid; place-items: center; border: 2px solid var(--v5-bg); }
+    .v5-login { color: var(--v5-text); font-weight: 600; font-size: .9rem; padding: .5rem .75rem; }
+    .v5-login:hover { color: #fff; }
+    .v5-oc { background: var(--v5-bg-2) !important; color: var(--v5-text); border-left: 1px solid var(--v5-line) !important; }
+    .v5-oc .oc-link { display: flex; align-items: center; gap: .85rem; padding: .85rem .9rem; border-radius: 14px; color: var(--v5-text); font-weight: 600; }
+    .v5-oc .oc-link:hover { background: var(--v5-glass-2); color: #fff; }
+    .v5-oc .oc-link i { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; background: rgba(var(--ab-primary-rgb), .16); color: var(--v5-accent); }
+
+    /* ===== Hero ===== */
+    .v5-hero { padding: 3.5rem 0 5rem; position: relative; isolation: isolate; }
+    .v5-hero::before { content: ""; position: absolute; inset: -120px 0 0; z-index: -1; pointer-events: none;
+      background: radial-gradient(60% 55% at 78% 30%, rgba(var(--ab-primary-rgb), .32), transparent 70%), radial-gradient(40% 40% at 10% 10%, rgba(var(--ab-primary-rgb), .16), transparent 70%); }
+    .v5-hero::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .5;
+      background-image: linear-gradient(var(--v5-line) 1px, transparent 1px), linear-gradient(90deg, var(--v5-line) 1px, transparent 1px); background-size: 64px 64px;
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 60% 35%, #000 10%, transparent 75%); mask-image: radial-gradient(ellipse 70% 60% at 60% 35%, #000 10%, transparent 75%); }
+    .v5-pill { display: inline-flex; align-items: center; gap: .55rem; padding: .4rem .9rem .4rem .45rem; border-radius: 999px; background: var(--v5-glass); border: 1px solid var(--v5-line-2); font-size: .8rem; color: var(--v5-muted); backdrop-filter: blur(10px); }
+    .v5-pill b { background: rgba(var(--ab-primary-rgb), .22); color: #fff; padding: .15rem .55rem; border-radius: 999px; font-size: .7rem; letter-spacing: .04em; }
+    .v5-hero h1 { font-size: clamp(2.35rem, 5.4vw, 4.2rem); font-weight: 800; letter-spacing: -.045em; line-height: 1.02; margin: 1.25rem 0 1.15rem; color: #fff; }
+    .v5-hero .lead { color: var(--v5-muted); font-size: 1.1rem; max-width: 520px; }
+    .v5-facts { display: flex; flex-wrap: wrap; gap: 1.75rem; margin-top: 2.25rem; padding-top: 1.5rem; border-top: 1px solid var(--v5-line); }
+    .v5-facts div b { display: block; font-size: 1.4rem; font-weight: 800; letter-spacing: -.02em; color: #fff; }
+    .v5-facts div span { font-size: .78rem; color: var(--v5-muted); }
+
+    .v5-stage { position: relative; height: 520px; perspective: 1400px; display: grid; place-items: center; }
+    .v5-stage .halo { position: absolute; width: 78%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(var(--ab-primary-rgb), .55), rgba(var(--ab-primary-rgb), .08) 55%, transparent 70%); filter: blur(30px); }
+    .v5-stage .ring { position: absolute; width: 92%; aspect-ratio: 1; border-radius: 50%; border: 1px solid var(--v5-line); }
+    .v5-stage .ring.r2 { width: 66%; border-style: dashed; border-color: rgba(var(--ab-primary-rgb), .3); animation: v5-spin 80s linear infinite; }
+    .v5-tilt { transform-style: preserve-3d; transition: transform .25s ease-out; }
+    .v5-card { width: min(400px, 82vw); aspect-ratio: 1.586; border-radius: 22px; padding: 1.5rem 1.6rem; color: #fff; position: relative; overflow: hidden;
+      background: radial-gradient(120% 140% at 0% 0%, var(--ab-primary-300) 0%, var(--ab-primary-700) 45%, color-mix(in srgb, var(--ab-sidebar) 70%, #000) 100%);
+      transform: rotateY(-16deg) rotateX(12deg) rotateZ(-5deg);
+      box-shadow: 0 40px 80px -20px rgba(0, 0, 0, .7), 0 0 90px -10px rgba(var(--ab-primary-rgb), .7), inset 0 1px 0 rgba(255, 255, 255, .35), inset 0 0 0 1px rgba(255, 255, 255, .14);
+      display: flex; flex-direction: column; justify-content: space-between; animation: v5-hover 7s ease-in-out infinite; }
+    .v5-card::before { content: ""; position: absolute; inset: 0; background: conic-gradient(from 210deg at 70% 30%, transparent 0deg, rgba(255, 255, 255, .22) 40deg, transparent 90deg, rgba(255, 255, 255, .08) 200deg, transparent 260deg); mix-blend-mode: overlay; }
+    .v5-card::after { content: ""; position: absolute; top: -60%; left: -30%; width: 60%; height: 220%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .22), transparent); transform: rotate(20deg); animation: v5-sheen 6s ease-in-out infinite; }
+    .v5-card > * { position: relative; z-index: 1; }
+    .v5-card .chip { width: 46px; height: 34px; border-radius: 8px; background: linear-gradient(135deg, #f8e2a0, #c9a04a 60%, #f3d98b); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .18); position: relative; }
+    .v5-card .chip::after { content: ""; position: absolute; inset: 8px 10px; border: 1px solid rgba(0, 0, 0, .2); border-radius: 4px; }
+    .v5-card .num { font-family: var(--v5-mono); font-size: clamp(.95rem, 2.4vw, 1.2rem); letter-spacing: .14em; text-shadow: 0 1px 2px rgba(0, 0, 0, .3); white-space: nowrap; }
+    .v5-card .usd { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
+    .v5-card .bal { font-size: 1.55rem; font-weight: 800; letter-spacing: -.02em; }
+    .v5-card .visa { font-weight: 800; font-style: italic; font-size: 1.6rem; letter-spacing: -.02em; }
+
+    .v5-chip { position: absolute; z-index: 3; display: flex; align-items: center; gap: .7rem; padding: .7rem .95rem .7rem .7rem; border-radius: 16px; min-width: 210px;
+      background: rgba(255, 255, 255, .07); border: 1px solid rgba(255, 255, 255, .16); backdrop-filter: blur(16px) saturate(150%); -webkit-backdrop-filter: blur(16px) saturate(150%);
+      box-shadow: 0 20px 40px -18px rgba(0, 0, 0, .7), inset 0 1px 0 rgba(255, 255, 255, .12); animation: v5-float 6s ease-in-out infinite; }
+    .v5-chip .ic { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; font-size: 1.05rem; }
+    .v5-chip .ic img { width: 38px; height: 38px; border-radius: 12px; object-fit: cover; }
+    .v5-chip b { display: block; font-size: .84rem; color: #fff; }
+    .v5-chip span { font-size: .74rem; color: var(--v5-muted); }
+    .v5-chip .ok { margin-left: auto; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: rgba(18, 184, 134, .22); color: #63e6be; font-size: .8rem; }
+    .v5-chip.c1 { top: 8%; left: -2%; }
+    .v5-chip.c2 { bottom: 12%; left: 2%; animation-delay: -2s; }
+    .v5-chip.c3 { top: 20%; right: -3%; animation-delay: -4s; }
+    @media (max-width: 1199.98px) { .v5-chip.c3 { right: 0; } .v5-chip.c1 { left: 0; } }
+    @media (max-width: 991.98px) { .v5-stage { height: 460px; margin-top: 2rem; } }
+    @media (max-width: 575.98px) {
+      .v5-stage { height: 400px; }
+      .v5-chip { min-width: 0; padding: .5rem .7rem .5rem .5rem; gap: .5rem; border-radius: 14px; }
+      .v5-chip .ic, .v5-chip .ic img { width: 30px; height: 30px; border-radius: 9px; font-size: .9rem; }
+      .v5-chip b { font-size: .74rem; } .v5-chip span { font-size: .66rem; } .v5-chip .ok { display: none; }
+      .v5-chip.c1 { top: 2%; left: 0; } .v5-chip.c3 { top: auto; bottom: 2%; right: 0; } .v5-chip.c2 { bottom: 16%; left: 0; }
+    }
+
+    @keyframes v5-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    @keyframes v5-hover { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
+    @keyframes v5-sheen { 0%, 55% { left: -60%; } 100% { left: 130%; } }
+    @keyframes v5-spin { to { transform: rotate(360deg); } }
+
+    /* ===== Services — glass cards with pointer glow ===== */
+    .v5-svc { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2.5rem; }
+    @media (max-width: 991.98px) { .v5-svc { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 575.98px) { .v5-svc { grid-template-columns: 1fr; gap: .75rem; } }
+    .v5-glass { position: relative; border-radius: 22px; background: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .02)); border: 1px solid var(--v5-line); overflow: hidden; isolation: isolate; }
+    .v5-glass::before { content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .3s; background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 0%), rgba(var(--ab-primary-rgb), .28), transparent 60%); }
+    .v5-svc a { display: flex; flex-direction: column; padding: 1.6rem; min-height: 230px; color: var(--v5-text); transition: transform .3s, border-color .3s, box-shadow .3s; }
+    .v5-svc a:hover { transform: translateY(-4px); border-color: rgba(var(--ab-primary-rgb), .55); box-shadow: 0 30px 60px -30px rgba(var(--ab-primary-rgb), .7); color: var(--v5-text); }
+    .v5-svc a:hover::before, .v5-svc a:focus-visible::before { opacity: 1; }
+    .v5-svc .ic { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; font-size: 1.4rem; color: #fff; background: linear-gradient(140deg, rgba(var(--ab-primary-rgb), .55), rgba(var(--ab-primary-rgb), .12)); border: 1px solid rgba(255, 255, 255, .14); box-shadow: 0 10px 30px -10px rgba(var(--ab-primary-rgb), .8); }
+    .v5-svc h3 { font-size: 1.15rem; font-weight: 700; margin: 1.25rem 0 .35rem; color: #fff; }
+    .v5-svc p { color: var(--v5-muted); font-size: .88rem; margin: 0 0 1rem; }
+    .v5-svc .meta { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: .5rem; font-size: .78rem; color: var(--v5-accent); font-weight: 700; }
+    .v5-svc .meta i { transition: transform .25s; }
+    .v5-svc a:hover .meta i { transform: translateX(4px); }
+    .v5-svc .nets img { width: 22px; height: 22px; border-radius: 6px; margin-left: -4px; border: 2px solid var(--v5-bg-2); }
+    .v5-svc .feature { grid-column: span 2; background: linear-gradient(120deg, rgba(var(--ab-primary-rgb), .2), rgba(255, 255, 255, .02) 60%); }
+    .v5-svc .wide { grid-column: 1 / -1; min-height: 0; display: grid; grid-template-columns: auto 1fr auto; align-items: center; column-gap: 1.25rem; }
+    .v5-svc .wide h3 { margin: 0 0 .2rem; } .v5-svc .wide p { margin: 0; } .v5-svc .wide .meta { margin: 0; gap: 1rem; }
+    .v5-svc .wide .txt { min-width: 0; }
+    @media (max-width: 575.98px) { .v5-svc .feature { grid-column: auto; } .v5-svc .wide { grid-template-columns: 1fr; row-gap: .9rem; } }
+
+    /* ===== Premium picks ===== */
+    .v5-band { background: linear-gradient(180deg, transparent, var(--v5-bg-2) 18%, var(--v5-bg-2) 82%, transparent); }
+    .v5-head { display: flex; align-items: end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .v5-arrows { display: flex; gap: .5rem; }
+    .v5-rail { display: flex; gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 2rem .25rem 1rem; margin: 0 -.25rem; scroll-behavior: smooth; }
+    .v5-rail::-webkit-scrollbar { display: none; }
+    .v5-prod { flex: 0 0 270px; scroll-snap-align: start; padding: .8rem; display: flex; flex-direction: column; transition: transform .3s, border-color .3s; }
+    .v5-prod:hover { transform: translateY(-4px); border-color: rgba(var(--ab-primary-rgb), .45); }
+    .v5-prod:hover::before { opacity: 1; }
+    .v5-prod .art { display: block; position: relative; border-radius: 16px; overflow: hidden; }
+    .v5-prod .ab-product-art { border-radius: 16px; font-size: 4rem; background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, .1), rgba(255, 255, 255, .02) 70%); }
+    .v5-prod .tag { position: absolute; top: 10px; left: 10px; z-index: 2; font-size: .66rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: .25rem .55rem; border-radius: 99px; background: rgba(0, 0, 0, .45); border: 1px solid var(--v5-line-2); color: #fff; backdrop-filter: blur(6px); }
+    .v5-prod .brand { font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--v5-muted); margin-top: .9rem; }
+    .v5-prod .nm { color: #fff; font-weight: 600; font-size: .95rem; margin: .2rem 0 .35rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.5em; }
+    .v5-prod .nm:hover { color: var(--v5-accent); }
+    .v5-prod .rt { font-size: .76rem; color: var(--v5-muted); }
+    .v5-prod .rt i { color: #ffd43b; }
+    .v5-prod .pr { font-weight: 800; font-size: 1.1rem; color: #fff; }
+    .v5-prod .old { font-size: .75rem; color: var(--v5-muted); text-decoration: line-through; }
+    .v5-add { width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(var(--ab-primary-rgb), .5); background: rgba(var(--ab-primary-rgb), .16); color: #fff; display: grid; place-items: center; transition: all .2s; flex-shrink: 0; }
+    .v5-add:hover { background: var(--ab-primary-700); box-shadow: 0 0 24px rgba(var(--ab-primary-rgb), .7); }
+    @media (max-width: 575.98px) { .v5-prod { flex-basis: 220px; } }
+
+    /* ===== Gift card terminal ===== */
+    .v5-term { border-radius: 22px; background: color-mix(in srgb, var(--v5-bg) 70%, #000); border: 1px solid var(--v5-line-2); overflow: hidden; font-family: var(--v5-mono); box-shadow: 0 40px 80px -40px rgba(var(--ab-primary-rgb), .55), 0 0 0 1px rgba(var(--ab-primary-rgb), .12); margin-top: 2.25rem; }
+    .v5-term .tb { display: flex; align-items: center; gap: .5rem; padding: .8rem 1.1rem; border-bottom: 1px solid var(--v5-line); background: rgba(255, 255, 255, .03); font-size: .76rem; color: var(--v5-muted); }
+    .v5-term .dots { display: flex; gap: 6px; } .v5-term .dots i { width: 11px; height: 11px; border-radius: 50%; background: rgba(255, 255, 255, .18); }
+    .v5-term .dots i:nth-child(1) { background: #ff5f57; } .v5-term .dots i:nth-child(2) { background: #febc2e; } .v5-term .dots i:nth-child(3) { background: #28c840; }
+    .v5-live { margin-left: auto; display: inline-flex; align-items: center; gap: .45rem; color: #63e6be; font-weight: 700; letter-spacing: .08em; }
+    .v5-live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #20c997; box-shadow: 0 0 10px #20c997; animation: v5-blink 1.6s ease-in-out infinite; }
+    @keyframes v5-blink { 50% { opacity: .25; } }
+    .v5-ticker { overflow: hidden; border-bottom: 1px solid var(--v5-line); background: rgba(var(--ab-primary-rgb), .07); }
+    .v5-ticker .track { display: flex; width: max-content; animation: v5-marquee 38s linear infinite; }
+    .v5-ticker:hover .track { animation-play-state: paused; }
+    .v5-ticker span { padding: .6rem 1.4rem; font-size: .8rem; white-space: nowrap; color: var(--v5-muted); border-right: 1px solid var(--v5-line); }
+    .v5-ticker span b { color: #fff; margin-right: .5rem; } .v5-ticker span em { font-style: normal; color: #63e6be; font-weight: 700; }
+    @keyframes v5-marquee { to { transform: translateX(-50%); } }
+    .v5-board { width: 100%; border-collapse: collapse; font-size: .86rem; }
+    .v5-board th { font-weight: 600; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--v5-muted); padding: .85rem 1.1rem; border-bottom: 1px solid var(--v5-line); text-align: left; }
+    .v5-board td { padding: .8rem 1.1rem; border-bottom: 1px solid rgba(255, 255, 255, .05); color: var(--v5-text); vertical-align: middle; }
+    .v5-board tbody tr { transition: background .2s; }
+    .v5-board tbody tr:hover { background: rgba(var(--ab-primary-rgb), .1); }
+    .v5-board .sym { display: flex; align-items: center; gap: .7rem; }
+    .v5-board .sym i { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; color: #fff; font-size: .9rem; border: 1px solid rgba(255, 255, 255, .15); flex-shrink: 0; }
+    .v5-board .sym b { color: #fff; letter-spacing: .06em; } .v5-board .sym small { display: block; color: var(--v5-muted); font-size: .72rem; font-family: var(--ab-font); }
+    .v5-board .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .v5-board .best { color: #63e6be; font-weight: 800; }
+    .v5-board .dim { color: rgba(232, 236, 248, .5); }
+    .v5-board a.trade { color: var(--v5-accent); font-weight: 700; font-size: .78rem; white-space: nowrap; }
+    .v5-board a.trade:hover { color: #fff; }
+    @media (max-width: 767.98px) { .v5-board .hide-sm { display: none; } .v5-board td, .v5-board th { padding: .7rem .75rem; } }
+    .v5-prompt { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; padding: 1rem 1.1rem; font-size: .86rem; color: var(--v5-muted); background: rgba(255, 255, 255, .025); }
+    .v5-prompt .ps { color: var(--v5-accent); font-weight: 700; }
+    .v5-prompt select, .v5-prompt input { font-family: var(--v5-mono); background: rgba(255, 255, 255, .06); border: 1px solid var(--v5-line-2); color: #fff; border-radius: 8px; padding: .35rem .6rem; font-size: .85rem; }
+    .v5-prompt select option { background: #111; color: #fff; }
+    .v5-prompt input { width: 92px; }
+    .v5-prompt .out { color: #63e6be; font-weight: 800; font-size: 1rem; }
+    .v5-prompt a { margin-left: auto; }
+    @media (max-width: 575.98px) { .v5-prompt a { margin-left: 0; width: 100%; justify-content: center; } }
+    .v5-cursor { display: inline-block; width: 8px; height: 1em; background: var(--v5-accent); vertical-align: -2px; animation: v5-blink 1s steps(1) infinite; }
+
+    /* ===== eSIM spotlight — globe of flags ===== */
+    .v5-globe-stage { position: relative; width: min(500px, 100%); aspect-ratio: 1; margin: 0 auto; container-type: inline-size; }
+    .v5-globe { position: absolute; inset: 25%; border-radius: 50%; overflow: hidden;
+      background: radial-gradient(circle at 34% 30%, rgba(255, 255, 255, .35), transparent 22%), radial-gradient(circle at 40% 38%, rgba(var(--ab-primary-rgb), .85), color-mix(in srgb, var(--ab-primary-700) 60%, #000) 62%, #000 100%);
+      box-shadow: 0 0 80px rgba(var(--ab-primary-rgb), .65), 0 0 180px rgba(var(--ab-primary-rgb), .3), inset -20px -30px 60px rgba(0, 0, 0, .55); }
+    .v5-globe svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .45; }
+    .v5-globe .lon { animation: v5-lon 14s linear infinite; transform-origin: center; }
+    @keyframes v5-lon { to { transform: translateX(-25%); } }
+    .v5-orbit { position: absolute; inset: 6%; border-radius: 50%; animation: v5-spin 70s linear infinite; }
+    .v5-orbit.o2 { inset: 16%; animation-duration: 50s; animation-direction: reverse; }
+    .v5-orbit::before { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1px solid rgba(var(--ab-primary-rgb), .25); }
+    .v5-orbit .f { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform: rotate(var(--a)) translateX(var(--r)) rotate(calc(-1 * var(--a))); }
+    .v5-orbit .f img { position: absolute; width: 11cqw; height: 11cqw; max-width: 52px; max-height: 52px; left: 0; top: 0; translate: -50% -50%; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255, 255, 255, .7); box-shadow: 0 0 22px rgba(var(--ab-primary-rgb), .8), 0 6px 14px rgba(0, 0, 0, .5); animation: v5-spin 70s linear infinite reverse; }
+    .v5-orbit.o2 .f img { width: 9cqw; height: 9cqw; animation-duration: 50s; animation-direction: normal; }
+    .v5-orbit { --r: 44cqw; } .v5-orbit.o2 { --r: 34cqw; }
+    .v5-globe-stage:hover .v5-orbit, .v5-globe-stage:hover .v5-orbit .f img { animation-play-state: paused; }
+    .v5-dest { display: grid; grid-template-columns: repeat(2, 1fr); gap: .6rem; margin-top: 1.5rem; }
+    .v5-dest a { display: flex; align-items: center; gap: .7rem; padding: .7rem .8rem; border-radius: 14px; background: var(--v5-glass); border: 1px solid var(--v5-line); color: var(--v5-text); transition: all .2s; }
+    .v5-dest a:hover { border-color: rgba(var(--ab-primary-rgb), .55); background: rgba(var(--ab-primary-rgb), .12); color: #fff; }
+    .v5-dest img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .v5-dest b { font-size: .84rem; display: block; }
+    .v5-dest span { font-size: .72rem; color: var(--v5-muted); }
+    .v5-picker { display: flex; gap: .5rem; margin-top: 1.5rem; padding: .4rem; border-radius: 999px; background: var(--v5-glass); border: 1px solid var(--v5-line-2); max-width: 480px; }
+    .v5-picker select { flex: 1; min-width: 0; background: transparent; border: 0; color: #fff; padding: 0 .9rem; font-weight: 600; }
+    .v5-picker select option { background: #111; color: #fff; }
+    .v5-picker select:focus-visible { outline: none; }
+    .v5-picker:focus-within { border-color: var(--v5-accent); }
+    @media (max-width: 575.98px) { .v5-dest { grid-template-columns: 1fr 1fr; } .v5-dest a { padding: .55rem .6rem; gap: .5rem; } .v5-dest img { width: 26px; height: 26px; } }
+
+    /* ===== Flights strip ===== */
+    .v5-routes { display: grid; grid-template-columns: repeat(4, 1fr); gap: .75rem; margin-top: 2rem; }
+    @media (max-width: 991.98px) { .v5-routes { grid-template-columns: repeat(2, 1fr); } }
+    .v5-routes a { padding: 1.1rem 1.2rem; color: var(--v5-text); display: block; transition: border-color .2s, transform .2s; }
+    .v5-routes a:hover { border-color: rgba(var(--ab-primary-rgb), .55); transform: translateY(-3px); color: #fff; }
+    .v5-routes a:hover::before { opacity: 1; }
+    .v5-routes .codes { display: flex; align-items: center; justify-content: space-between; font-family: var(--v5-mono); font-size: 1.35rem; font-weight: 700; color: #fff; letter-spacing: .04em; }
+    .v5-routes .codes i { color: var(--v5-accent); font-size: 1rem; }
+    .v5-routes .codes .line { flex: 1; height: 1px; margin: 0 .6rem; background: linear-gradient(90deg, transparent, rgba(var(--ab-primary-rgb), .7), transparent); }
+    .v5-routes small { color: var(--v5-muted); font-size: .76rem; }
+    @media (max-width: 575.98px) { .v5-routes a { padding: .9rem; } .v5-routes .codes { font-size: 1.05rem; } .v5-routes .codes .line { margin: 0 .3rem; } }
+
+    /* ===== CTA ===== */
+    @property --v5-ang { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+    .v5-cta { position: relative; border-radius: 32px; padding: 4.5rem 2rem; text-align: center; overflow: hidden; isolation: isolate;
+      background: radial-gradient(70% 90% at 50% 0%, rgba(var(--ab-primary-rgb), .5), transparent 70%), color-mix(in srgb, var(--ab-sidebar) 80%, #000); }
+    .v5-cta::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; z-index: -1;
+      background: conic-gradient(from var(--v5-ang), transparent 0deg, var(--ab-primary-300) 60deg, transparent 140deg, transparent 220deg, rgba(var(--ab-primary-rgb), .9) 290deg, transparent 360deg);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: v5-ang 8s linear infinite; }
+    .v5-cta::after { content: ""; position: absolute; left: 50%; bottom: -55%; width: 120%; aspect-ratio: 2; translate: -50% 0; z-index: -1; border-radius: 50%; background: radial-gradient(closest-side, rgba(var(--ab-primary-rgb), .45), transparent); filter: blur(10px); }
+    @keyframes v5-ang { to { --v5-ang: 360deg; } }
+    .v5-cta h2 { font-size: clamp(2rem, 5vw, 3.6rem); font-weight: 800; letter-spacing: -.045em; line-height: 1.04; color: #fff; margin-bottom: 1rem; }
+    .v5-cta p { color: var(--v5-muted); max-width: 540px; margin: 0 auto 2rem; font-size: 1.05rem; }
+    @media (max-width: 575.98px) { .v5-cta { padding: 3rem 1.25rem; border-radius: 24px; } }
+
+    /* ===== Footer ===== */
+    .v5-foot { border-top: 1px solid var(--v5-line); padding: 3.5rem 0 2rem; background: color-mix(in srgb, var(--v5-bg) 70%, #000); }
+    .v5-foot h3 { font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; color: var(--v5-muted); font-weight: 700; margin-bottom: 1rem; }
+    .v5-foot ul { list-style: none; padding: 0; margin: 0; display: grid; gap: .55rem; }
+    .v5-foot ul a { color: var(--v5-text); opacity: .85; font-size: .9rem; }
+    .v5-foot ul a:hover { color: var(--v5-accent); opacity: 1; }
+    .v5-foot .base { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--v5-line); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; font-size: .8rem; color: var(--v5-muted); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .v5-card, .v5-chip, .v5-orbit, .v5-orbit .f img, .v5-ticker .track, .v5-globe .lon, .v5-stage .ring.r2, .v5-cta::before { animation: none !important; }
+      .v5-card::after { display: none; }
+      .v5-ticker { overflow-x: auto; }
+    }
+  </style>
+</head>
+<body class="v5" data-bs-theme="dark">
+<a class="visually-hidden-focusable position-absolute m-2 px-3 py-2 rounded bg-dark text-white" style="z-index:2000" href="#main">Skip to content</a>
+
+<!-- ============ Header ============ -->
+<header class="v5-nav" id="v5Nav">
+  <div class="v5-wrap bar">
+    <a href="./index-v5.html" class="v5-logo" aria-label="AutoBiz home"><img src="./assets/img/logo.svg" alt="" width="34" height="34">AutoBiz</a>
+    <nav class="v5-links d-none d-xl-flex" aria-label="Primary">
+      <a href="./app/marketplace.html">Shop</a>
+      <a href="./app/esim.html">eSIM</a>
+      <a href="./app/flights.html">Flights</a>
+      <a href="./app/giftcards.html">Gift cards</a>
+      <a href="./app/virtual-cards.html">USD cards</a>
+      <a href="./app/bills.html">Bills</a>
+    </nav>
+    <div class="v5-actions">
+      <a href="./app/cart.html" class="v5-icon-btn" aria-label="Cart"><i class="bi bi-bag"></i><span class="v5-count" data-cart-count hidden></span></a>
+      <span class="d-none d-md-flex align-items-center gap-1" data-guest>
+        <a href="./login.html" class="v5-login">Log in</a>
+        <a href="./register.html" class="v5-btn v5-btn-primary v5-btn-sm">Sign up</a>
+      </span>
+      <a href="./app/dashboard.html" class="v5-btn v5-btn-ghost v5-btn-sm d-none" data-member><i class="bi bi-person-circle"></i>My account</a>
+      <button class="v5-icon-btn d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#v5Menu" aria-controls="v5Menu" aria-label="Open menu"><i class="bi bi-list"></i></button>
+    </div>
+  </div>
+</header>
+
+<div class="offcanvas offcanvas-end v5-oc" tabindex="-1" id="v5Menu" aria-labelledby="v5MenuLabel">
+  <div class="offcanvas-header">
+    <span class="v5-logo" id="v5MenuLabel"><img src="./assets/img/logo.svg" alt="" width="34" height="34">AutoBiz</span>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close menu"></button>
+  </div>
+  <div class="offcanvas-body d-flex flex-column">
+    <nav aria-label="Mobile" class="d-grid gap-1">
+      <a class="oc-link" href="./app/marketplace.html"><i class="bi bi-bag-heart"></i>Shop</a>
+      <a class="oc-link" href="./app/esim.html"><i class="bi bi-sim"></i>Travel eSIM</a>
+      <a class="oc-link" href="./app/flights.html"><i class="bi bi-airplane"></i>Flights</a>
+      <a class="oc-link" href="./app/giftcards.html"><i class="bi bi-gift"></i>Gift cards</a>
+      <a class="oc-link" href="./app/virtual-cards.html"><i class="bi bi-credit-card-2-front"></i>USD cards</a>
+      <a class="oc-link" href="./app/bills.html"><i class="bi bi-lightning-charge"></i>Airtime, data &amp; bills</a>
+      <a class="oc-link" href="./app/cart.html"><i class="bi bi-bag"></i>Cart <span class="badge rounded-pill ms-auto" style="background:var(--ab-primary-700)" data-cart-count hidden></span></a>
+    </nav>
+    <div class="mt-auto pt-4 d-grid gap-2" id="ocAuth">
+      <a href="./register.html" class="v5-btn v5-btn-primary justify-content-center">Create free account</a>
+      <a href="./login.html" class="v5-btn v5-btn-ghost justify-content-center">Log in</a>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+  <!-- ============ Hero ============ -->
+  <section class="v5-hero" aria-labelledby="heroTitle">
+    <div class="v5-wrap">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-6">
+          <span class="v5-pill"><b>NEW</b>Dollar card, eSIM &amp; gift cards in one wallet</span>
+          <h1 id="heroTitle">Spend and shop <span class="v5-grad-text">without borders.</span></h1>
+          <p class="lead">Pay online in dollars with a virtual card, land connected with a travel eSIM, book flights, cash out gift cards and shop verified sellers — all from your Naira wallet.</p>
+          <div class="d-flex flex-wrap gap-2 mt-4">
+            <a href="./app/virtual-cards.html" class="v5-btn v5-btn-primary">Get your USD card <i class="bi bi-arrow-right"></i></a>
+            <a href="./app/marketplace.html" class="v5-btn v5-btn-ghost"><i class="bi bi-bag"></i>Start shopping</a>
+          </div>
+          <div class="v5-facts" id="heroFacts"></div>
+        </div>
+        <div class="col-lg-6">
+          <div class="v5-stage" id="stage">
+            <div class="halo" aria-hidden="true"></div>
+            <div class="ring" aria-hidden="true"></div>
+            <div class="ring r2" aria-hidden="true"></div>
+            <div class="v5-tilt" id="tilt">
+              <div class="v5-card" role="img" aria-label="AutoBiz USD virtual Visa card">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div><div class="usd">USD virtual card</div><div class="bal">$1,250.00</div></div>
+                  <i class="bi bi-wifi fs-4" style="transform:rotate(90deg)" aria-hidden="true"></i>
+                </div>
+                <div class="chip" aria-hidden="true"></div>
+                <div class="d-flex justify-content-between align-items-end gap-2">
+                  <div><div class="num">4081 •••• •••• 2290</div><div class="fs-8 opacity-75 mt-1">VALID THRU 11/29</div></div>
+                  <span class="visa">VISA</span>
+                </div>
+              </div>
+            </div>
+            <div class="v5-chip c1" id="chipEsim"></div>
+            <div class="v5-chip c2" id="chipGift"></div>
+            <div class="v5-chip c3" id="chipOrder"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Services ============ -->
+  <section class="v5-sec pt-3" aria-labelledby="svcTitle">
+    <div class="v5-wrap">
+      <span class="v5-eyebrow">The suite</span>
+      <h2 class="v5-h2" id="svcTitle">Everything you pay for, <span class="v5-grad-text">refined.</span></h2>
+      <p class="v5-lead">Six services, one balance. Browse freely — you only sign in when it's time to pay.</p>
+      <div class="v5-svc" id="svc"></div>
+    </div>
+  </section>
+
+  <!-- ============ Premium picks ============ -->
+  <section class="v5-sec v5-band" aria-labelledby="picksTitle">
+    <div class="v5-wrap">
+      <div class="v5-head">
+        <div><span class="v5-eyebrow">Marketplace</span><h2 class="v5-h2 mb-0" id="picksTitle">Premium picks</h2></div>
+        <div class="d-flex align-items-center gap-3">
+          <a href="./app/marketplace.html" class="fw-semibold" style="color:var(--v5-accent)">Shop all <i class="bi bi-arrow-right"></i></a>
+          <div class="v5-arrows">
+            <button class="v5-icon-btn" type="button" data-rail="-1" aria-label="Previous products"><i class="bi bi-chevron-left"></i></button>
+            <button class="v5-icon-btn" type="button" data-rail="1" aria-label="Next products"><i class="bi bi-chevron-right"></i></button>
+          </div>
+        </div>
+      </div>
+      <div class="v5-rail" id="rail" tabindex="0" aria-label="Premium products"></div>
+    </div>
+  </section>
+
+  <!-- ============ Gift card terminal ============ -->
+  <section class="v5-sec" aria-labelledby="rateTitle">
+    <div class="v5-wrap">
+      <div class="row align-items-end g-3">
+        <div class="col-lg-7"><span class="v5-eyebrow">Gift card exchange</span><h2 class="v5-h2 mb-0" id="rateTitle">The rate board.</h2></div>
+        <div class="col-lg-5"><p class="v5-lead mb-0">Today's ₦ per $1 for every card we trade. Most trades are reviewed and paid to your wallet within 5–15 minutes.</p></div>
+      </div>
+      <div class="v5-term">
+        <div class="tb"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="ms-2">autobiz://rates/giftcards</span><span class="v5-live" id="clock">LIVE</span></div>
+        <div class="v5-ticker" aria-hidden="true"><div class="track" id="ticker"></div></div>
+        <div class="table-responsive">
+          <table class="v5-board">
+            <caption class="visually-hidden">Gift card rates in Naira per US dollar</caption>
+            <thead><tr><th scope="col">Card</th><th scope="col" class="num hide-sm">Physical</th><th scope="col" class="num hide-sm">E-code</th><th scope="col" class="num">Best ₦/$</th><th scope="col" class="num hide-sm">Accepts</th><th scope="col"><span class="visually-hidden">Action</span></th></tr></thead>
+            <tbody id="board"></tbody>
+          </table>
+        </div>
+        <form class="v5-prompt" id="quote">
+          <span class="ps" aria-hidden="true">$ quote</span>
+          <label class="visually-hidden" for="qCard">Gift card</label><select id="qCard"></select>
+          <label class="visually-hidden" for="qUsd">Card value in US dollars</label><input id="qUsd" type="number" min="1" value="100" inputmode="numeric">
+          <span aria-hidden="true">→</span><output class="out" id="qOut" for="qCard qUsd" aria-live="polite"></output><span class="v5-cursor" aria-hidden="true"></span>
+          <button type="submit" class="v5-btn v5-btn-primary v5-btn-sm ms-sm-auto">Trade this card <i class="bi bi-arrow-right"></i></button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ eSIM spotlight ============ -->
+  <section class="v5-sec v5-band" aria-labelledby="esimTitle">
+    <div class="v5-wrap">
+      <div class="row align-items-center g-4 g-lg-5">
+        <div class="col-lg-6 order-lg-2">
+          <span class="v5-eyebrow">Travel eSIM</span>
+          <h2 class="v5-h2" id="esimTitle">Land connected in <span class="v5-grad-text" id="esimCount">20 destinations.</span></h2>
+          <p class="v5-lead">Pick your destination, scan the QR code, and your phone is online the moment you land. No roaming bills, no SIM swaps.</p>
+          <form class="v5-picker" id="esimForm">
+            <label class="visually-hidden" for="esimSel">Destination</label>
+            <select id="esimSel"></select>
+            <button class="v5-btn v5-btn-primary v5-btn-sm" type="submit">View plans</button>
+          </form>
+          <div class="v5-dest" id="dest"></div>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+          <div class="v5-globe-stage" aria-hidden="true">
+            <div class="v5-globe">
+              <svg viewBox="0 0 200 200" fill="none" stroke="#fff" stroke-width=".6">
+                <ellipse cx="100" cy="100" rx="99" ry="30"/><ellipse cx="100" cy="100" rx="99" ry="62"/><line x1="0" y1="100" x2="200" y2="100"/>
+                <g class="lon"><ellipse cx="100" cy="100" rx="25" ry="99"/><ellipse cx="100" cy="100" rx="60" ry="99"/><ellipse cx="100" cy="100" rx="90" ry="99"/><ellipse cx="150" cy="100" rx="25" ry="99"/><ellipse cx="150" cy="100" rx="60" ry="99"/><ellipse cx="150" cy="100" rx="90" ry="99"/></g>
+              </svg>
+            </div>
+            <div class="v5-orbit" id="orbit1"></div>
+            <div class="v5-orbit o2" id="orbit2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Flights ============ -->
+  <section class="v5-sec pb-0" aria-labelledby="flyTitle">
+    <div class="v5-wrap">
+      <div class="v5-head">
+        <div><span class="v5-eyebrow">Flights</span><h2 class="v5-h2 mb-0" id="flyTitle">Popular routes, one tap away.</h2></div>
+        <a href="./app/flights.html" class="fw-semibold" style="color:var(--v5-accent)">Search all flights <i class="bi bi-arrow-right"></i></a>
+      </div>
+      <div class="v5-routes" id="routes"></div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="v5-sec" aria-labelledby="ctaTitle">
+    <div class="v5-wrap">
+      <div class="v5-cta">
+        <span class="v5-eyebrow justify-content-center">AutoBiz</span>
+        <h2 id="ctaTitle" class="mt-3">Your world.<br><span class="v5-grad-text">One wallet.</span></h2>
+        <p id="ctaText">Create a free account in a minute. Fund by transfer or card, then pay for anything with your PIN.</p>
+        <div class="d-flex flex-wrap justify-content-center gap-2" id="ctaBtns">
+          <a href="./register.html" class="v5-btn v5-btn-primary">Create free account <i class="bi bi-arrow-right"></i></a>
+          <a href="./login.html" class="v5-btn v5-btn-ghost">Log in</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ Footer ============ -->
+<footer class="v5-foot">
+  <div class="v5-wrap">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <a href="./index-v5.html" class="v5-logo mb-3" aria-label="AutoBiz home"><img src="./assets/img/logo.svg" alt="" width="34" height="34">AutoBiz</a>
+        <p class="fs-7 mb-0" style="color:var(--v5-muted);max-width:320px">Shop, travel and pay — a marketplace, travel eSIMs, flights, USD cards, gift card exchange and bills in one wallet.</p>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3">
+        <h3>Services</h3>
+        <ul>
+          <li><a href="./app/marketplace.html">Marketplace</a></li>
+          <li><a href="./app/esim.html">Travel eSIM</a></li>
+          <li><a href="./app/flights.html">Flights</a></li>
+          <li><a href="./app/virtual-cards.html">USD virtual cards</a></li>
+          <li><a href="./app/giftcards.html">Gift cards</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3">
+        <h3>Bills</h3>
+        <ul>
+          <li><a href="./app/bills.html?tab=airtime">Airtime</a></li>
+          <li><a href="./app/bills.html?tab=data">Data</a></li>
+          <li><a href="./app/bills.html?tab=electricity">Electricity</a></li>
+          <li><a href="./app/bills.html?tab=cable">Cable TV</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4 col-lg-2">
+        <h3>Account</h3>
+        <ul id="footAcct">
+          <li><a href="./login.html">Log in</a></li>
+          <li><a href="./register.html">Create account</a></li>
+          <li><a href="./app/cart.html">Cart</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="base"><span>© <span id="yr"></span> AutoBiz. All rights reserved.</span><span>Prices in Naira (₦). USD services at ₦<span id="usdRate"></span>/$1.</span></div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/js/data.js"></script>
+<script src="./assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const D = AB_DATA, { fmt, esc } = AB;
+  const $ = (id) => document.getElementById(id);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const best = (g) => Math.max(...Object.values(g.types));
+  const authed = AB.auth.isAuthed();
+
+  /* ---- Header ---- */
+  const nav = $("v5Nav");
+  const onScroll = () => nav.classList.toggle("scrolled", scrollY > 8);
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  if (authed) {
+    document.querySelectorAll("[data-guest]").forEach((el) => el.remove());
+    document.querySelectorAll("[data-member]").forEach((el) => el.classList.add("d-md-inline-flex"));
+    $("ocAuth").innerHTML = `<a href="./app/dashboard.html" class="v5-btn v5-btn-primary justify-content-center"><i class="bi bi-person-circle"></i>Go to my account</a>`;
+    $("footAcct").innerHTML = `<li><a href="./app/dashboard.html">My account</a></li><li><a href="./app/wallet.html">Wallet</a></li><li><a href="./app/cart.html">Cart</a></li>`;
+  }
+
+  /* ---- Hero facts + floating chips (real catalog data) ---- */
+  const esimN = D.esimCountries.length, minEsim = Math.min(...D.esimCountries.map((c) => c.from));
+  const topRate = Math.max(...D.giftcards.map(best));
+  $("heroFacts").innerHTML = [
+    [`${esimN}`, "eSIM destinations"],
+    [`${fmt.naira(topRate)}/$`, "top gift card rate"],
+    [`${D.airports.length}`, "airports on our routes"]
+  ].map(([b, s]) => `<div><b class="tabular">${b}</b><span>${s}</span></div>`).join("");
+
+  const gb = D.esimCountries.find((c) => c.code === "gb");
+  const steam = D.giftcards.find((g) => g.id === "steam");
+  const sony = D.products.find((p) => p.id === "p5");
+  $("chipEsim").innerHTML = `<span class="ic"><img src="${AB.flag("gb")}" alt=""></span><div><b>eSIM active</b><span>${esc(gb.name)} · ${gb.speed}</span></div><span class="ok"><i class="bi bi-check-lg"></i></span>`;
+  $("chipGift").innerHTML = `<span class="ic" style="background:${steam.color};color:#fff"><i class="bi ${steam.icon}"></i></span><div><b>Gift card paid</b><span class="tabular">Steam $100 → ${fmt.naira(100 * best(steam))}</span></div><span class="ok"><i class="bi bi-check-lg"></i></span>`;
+  $("chipOrder").innerHTML = `<span class="ic tone-${sony.tone}"><i class="bi ${sony.icon}"></i></span><div><b>Order shipped</b><span>${esc(sony.brand)} WH-1000XM5</span></div><span class="ok"><i class="bi bi-truck"></i></span>`;
+  ["chipEsim", "chipGift", "chipOrder"].forEach((id) => $(id).setAttribute("aria-hidden", "true"));
+
+  // Pointer tilt for the card
+  if (!reduce && matchMedia("(hover: hover)").matches) {
+    const stage = $("stage"), tilt = $("tilt");
+    stage.addEventListener("pointermove", (e) => {
+      const r = stage.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      tilt.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 12}deg)`;
+    });
+    stage.addEventListener("pointerleave", () => (tilt.style.transform = ""));
+  }
+
+  /* ---- Services ---- */
+  const nets = D.networks.map((n) => `<img src="./assets/img/networks/${n.logo}" alt="">`).join("");
+  const svcs = [
+    { cls: "feature", href: "./app/marketplace.html", icon: "bi-bag-heart", t: "Marketplace", d: `Phones, electronics, fashion, home, beauty and more from verified sellers across ${D.categories.length} categories — with buyer protection on every order.`, m: "Browse the store" },
+    { href: "./app/virtual-cards.html", icon: "bi-credit-card-2-front", t: "USD virtual card", d: "Pay Netflix, Spotify, Amazon and more in dollars. Freeze or set limits anytime.", m: "$2 to create · fund from $5" },
+    { href: "./app/esim.html", icon: "bi-sim", t: "Travel eSIM", d: `Data plans in ${esimN} destinations, including regional and global bundles.`, m: `From ${fmt.usd(minEsim)}` },
+    { href: "./app/flights.html", icon: "bi-airplane", t: "Flights", d: `Domestic and international fares on ${D.airlines.length} airlines, with seats and add-ons.`, m: "Compare fares" },
+    { href: "./app/giftcards.html", icon: "bi-gift", t: "Gift card exchange", d: `Trade ${D.giftcards.length} brands — Apple, Steam, Amazon and more — for Naira.`, m: `Up to ${fmt.naira(topRate)}/$` },
+    { cls: "wide", href: "./app/bills.html", icon: "bi-lightning-charge", t: "Airtime, data & bills", d: "Top up any network, buy electricity tokens, renew cable TV and exam pins.", m: `<span class="nets ps-1">${nets}</span>` }
+  ];
+  $("svc").innerHTML = svcs.map((s) => `
+    <a href="${s.href}" class="v5-glass ${s.cls || ""}">
+      <span class="ic"><i class="bi ${s.icon}"></i></span>
+      <span class="txt d-block"><h3>${s.t}</h3><p>${s.d}</p></span>
+      <span class="meta"><span>${s.m}</span><i class="bi bi-arrow-up-right" aria-hidden="true"></i></span>
+    </a>`).join("");
+  // Pointer-following glow on every glass card
+  document.addEventListener("pointermove", (e) => {
+    const g = e.target.closest?.(".v5-glass"); if (!g) return;
+    const r = g.getBoundingClientRect();
+    g.style.setProperty("--mx", `${e.clientX - r.left}px`); g.style.setProperty("--my", `${e.clientY - r.top}px`);
+  }, { passive: true });
+
+  /* ---- Premium picks ---- */
+  const picks = [...D.products].sort((a, b) => b.price - a.price).slice(0, 10);
+  $("rail").innerHTML = picks.map((p) => `
+    <article class="v5-glass v5-prod">
+      <a href="./app/product.html?id=${p.id}" class="art" aria-label="${esc(p.name)}">${p.badge ? `<span class="tag">${esc(p.badge)}</span>` : ""}${AB.productArt(p)}</a>
+      <div class="brand">${esc(p.brand)}</div>
+      <a href="./app/product.html?id=${p.id}" class="nm">${esc(p.name)}</a>
+      <div class="rt"><i class="bi bi-star-fill"></i> ${p.rating} · ${fmt.num(p.reviews)} reviews</div>
+      <div class="d-flex align-items-end justify-content-between gap-2 mt-3">
+        <div class="min-w-0"><div class="pr tabular text-truncate">${fmt.naira(p.price)}</div><div class="old tabular">${fmt.naira(p.oldPrice)}</div></div>
+        <button class="v5-add" type="button" data-add="${p.id}" aria-label="Add ${esc(p.name)} to cart"><i class="bi bi-plus-lg"></i></button>
+      </div>
+    </article>`).join("");
+  document.querySelectorAll("[data-rail]").forEach((b) => b.addEventListener("click", () => {
+    const r = $("rail"); r.scrollBy({ left: Number(b.dataset.rail) * (r.clientWidth * .8), behavior: reduce ? "auto" : "smooth" });
+  }));
+  document.body.addEventListener("click", (e) => { const b = e.target.closest("[data-add]"); if (b) AB.cart.add(b.dataset.add, 1); });
+
+  /* ---- Gift card terminal ---- */
+  const sym = (g) => g.id.toUpperCase().slice(0, 6);
+  const cards = [...D.giftcards].sort((a, b) => best(b) - best(a));
+  const tick = cards.map((g) => `<span><b>${sym(g)}</b><em>${fmt.naira(best(g))}</em>/$</span>`).join("");
+  $("ticker").innerHTML = tick + tick;
+  $("board").innerHTML = cards.map((g) => `
+    <tr>
+      <td><div class="sym"><i class="bi ${g.icon}" style="background:${g.color}" aria-hidden="true"></i><div><b>${sym(g)}</b><small>${esc(g.name)}</small></div></div></td>
+      <td class="num hide-sm ${g.types.Physical ? "" : "dim"}">${g.types.Physical ? fmt.naira(g.types.Physical) : "—"}</td>
+      <td class="num hide-sm ${g.types["E-code"] ? "" : "dim"}">${g.types["E-code"] ? fmt.naira(g.types["E-code"]) : "—"}</td>
+      <td class="num best">${fmt.naira(best(g))}</td>
+      <td class="num hide-sm dim">$${g.range[0]}–${g.range[1]}</td>
+      <td class="text-end"><a class="trade" href="./app/giftcards.html?card=${g.id}" aria-label="Trade ${esc(g.name)}">Trade <i class="bi bi-arrow-right"></i></a></td>
+    </tr>`).join("");
+  const clock = () => ($("clock").textContent = `LIVE · ${new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`);
+  clock(); setInterval(clock, 1000);
+  $("qCard").innerHTML = cards.map((g) => `<option value="${g.id}" ${g.id === "steam" ? "selected" : ""}>${sym(g)}</option>`).join("");
+  const quote = () => {
+    const g = D.giftcards.find((x) => x.id === $("qCard").value);
+    $("qOut").textContent = fmt.naira(Math.max(0, Number($("qUsd").value) || 0) * best(g));
+  };
+  ["input", "change"].forEach((ev) => { $("qCard").addEventListener(ev, quote); $("qUsd").addEventListener(ev, quote); });
+  quote();
+  $("quote").addEventListener("submit", (e) => { e.preventDefault(); location.href = `./app/giftcards.html?card=${$("qCard").value}`; });
+
+  /* ---- eSIM spotlight ---- */
+  const countries = D.esimCountries.filter((c) => !c.regional);
+  $("esimCount").textContent = `${esimN} destinations.`;
+  const ring = (list, el) => (el.innerHTML = list.map((c, i) => `<span class="f" style="--a:${(360 / list.length) * i}deg"><img src="${AB.flag(c.code, 80)}" alt=""></span>`).join(""));
+  ring(countries.slice(0, 9), $("orbit1"));
+  ring(countries.slice(9), $("orbit2"));
+  $("esimSel").innerHTML = D.esimCountries.map((c) => `<option value="${c.code}" ${c.code === "gb" ? "selected" : ""}>${esc(c.name)} — from ${fmt.usd(c.from)}</option>`).join("");
+  $("esimForm").addEventListener("submit", (e) => { e.preventDefault(); location.href = `./app/esim.html?country=${$("esimSel").value}`; });
+  $("dest").innerHTML = ["gb", "us", "ae", "ca", "gh", "tr"].map((code) => D.esimCountries.find((c) => c.code === code)).map((c) => `
+    <a href="./app/esim.html?country=${c.code}"><img src="${AB.flag(c.code)}" alt="" loading="lazy"><div class="min-w-0"><b class="text-truncate">${esc(c.name)}</b><span class="tabular">${c.speed} · from ${fmt.naira(Math.round(c.from * D.usdRate))}</span></div></a>`).join("");
+
+  /* ---- Flights ---- */
+  const ap = (code) => D.airports.find((a) => a.code === code);
+  $("routes").innerHTML = [["LOS", "ABV"], ["LOS", "DXB"], ["ABV", "LHR"], ["LOS", "JFK"]].map(([f, t]) => `
+    <a class="v5-glass" href="./app/flights.html?from=${f}&to=${t}" aria-label="Flights from ${ap(f).city} to ${ap(t).city}">
+      <div class="codes"><span>${f}</span><span class="line"></span><i class="bi bi-airplane-fill" style="transform:rotate(90deg)"></i><span class="line"></span><span>${t}</span></div>
+      <small class="d-flex justify-content-between mt-2"><span>${esc(ap(f).city)}</span><span>${esc(ap(t).city)}</span></small>
+    </a>`).join("");
+
+  /* ---- Members ---- */
+  if (authed) {
+    const u = AB.store.get("user");
+    $("ctaTitle").innerHTML = `Welcome back,<br><span class="v5-grad-text">${esc(u.firstName)}.</span>`;
+    $("ctaText").textContent = "Your wallet, orders, trips, eSIMs and cards are waiting in your account.";
+    $("ctaBtns").innerHTML = `<a href="./app/dashboard.html" class="v5-btn v5-btn-primary">Go to my account <i class="bi bi-arrow-right"></i></a><a href="./app/wallet.html" class="v5-btn v5-btn-ghost">Fund wallet</a>`;
+  }
+
+  $("yr").textContent = new Date().getFullYear();
+  $("usdRate").textContent = fmt.num(D.usdRate);
+  AB.refreshShell();
+});
+</script>
+</body>
+</html>

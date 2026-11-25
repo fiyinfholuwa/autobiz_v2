@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AutoBiz · Nigeria's everything store — shop, travel &amp; pay</title>
+  <meta name="description" content="Shop phones, electronics, fashion and groceries from verified sellers, plus travel eSIMs, flights, USD virtual cards, gift card exchange and bills — all on AutoBiz.">
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="./assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="./assets/css/app.css" rel="stylesheet">
+  <script src="./assets/js/brand.js"></script>
+  <style>
+    /* ===== Marketplace-first megastore ===== */
+    .mg-sec { margin-bottom: 1.75rem; }
+    .mg-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: .85rem; }
+    .mg-head h2 { font-size: 1.15rem; font-weight: 800; letter-spacing: -.02em; margin: 0; display: flex; align-items: center; gap: .5rem; }
+    .mg-head .sub { color: var(--ab-muted); font-size: .8rem; margin-top: 2px; }
+    .mg-more { font-weight: 700; font-size: .8125rem; white-space: nowrap; color: var(--ab-primary); }
+    .mg-panel { background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 16px; }
+    a:focus-visible, button:focus-visible { outline: 3px solid rgba(var(--ab-primary-rgb), .55); outline-offset: 2px; }
+
+    /* --- Hero: category rail + carousel + side promos --- */
+    .mg-hero { display: grid; grid-template-columns: 232px minmax(0, 1fr) 272px; gap: 1rem; }
+    .mg-rail { padding: .5rem; display: flex; flex-direction: column; }
+    .mg-rail h2 { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--ab-muted); font-weight: 700; margin: .45rem .6rem .35rem; }
+    .mg-rail a { display: flex; align-items: center; gap: .65rem; padding: .48rem .6rem; border-radius: 10px; color: var(--ab-text); font-size: .84rem; font-weight: 600; transition: background .15s, color .15s; }
+    .mg-rail a .ab-icon { width: 30px; height: 30px; border-radius: 9px; font-size: .9rem; flex-shrink: 0; }
+    .mg-rail a .chev { margin-left: auto; font-size: .7rem; color: var(--ab-muted); opacity: 0; transform: translateX(-4px); transition: all .15s; }
+    .mg-rail a:hover, .mg-rail a:focus-visible { background: var(--ab-primary-soft); color: var(--ab-primary); }
+    .mg-rail a:hover .chev, .mg-rail a:focus-visible .chev { opacity: 1; transform: none; color: var(--ab-primary); }
+    .mg-rail .all { margin-top: auto; border-top: 1px dashed var(--ab-border); border-radius: 0 0 10px 10px; padding-top: .6rem; color: var(--ab-primary); }
+
+    .mg-car, .mg-car .carousel-inner, .mg-car .carousel-item { height: 100%; }
+    .mg-car .carousel-inner { border-radius: 18px; }
+    .mg-slide { position: relative; overflow: hidden; height: 100%; min-height: 380px; padding: 2.25rem 2.5rem; display: flex; flex-direction: column; justify-content: center; color: #fff; }
+    .mg-slide h1, .mg-slide h2 { color: #fff; font-size: clamp(1.55rem, 3vw, 2.45rem); font-weight: 800; letter-spacing: -.035em; line-height: 1.08; max-width: min(470px, 62%); margin-bottom: .6rem; }
+    .mg-slide p { max-width: min(400px, 58%); opacity: .88; margin-bottom: 1.25rem; }
+    .mg-slide .kicker { display: inline-flex; align-items: center; gap: .35rem; align-self: flex-start; font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: .35rem .7rem; border-radius: 999px; background: rgba(255,255,255,.16); margin-bottom: .9rem; backdrop-filter: blur(4px); }
+    .mg-slide .btn-w { background: #fff; color: #111; font-weight: 800; border-radius: 12px; padding: .7rem 1.3rem; }
+    .mg-slide .btn-w:hover { background: rgba(255,255,255,.88); }
+    .mg-slide .price-tag { position: absolute; z-index: 2; right: 9%; top: 14%; background: #ffd43b; color: #1a1300; font-weight: 800; border-radius: 14px; padding: .55rem .8rem; transform: rotate(6deg); box-shadow: 0 14px 28px -12px rgba(0,0,0,.45); line-height: 1.1; text-align: center; }
+    .mg-slide .price-tag small { display: block; font-size: .64rem; font-weight: 700; opacity: .75; text-transform: uppercase; letter-spacing: .05em; }
+    .mg-slide .art { position: absolute; right: 7%; bottom: 50%; transform: translateY(54%) rotate(-10deg); font-size: 10.5rem; line-height: 1; opacity: .95; filter: drop-shadow(0 26px 30px rgba(0,0,0,.3)); }
+    .mg-slide .ring { position: absolute; border-radius: 50%; border: 2px solid rgba(255,255,255,.14); }
+    .mg-slide .ring.r1 { width: 420px; height: 420px; right: -90px; top: -110px; }
+    .mg-slide .ring.r2 { width: 260px; height: 260px; right: 40px; bottom: -140px; background: rgba(255,255,255,.06); border: 0; }
+    .mg-slide > :not(.art):not(.ring):not(.price-tag) { position: relative; z-index: 1; }
+    .mg-slide.s-brand { background: linear-gradient(115deg, var(--ab-sidebar) 0%, var(--ab-primary-700) 55%, var(--ab-primary) 120%); }
+    .mg-slide.s-brand .art { color: #ffd43b; }
+    .mg-slide.s-orange { background: linear-gradient(115deg, #c2410c, #f76707 55%, #ffa94d); }
+    .mg-slide.s-violet { background: linear-gradient(115deg, #3b1f9e, #7048e8 60%, #9775fa); }
+    .mg-slide.s-green { background: linear-gradient(115deg, #0b5d3b, #0ca678 60%, #63e6be); }
+    .mg-car .carousel-indicators { justify-content: flex-start; margin: 0 0 1.1rem 2.5rem; gap: 4px; }
+    .mg-car .carousel-indicators [data-bs-target] { width: 18px; height: 5px; border-radius: 5px; border: 0; opacity: .45; transition: width .3s, opacity .3s; }
+    .mg-car .carousel-indicators .active { width: 34px; opacity: 1; }
+    .mg-car .carousel-control-prev, .mg-car .carousel-control-next { width: 40px; height: 40px; top: auto; bottom: 1rem; border-radius: 50%; background: rgba(0,0,0,.28); opacity: 1; }
+    .mg-car .carousel-control-prev { left: auto; right: 4rem; }
+    .mg-car .carousel-control-next { right: 1.25rem; }
+    .mg-car .carousel-control-prev-icon, .mg-car .carousel-control-next-icon { width: 1rem; height: 1rem; }
+
+    .mg-side { display: grid; grid-template-rows: 1fr 1fr; gap: 1rem; }
+    .mg-promo { position: relative; overflow: hidden; border-radius: 18px; padding: 1.15rem 1.2rem; color: #fff; display: flex; flex-direction: column; justify-content: space-between; min-height: 182px; transition: transform .2s, box-shadow .2s; }
+    .mg-promo:hover { color: #fff; transform: translateY(-3px); box-shadow: var(--ab-shadow); }
+    .mg-promo .tag { font-size: .68rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; opacity: .85; }
+    .mg-promo h3 { color: #fff; font-size: 1.15rem; font-weight: 800; letter-spacing: -.02em; margin: .3rem 0 .15rem; max-width: 190px; line-height: 1.2; }
+    .mg-promo .big { font-size: 1.45rem; font-weight: 800; letter-spacing: -.02em; }
+    .mg-promo .go { display: inline-flex; align-items: center; gap: .35rem; font-size: .8rem; font-weight: 700; }
+    .mg-promo .bgicon { position: absolute; right: -14px; bottom: -22px; font-size: 7.5rem; opacity: .2; transform: rotate(-12deg); }
+    .mg-promo .flags { display: flex; margin-top: .4rem; }
+    .mg-promo .flags img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,.9); margin-right: -7px; }
+    .mg-promo.p-esim { background: linear-gradient(140deg, #4c2bd1, #7048e8 60%, #b197fc); }
+    .mg-promo.p-gift { background: linear-gradient(140deg, #a61e4d, #e64980 60%, #faa2c1); }
+
+    /* --- Services ribbon --- */
+    .mg-ribbon { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: .5rem; padding: .5rem; }
+    .mg-ribbon a { display: flex; align-items: center; gap: .55rem; padding: .5rem .6rem; border-radius: 12px; color: var(--ab-text); font-weight: 700; font-size: .8rem; transition: background .15s; min-width: 0; }
+    .mg-ribbon a:hover { background: var(--ab-surface-2); }
+    .mg-ribbon .ab-icon { width: 34px; height: 34px; border-radius: 10px; font-size: .95rem; flex-shrink: 0; }
+    .mg-ribbon span.t { min-width: 0; line-height: 1.15; }
+    .mg-ribbon small { display: block; font-weight: 600; font-size: .68rem; color: var(--ab-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* --- Product card (dense retail) --- */
+    .mg-card { background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 14px; padding: .6rem; display: flex; flex-direction: column; height: 100%; transition: box-shadow .2s, transform .2s, border-color .2s; position: relative; }
+    .mg-card:hover { box-shadow: var(--ab-shadow); transform: translateY(-2px); border-color: rgba(var(--ab-primary-rgb), .3); }
+    .mg-card .art { position: relative; display: block; }
+    .mg-card .ab-product-art { font-size: 2.8rem; border-radius: 10px; }
+    .mg-card .off { position: absolute; top: 6px; left: 6px; z-index: 2; background: var(--ab-danger); color: #fff; font-size: .68rem; font-weight: 800; padding: 2px 6px; border-radius: 6px; }
+    .mg-card .bdg { position: absolute; top: 6px; right: 6px; z-index: 2; background: var(--ab-surface); color: var(--ab-text); font-size: .64rem; font-weight: 800; padding: 2px 6px; border-radius: 6px; box-shadow: var(--ab-shadow-sm); }
+    .mg-card .nm { color: var(--ab-text); font-size: .8rem; font-weight: 600; line-height: 1.3; margin: .55rem 0 .2rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.6em; }
+    .mg-card .nm:hover { color: var(--ab-primary); }
+    .mg-card .pr { font-weight: 800; font-size: .95rem; letter-spacing: -.01em; }
+    .mg-card .old { font-size: .72rem; color: var(--ab-muted); text-decoration: line-through; }
+    .mg-card .meta { font-size: .7rem; color: var(--ab-muted); display: flex; align-items: center; gap: .3rem; flex-wrap: wrap; }
+    .mg-card .meta .bi-star-fill { color: #f59f00; }
+    .mg-card .add { width: 32px; height: 32px; border-radius: 10px; flex-shrink: 0; }
+    .mg-card .ship { font-size: .66rem; font-weight: 700; color: var(--ab-accent); }
+
+    /* --- Flash sale --- */
+    .mg-flash { border-radius: 18px; overflow: hidden; border: 1px solid var(--ab-border); background: var(--ab-surface); }
+    .mg-flash-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: .8rem 1.1rem; background: linear-gradient(90deg, #e03131, #f76707); color: #fff; }
+    .mg-flash-top h2 { color: #fff; font-size: 1.15rem; font-weight: 800; margin: 0; display: flex; align-items: center; gap: .45rem; letter-spacing: -.02em; }
+    .mg-flash-top .bolt { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: #ffd43b; color: #c92a2a; }
+    .mg-cd { display: flex; align-items: center; gap: .3rem; font-size: .8rem; font-weight: 700; }
+    .mg-cd b { background: rgba(0,0,0,.28); border-radius: 7px; padding: .2rem .45rem; font-variant-numeric: tabular-nums; font-size: .9rem; min-width: 2.1em; text-align: center; }
+    .mg-flash-top a { color: #fff; font-weight: 700; font-size: .8125rem; }
+    .mg-flash .hscroll { padding: 1rem 1.1rem; gap: .75rem; }
+    .mg-flash .hscroll > * { width: 188px; }
+    .mg-stock { margin-top: .5rem; }
+    .mg-stock .bar { height: 7px; border-radius: 7px; background: var(--ab-danger-soft); overflow: hidden; }
+    .mg-stock .bar i { display: block; height: 100%; border-radius: 7px; background: linear-gradient(90deg, #f76707, #e03131); }
+    .mg-stock .lbl { display: flex; justify-content: space-between; font-size: .66rem; font-weight: 700; margin-top: .25rem; color: var(--ab-muted); }
+    .mg-stock .lbl .low { color: var(--ab-danger); }
+
+    /* --- Category tabs --- */
+    .mg-tabs { display: flex; gap: .35rem; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; border-bottom: 1px solid var(--ab-border); margin-bottom: 1rem; }
+    .mg-tabs::-webkit-scrollbar { display: none; }
+    .mg-tabs button { background: none; border: 0; padding: .6rem .8rem; font-size: .82rem; font-weight: 700; color: var(--ab-muted); white-space: nowrap; display: inline-flex; align-items: center; gap: .4rem; border-bottom: 3px solid transparent; margin-bottom: -1px; border-radius: 8px 8px 0 0; }
+    .mg-tabs button:hover { color: var(--ab-text); background: var(--ab-surface-2); }
+    .mg-tabs button[aria-selected="true"] { color: var(--ab-primary); border-bottom-color: var(--ab-primary); }
+    .mg-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .75rem; }
+    .mg-grid.fade-in > * { animation: mgIn .3s ease both; }
+    @keyframes mgIn { from { opacity: 0; transform: translateY(6px); } }
+
+    /* --- Brand strip --- */
+    .mg-brands { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .mg-brands a { display: inline-flex; align-items: center; gap: .4rem; border: 1px solid var(--ab-border); background: var(--ab-surface); color: var(--ab-text); border-radius: 10px; padding: .5rem .85rem; font-weight: 800; font-size: .84rem; letter-spacing: -.01em; transition: all .15s; }
+    .mg-brands a small { font-weight: 600; color: var(--ab-muted); font-size: .7rem; }
+    .mg-brands a:hover { border-color: var(--ab-primary); color: var(--ab-primary); background: var(--ab-primary-soft); }
+
+    /* --- Travel --- */
+    .mg-dest { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+    .mg-dest a { display: flex; align-items: center; gap: .7rem; padding: .6rem .7rem; border-radius: 12px; border: 1px solid var(--ab-border); color: var(--ab-text); transition: all .15s; min-width: 0; }
+    .mg-dest a:hover { border-color: rgba(var(--ab-primary-rgb), .4); background: var(--ab-primary-soft); }
+    .mg-dest img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 2px var(--ab-surface), 0 0 0 3px var(--ab-border); flex-shrink: 0; }
+    .mg-dest .p { margin-left: auto; text-align: right; font-weight: 800; font-size: .82rem; white-space: nowrap; }
+    .mg-dest .p small { display: block; font-weight: 600; font-size: .66rem; color: var(--ab-muted); }
+    .mg-route { display: flex; align-items: center; gap: .75rem; padding: .6rem .2rem; border-bottom: 1px dashed var(--ab-border); color: var(--ab-text); }
+    .mg-route:last-child { border-bottom: 0; }
+    .mg-route:hover { color: var(--ab-text); }
+    .mg-route:hover .fare { background: var(--ab-primary); color: var(--ab-on-primary); }
+    .mg-route .code { font-weight: 800; font-size: 1.05rem; letter-spacing: .02em; }
+    .mg-route .city { font-size: .68rem; color: var(--ab-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mg-route .path { flex: 1; min-width: 30px; position: relative; height: 2px; background: repeating-linear-gradient(90deg, var(--ab-border) 0 6px, transparent 6px 10px); }
+    .mg-route .path i { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(90deg); color: var(--ab-primary); background: var(--ab-surface); padding: 0 .25rem; font-size: .9rem; }
+    .mg-route .fare { font-size: .72rem; font-weight: 700; padding: .35rem .65rem; border-radius: 8px; background: var(--ab-primary-soft); color: var(--ab-primary); white-space: nowrap; transition: all .15s; }
+    .mg-route .end { width: 84px; flex-shrink: 0; min-width: 0; }
+    .mg-route .end.r { text-align: right; }
+
+    /* --- Gift card ticker --- */
+    .mg-ticker { display: flex; align-items: stretch; border-radius: 14px; overflow: hidden; border: 1px solid var(--ab-border); background: var(--ab-surface); }
+    .mg-ticker .lab { flex-shrink: 0; display: flex; align-items: center; gap: .45rem; padding: 0 1rem; background: var(--ab-sidebar); color: #fff; font-weight: 800; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+    .mg-ticker .lab .dot { width: 8px; height: 8px; border-radius: 50%; background: #3ddba9; box-shadow: 0 0 0 4px rgba(61,219,169,.2); }
+    .mg-ticker .vp { overflow: hidden; flex: 1; min-width: 0; mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
+    .mg-ticker .track { display: flex; width: max-content; animation: mgTick 40s linear infinite; }
+    .mg-ticker:hover .track, .mg-ticker:focus-within .track { animation-play-state: paused; }
+    .mg-ticker .it { display: inline-flex; align-items: center; gap: .5rem; padding: .7rem 1.1rem; color: var(--ab-text); font-size: .8rem; font-weight: 600; white-space: nowrap; border-right: 1px solid var(--ab-border); }
+    .mg-ticker .it:hover { background: var(--ab-surface-2); }
+    .mg-ticker .it .ic { width: 24px; height: 24px; border-radius: 7px; display: inline-grid; place-items: center; color: #fff; font-size: .75rem; }
+    .mg-ticker .it b { color: var(--ab-accent); font-variant-numeric: tabular-nums; }
+    .mg-ticker .it .up { color: var(--ab-orange); font-size: .7rem; }
+    @keyframes mgTick { to { transform: translateX(-50%); } }
+
+    /* --- Dual promo (USD card + bills) --- */
+    .mg-duo { display: grid; grid-template-columns: 1.15fr 1fr; gap: 1rem; }
+    .mg-usd { position: relative; overflow: hidden; border-radius: 18px; padding: 1.4rem 1.5rem; color: #fff; background: radial-gradient(120% 140% at 100% 0%, rgba(var(--ab-primary-rgb), .55), var(--ab-sidebar) 62%); display: flex; align-items: center; gap: 1rem; }
+    .mg-usd h3 { color: #fff; font-size: 1.2rem; font-weight: 800; letter-spacing: -.02em; }
+    .mg-usd p { opacity: .78; font-size: .84rem; margin-bottom: .9rem; }
+    .mg-mini-card { flex-shrink: 0; width: 170px; aspect-ratio: 1.586; border-radius: 14px; padding: .8rem; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(135deg, var(--ab-primary-300), var(--ab-primary-700)); box-shadow: 0 18px 34px -14px rgba(0,0,0,.6); transform: rotate(-6deg); font-size: .7rem; font-weight: 700; }
+    .mg-mini-card .chip { width: 28px; height: 20px; border-radius: 5px; background: linear-gradient(135deg, #f8e3a1, #c9a74a); }
+    .mg-bills { padding: 1.2rem 1.3rem; display: flex; flex-direction: column; justify-content: space-between; gap: .8rem; }
+    .mg-bills .nets { display: flex; gap: .45rem; }
+    .mg-bills .nets a { border-radius: 12px; overflow: hidden; display: block; box-shadow: 0 0 0 1px var(--ab-border); transition: transform .15s; }
+    .mg-bills .nets a:hover { transform: translateY(-2px); }
+    .mg-bills .nets img { width: 42px; height: 42px; object-fit: cover; display: block; }
+
+    /* --- Join strip --- */
+    .mg-join { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 1.1rem 1.3rem; border-radius: 16px; background: var(--ab-primary-soft); border: 1px solid rgba(var(--ab-primary-rgb), .2); }
+    .mg-join h2 { font-size: 1.05rem; font-weight: 800; margin: 0; }
+    .mg-join p { margin: 0; font-size: .82rem; color: var(--ab-muted); }
+
+    /* --- Responsive --- */
+    @media (max-width: 1199.98px) {
+      .mg-hero { grid-template-columns: 210px minmax(0, 1fr); }
+      .mg-side { grid-column: 1 / -1; grid-template-rows: none; grid-template-columns: 1fr 1fr; }
+      .mg-promo { min-height: 150px; }
+      .mg-ribbon { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .mg-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+    @media (max-width: 991.98px) {
+      .mg-hero { grid-template-columns: minmax(0, 1fr); }
+      .mg-rail { flex-direction: row; overflow-x: auto; scrollbar-width: none; gap: .35rem; padding: .4rem; order: 2; }
+      .mg-rail::-webkit-scrollbar { display: none; }
+      .mg-rail h2, .mg-rail .chev { display: none; }
+      .mg-rail a { flex-shrink: 0; white-space: nowrap; background: var(--ab-surface-2); padding: .4rem .7rem .4rem .4rem; font-size: .78rem; }
+      .mg-rail .all { margin-top: 0; border: 0; border-radius: 10px; padding-top: .4rem; }
+      .mg-car { order: 1; }
+      .mg-side { order: 3; }
+      .mg-duo { grid-template-columns: minmax(0, 1fr); }
+      .mg-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 767.98px) {
+      .mg-slide { min-height: 290px; padding: 1.5rem 1.4rem 3rem; }
+      .mg-slide .art { font-size: 7rem; right: -4%; opacity: .35; }
+      .mg-slide h1, .mg-slide h2, .mg-slide p { max-width: none; }
+      .mg-slide .price-tag { display: none; }
+      .mg-car .carousel-indicators { margin-left: 1.4rem; }
+      .mg-car .carousel-control-prev, .mg-car .carousel-control-next { display: none; }
+      .mg-ribbon { display: flex; overflow-x: auto; scrollbar-width: none; }
+      .mg-ribbon::-webkit-scrollbar { display: none; }
+      .mg-ribbon a { flex-direction: column; text-align: center; gap: .35rem; flex-shrink: 0; width: 74px; padding: .5rem .25rem; font-size: .72rem; }
+      .mg-ribbon small { display: none; }
+      .mg-travel .mg-dest { grid-template-columns: minmax(0, 1fr); }
+      .mg-usd { flex-direction: column; align-items: flex-start; }
+      .mg-mini-card { display: none; }
+    }
+    @media (max-width: 575.98px) {
+      .mg-side { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .6rem; }
+      .mg-promo { padding: .9rem; min-height: 150px; }
+      .mg-promo h3 { font-size: .95rem; }
+      .mg-promo .big { font-size: 1.1rem; }
+      .mg-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; }
+      .mg-flash .hscroll > * { width: 158px; }
+      .mg-flash .hscroll { padding: .85rem; }
+      .mg-flash-top { padding: .7rem .85rem; }
+      .mg-route .end { width: 64px; }
+      #catGrid > :nth-child(n+7), #trending > :nth-child(n+7), #dest > :nth-child(n+7) { display: none; }
+      .mg-ticker .lab { padding: 0 .7rem; font-size: .68rem; }
+      .mg-ticker .lab .txt { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .mg-ticker .track { animation: none; }
+      .mg-ticker .vp { overflow-x: auto; mask-image: none; }
+      .mg-grid.fade-in > * { animation: none; }
+      .mg-card, .mg-promo { transition: none; }
+      .mg-card:hover, .mg-promo:hover { transform: none; }
+    }
+  </style>
+</head>
+<body data-page="home" data-title="Home" data-public="true" data-shell="store">
+<main class="ab-content">
+
+  <!-- ===== Hero: categories / carousel / side promos ===== -->
+  <section class="mg-sec mg-hero" aria-label="Featured">
+    <nav class="mg-panel mg-rail" aria-label="Shop by category">
+      <h2>Categories</h2>
+      <div id="rail" style="display:contents"></div>
+      <a href="./app/marketplace.html" class="all"><span class="ab-icon tone-primary"><i class="bi bi-grid"></i></span>All categories<i class="bi bi-chevron-right chev"></i></a>
+    </nav>
+
+    <div id="mgCar" class="carousel slide mg-car" aria-roledescription="carousel" aria-label="Promotions">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#mgCar" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#mgCar" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#mgCar" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <button type="button" data-bs-target="#mgCar" data-bs-slide-to="3" aria-label="Slide 4"></button>
+      </div>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="mg-slide s-brand">
+            <span class="ring r1"></span><span class="ring r2"></span>
+            <span class="kicker"><i class="bi bi-lightning-charge-fill"></i>Mega phone week</span>
+            <h1 class="h2" id="sPhoneTitle">Smartphones at their lowest prices this season</h1>
+            <p>Samsung, Apple, Xiaomi and more from verified sellers — delivered nationwide.</p>
+            <div><a href="./app/marketplace.html?cat=phones" class="btn btn-w">Shop phones <i class="bi bi-arrow-right ms-1"></i></a></div>
+            <span class="price-tag" id="sPhoneTag"></span>
+            <i class="bi bi-phone art" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="mg-slide s-orange">
+            <span class="ring r1"></span><span class="ring r2"></span>
+            <span class="kicker"><i class="bi bi-house-heart-fill"></i>Home &amp; kitchen</span>
+            <h2>Upgrade your kitchen, beat the heat, keep the lights on</h2>
+            <p>Air fryers, rechargeable fans and solar kits — many with free delivery.</p>
+            <div><a href="./app/marketplace.html?cat=home" class="btn btn-w">Shop home <i class="bi bi-arrow-right ms-1"></i></a></div>
+            <i class="bi bi-fire art" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="mg-slide s-violet">
+            <span class="ring r1"></span><span class="ring r2"></span>
+            <span class="kicker"><i class="bi bi-controller"></i>Gaming zone</span>
+            <h2>Consoles, accessories &amp; instant game codes</h2>
+            <p>PlayStation 5, RGB gear and Steam wallet codes delivered instantly to your account.</p>
+            <div><a href="./app/marketplace.html?cat=gaming" class="btn btn-w">Shop gaming <i class="bi bi-arrow-right ms-1"></i></a></div>
+            <i class="bi bi-controller art" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="mg-slide s-green">
+            <span class="ring r1"></span><span class="ring r2"></span>
+            <span class="kicker"><i class="bi bi-basket-fill"></i>Groceries</span>
+            <h2>Stock up the pantry without the market run</h2>
+            <p>Rice, oil and everyday essentials at fair prices from trusted sellers.</p>
+            <div><a href="./app/marketplace.html?cat=groceries" class="btn btn-w">Shop groceries <i class="bi bi-arrow-right ms-1"></i></a></div>
+            <i class="bi bi-basket2 art" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#mgCar" data-bs-slide="prev" aria-label="Previous slide"><span class="carousel-control-prev-icon" aria-hidden="true"></span></button>
+      <button class="carousel-control-next" type="button" data-bs-target="#mgCar" data-bs-slide="next" aria-label="Next slide"><span class="carousel-control-next-icon" aria-hidden="true"></span></button>
+    </div>
+
+    <div class="mg-side">
+      <a href="./app/esim.html" class="mg-promo p-esim">
+        <div><span class="tag"><i class="bi bi-sim me-1"></i>Travel eSIM</span><h3>Data in 120+ countries</h3></div>
+        <div><div class="big" id="esimFrom"></div><div class="flags" id="esimFlags"></div></div>
+        <i class="bi bi-globe2 bgicon" aria-hidden="true"></i>
+      </a>
+      <a href="./app/giftcards.html" class="mg-promo p-gift">
+        <div><span class="tag"><i class="bi bi-gift me-1"></i>Gift cards</span><h3>Sell cards for Naira</h3></div>
+        <div><div class="big" id="giftBest"></div><span class="go">Check today's rates <i class="bi bi-arrow-right"></i></span></div>
+        <i class="bi bi-gift bgicon" aria-hidden="true"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== Services ribbon ===== -->
+  <nav class="mg-sec mg-panel mg-ribbon" aria-label="AutoBiz services">
+    <a href="./app/marketplace.html"><span class="ab-icon tone-primary"><i class="bi bi-shop"></i></span><span class="t">Shop<small>Verified sellers</small></span></a>
+    <a href="./app/esim.html"><span class="ab-icon tone-violet"><i class="bi bi-sim"></i></span><span class="t">eSIM<small>120+ countries</small></span></a>
+    <a href="./app/flights.html"><span class="ab-icon tone-cyan"><i class="bi bi-airplane"></i></span><span class="t">Flights<small>Pay in Naira</small></span></a>
+    <a href="./app/virtual-cards.html"><span class="ab-icon tone-success"><i class="bi bi-credit-card-2-front"></i></span><span class="t">USD card<small>Pay online</small></span></a>
+    <a href="./app/giftcards.html"><span class="ab-icon tone-pink"><i class="bi bi-gift"></i></span><span class="t">Gift cards<small>Sell for Naira</small></span></a>
+    <a href="./app/bills.html?tab=airtime"><span class="ab-icon tone-warning"><i class="bi bi-phone"></i></span><span class="t">Airtime<small>All networks</small></span></a>
+    <a href="./app/bills.html?tab=electricity"><span class="ab-icon tone-orange"><i class="bi bi-lightning-charge"></i></span><span class="t">Electricity<small>Every DisCo</small></span></a>
+    <a href="./app/bills.html?tab=cable"><span class="ab-icon tone-danger"><i class="bi bi-tv"></i></span><span class="t">Cable TV<small>DStv, GOtv…</small></span></a>
+  </nav>
+
+  <!-- ===== Flash sale ===== -->
+  <section class="mg-sec mg-flash" aria-labelledby="flashTitle">
+    <div class="mg-flash-top">
+      <h2 id="flashTitle"><span class="bolt"><i class="bi bi-lightning-charge-fill"></i></span>Flash sale</h2>
+      <div class="mg-cd" role="timer" aria-label="Time left in flash sale"><span class="d-none d-sm-inline me-1">Ends in</span><span id="cd"></span></div>
+      <a href="./app/marketplace.html">See all <i class="bi bi-chevron-right"></i></a>
+    </div>
+    <div class="hscroll" id="flash"></div>
+  </section>
+
+  <!-- ===== Top deals by category ===== -->
+  <section class="mg-sec" aria-labelledby="dealsTitle">
+    <div class="mg-head"><div><h2 id="dealsTitle"><i class="bi bi-tags-fill text-primary"></i>Top deals by category</h2></div><a class="mg-more" id="dealsMore" href="./app/marketplace.html">View all <i class="bi bi-chevron-right"></i></a></div>
+    <div class="mg-tabs" role="tablist" aria-label="Product categories" id="tabs"></div>
+    <div class="mg-grid" id="catGrid" role="tabpanel" aria-labelledby="tab-all" tabindex="0"></div>
+  </section>
+
+  <!-- ===== Brands ===== -->
+  <section class="mg-sec mg-panel p-3" aria-labelledby="brandsTitle">
+    <div class="mg-head mb-2"><h2 id="brandsTitle"><i class="bi bi-patch-check-fill text-primary"></i>Shop by brand</h2></div>
+    <div class="mg-brands" id="brands"></div>
+  </section>
+
+  <!-- ===== Travel ===== -->
+  <section class="mg-sec mg-travel row g-3" aria-label="Travel">
+    <div class="col-lg-7">
+      <div class="mg-panel p-3 h-100">
+        <div class="mg-head"><div><h2><span class="ab-icon ab-icon-sm tone-violet"><i class="bi bi-sim"></i></span>Top eSIM destinations</h2><div class="sub">Instant mobile data abroad — no physical SIM.</div></div><a class="mg-more" href="./app/esim.html">All countries <i class="bi bi-chevron-right"></i></a></div>
+        <div class="mg-dest" id="dest"></div>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="mg-panel p-3 h-100">
+        <div class="mg-head"><div><h2><span class="ab-icon ab-icon-sm tone-cyan"><i class="bi bi-airplane"></i></span>Popular flight routes</h2><div class="sub">Compare airlines and book in Naira.</div></div><a class="mg-more" href="./app/flights.html">Search <i class="bi bi-chevron-right"></i></a></div>
+        <div id="routes"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Gift card ticker ===== -->
+  <section class="mg-sec mg-ticker" aria-label="Today's gift card rates">
+    <div class="lab"><span class="dot" aria-hidden="true"></span><span class="txt">Today's rates</span><i class="bi bi-gift d-sm-none" aria-hidden="true"></i></div>
+    <div class="vp"><div class="track" id="ticker"></div></div>
+  </section>
+
+  <!-- ===== USD card + bills ===== -->
+  <section class="mg-sec mg-duo" aria-label="Cards and bills">
+    <div class="mg-usd">
+      <div class="flex-grow-1">
+        <span class="badge rounded-pill mb-2" style="background:rgba(61,219,169,.18);color:#3ddba9">USD virtual card</span>
+        <h3>Pay Netflix, Amazon &amp; AliExpress in dollars</h3>
+        <p>Create a Visa or Mastercard in seconds and fund it from your Naira wallet. $2 to create, fund from $5.</p>
+        <a href="./app/virtual-cards.html" class="btn btn-light fw-bold">Get a USD card</a>
+      </div>
+      <div class="mg-mini-card" aria-hidden="true">
+        <div class="d-flex justify-content-between"><span>AutoBiz</span><i class="bi bi-wifi" style="transform:rotate(90deg)"></i></div>
+        <span class="chip"></span>
+        <div class="d-flex justify-content-between align-items-end"><span class="tabular">•••• 4081</span><span class="fst-italic fw-800">VISA</span></div>
+      </div>
+    </div>
+    <div class="mg-panel mg-bills">
+      <div class="d-flex align-items-center gap-3">
+        <span class="ab-icon ab-icon-lg tone-warning"><i class="bi bi-lightning-charge"></i></span>
+        <div><h3 class="h6 fw-800 mb-1">Airtime, data &amp; bills</h3><div class="fs-8 text-muted" id="billsLine">Instant top-ups for every network.</div></div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+        <div class="nets" id="nets"></div>
+        <a href="./app/bills.html" class="btn btn-primary btn-sm px-3">Pay a bill</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Trending ===== -->
+  <section class="mg-sec" aria-labelledby="trendTitle">
+    <div class="mg-head"><div><h2 id="trendTitle"><i class="bi bi-graph-up-arrow text-primary"></i>Trending now</h2><div class="sub">Most-reviewed products shoppers keep coming back to</div></div><a class="mg-more" href="./app/marketplace.html">Shop all <i class="bi bi-chevron-right"></i></a></div>
+    <div class="mg-grid" id="trending"></div>
+  </section>
+
+  <!-- ===== Join / account ===== -->
+  <section class="mg-sec mg-join" aria-labelledby="joinTitle">
+    <div class="d-flex align-items-center gap-3">
+      <span class="ab-icon ab-icon-lg tone-primary"><i class="bi bi-bag-check"></i></span>
+      <div><h2 id="joinTitle">Browse freely, sign up when you pay</h2><p id="joinText">One account and one wallet for shopping, travel, cards and bills.</p></div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap" id="joinBtns">
+      <a href="./register.html" class="btn btn-primary fw-bold">Create free account</a>
+      <a href="./login.html" class="btn btn-light-subtle fw-bold">Log in</a>
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/js/data.js"></script>
+<script src="./assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const D = AB_DATA, { fmt, esc } = AB;
+  const $ = (id) => document.getElementById(id);
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const disc = (p) => Math.round((1 - p.price / p.oldPrice) * 100);
+  const catOf = (id) => D.categories.find((c) => c.id === id);
+
+  /* ---- Category rail ---- */
+  $("rail").innerHTML = D.categories.map((c) => `<a href="./app/marketplace.html?cat=${c.id}"><span class="ab-icon tone-${c.tone}"><i class="bi ${c.icon}"></i></span>${esc(c.name)}<i class="bi bi-chevron-right chev"></i></a>`).join("");
+
+  /* ---- Carousel (no autoplay for reduced motion) ---- */
+  new bootstrap.Carousel($("mgCar"), { interval: reduce ? false : 5500, ride: reduce ? false : "carousel", pause: "hover" });
+  const phones = D.products.filter((p) => p.category === "phones");
+  const cheapest = phones.reduce((a, b) => (a.price < b.price ? a : b));
+  $("sPhoneTag").innerHTML = `<small>From</small>${fmt.naira(cheapest.price)}`;
+
+  /* ---- Side promos ---- */
+  const minEsim = Math.min(...D.esimCountries.filter((c) => !c.regional).map((c) => c.from));
+  $("esimFrom").textContent = `From ${fmt.usd(minEsim)}`;
+  $("esimFlags").innerHTML = ["gb", "us", "ae", "fr", "gh"].map((c) => `<img src="${AB.flag(c)}" alt="" loading="lazy">`).join("");
+  const best = (g) => Math.max(...Object.values(g.types));
+  const cards = [...D.giftcards].sort((a, b) => best(b) - best(a));
+  $("giftBest").textContent = `Up to ${fmt.naira(best(cards[0]))}/$`;
+
+  /* ---- Product card ---- */
+  const card = (p, extra = "") => `
+    <article class="mg-card">
+      <a href="./app/product.html?id=${p.id}" class="art" tabindex="-1" aria-hidden="true">${p.oldPrice > p.price ? `<span class="off">-${disc(p)}%</span>` : ""}${p.badge && !p.badge.startsWith("-") ? `<span class="bdg">${esc(p.badge)}</span>` : ""}${AB.productArt(p)}</a>
+      <a href="./app/product.html?id=${p.id}" class="nm">${esc(p.name)}</a>
+      <div class="meta"><i class="bi bi-star-fill"></i><b>${p.rating}</b><span>(${fmt.num(p.reviews)})</span>${p.freeShipping ? `<span class="ship ms-auto">${p.digital ? "Instant" : "Free delivery"}</span>` : ""}</div>
+      <div class="d-flex align-items-end justify-content-between gap-1 mt-auto pt-2">
+        <div class="min-w-0"><div class="pr tabular text-truncate">${fmt.naira(p.price)}</div><div class="old tabular">${fmt.naira(p.oldPrice)}</div></div>
+        <button class="btn btn-soft btn-icon add" data-add="${p.id}" aria-label="Add ${esc(p.name)} to cart"><i class="bi bi-cart-plus"></i></button>
+      </div>${extra}
+    </article>`;
+
+  /* ---- Flash sale with stock bars ---- */
+  const flash = [...D.products].filter((p) => !p.digital).sort((a, b) => disc(b) - disc(a)).slice(0, 10);
+  $("flash").innerHTML = flash.map((p) => {
+    const left = Math.max(2, Math.min(p.stock, Math.round(p.stock * 0.35) || 2));
+    const claimed = Math.min(94, Math.round(55 + (p.reviews % 37)));
+    return card(p, `<div class="mg-stock"><div class="bar" role="progressbar" aria-label="Claimed" aria-valuenow="${claimed}" aria-valuemin="0" aria-valuemax="100"><i style="width:${claimed}%"></i></div><div class="lbl"><span>${claimed}% claimed</span><span class="${left <= 5 ? "low" : ""}">${left} left</span></div></div>`);
+  }).join("");
+  const tick = () => {
+    const end = new Date(); end.setHours(24, 0, 0, 0);
+    const s = Math.max(0, Math.floor((end - Date.now()) / 1000)), p = (n) => String(n).padStart(2, "0");
+    $("cd").innerHTML = `<b>${p(Math.floor(s / 3600))}</b>:<b>${p(Math.floor(s / 60) % 60)}</b>:<b>${p(s % 60)}</b>`;
+  };
+  tick(); setInterval(tick, 1000);
+
+  /* ---- Tabbed category deals ---- */
+  const tabs = [{ id: "all", name: "All deals", icon: "bi-fire" }, ...D.categories];
+  $("tabs").innerHTML = tabs.map((c, i) => `<button type="button" role="tab" id="tab-${c.id}" data-cat="${c.id}" aria-selected="${i === 0}" aria-controls="catGrid" tabindex="${i === 0 ? 0 : -1}"><i class="bi ${c.icon}"></i>${esc(c.name)}</button>`).join("");
+  const renderCat = (id) => {
+    const list = (id === "all" ? [...D.products].sort((a, b) => disc(b) - disc(a)) : D.products.filter((p) => p.category === id).sort((a, b) => disc(b) - disc(a))).slice(0, 12);
+    const g = $("catGrid");
+    g.classList.remove("fade-in"); void g.offsetWidth; g.classList.add("fade-in");
+    g.innerHTML = list.map((p) => card(p)).join("");
+    g.setAttribute("aria-labelledby", `tab-${id}`);
+    $("dealsMore").href = id === "all" ? "./app/marketplace.html" : `./app/marketplace.html?cat=${id}`;
+    $("dealsMore").innerHTML = id === "all" ? `View all <i class="bi bi-chevron-right"></i>` : `All ${esc(catOf(id).name)} <i class="bi bi-chevron-right"></i>`;
+  };
+  const selectTab = (btn) => {
+    $("tabs").querySelectorAll("[role=tab]").forEach((b) => { const on = b === btn; b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; });
+    renderCat(btn.dataset.cat);
+  };
+  $("tabs").addEventListener("click", (e) => { const b = e.target.closest("[role=tab]"); if (b) selectTab(b); });
+  $("tabs").addEventListener("keydown", (e) => {
+    if (!["ArrowRight", "ArrowLeft"].includes(e.key)) return;
+    const all = [...$("tabs").querySelectorAll("[role=tab]")], i = all.indexOf(document.activeElement);
+    const n = all[(i + (e.key === "ArrowRight" ? 1 : -1) + all.length) % all.length];
+    n.focus(); n.scrollIntoView({ block: "nearest", inline: "nearest" }); selectTab(n); e.preventDefault();
+  });
+  renderCat("all");
+
+  /* ---- Brands ---- */
+  const brandCount = {};
+  D.products.forEach((p) => (brandCount[p.brand] = (brandCount[p.brand] || 0) + 1));
+  $("brands").innerHTML = Object.keys(brandCount).sort((a, b) => brandCount[b] - brandCount[a] || a.localeCompare(b))
+    .map((b) => `<a href="./app/marketplace.html?q=${encodeURIComponent(b)}">${esc(b)}<small>${brandCount[b]}</small></a>`).join("");
+
+  /* ---- Travel ---- */
+  $("dest").innerHTML = ["gb", "us", "ae", "ca", "gh", "tr", "fr", "za", "ke", "jp"].map((code) => D.esimCountries.find((c) => c.code === code)).filter(Boolean).map((c) => `
+    <a href="./app/esim.html?country=${c.code}"><img src="${AB.flag(c.code)}" alt="" loading="lazy">
+      <div class="min-w-0"><div class="fw-bold fs-7 text-truncate">${esc(c.name)}</div><div class="fs-8 text-muted text-truncate">${c.speed} · ${esc(c.networks)}</div></div>
+      <div class="p">${fmt.usd(c.from)}<small>${fmt.naira(Math.round(c.from * D.usdRate))}</small></div></a>`).join("");
+  const ap = (code) => D.airports.find((a) => a.code === code);
+  $("routes").innerHTML = [["LOS", "ABV"], ["LOS", "DXB"], ["ABV", "LHR"], ["LOS", "ACC"], ["PHC", "LOS"], ["LOS", "JFK"]].map(([f, t]) => `
+    <a class="mg-route" href="./app/flights.html?from=${f}&to=${t}" aria-label="Flights from ${ap(f).city} to ${ap(t).city}">
+      <div class="end"><div class="code">${f}</div><div class="city">${esc(ap(f).city)}</div></div>
+      <div class="path" aria-hidden="true"><i class="bi bi-airplane-fill"></i></div>
+      <div class="end r"><div class="code">${t}</div><div class="city">${esc(ap(t).city)}</div></div>
+      <span class="fare">${ap(t).country === "Nigeria" && ap(f).country === "Nigeria" ? "Local" : "Intl"} · Fares</span>
+    </a>`).join("");
+
+  /* ---- Gift card ticker (duplicated for a seamless loop) ---- */
+  const tickItems = (hidden) => cards.map((g) => `<a class="it" href="./app/giftcards.html?card=${g.id}" ${hidden ? 'aria-hidden="true" tabindex="-1"' : ""}><span class="ic" style="background:${g.color}"><i class="bi ${g.icon}"></i></span>${esc(g.name)} <b>${fmt.naira(best(g))}/$</b>${g.hot ? '<i class="bi bi-fire up" title="Popular"></i>' : ""}</a>`).join("");
+  $("ticker").innerHTML = tickItems(false) + (reduce ? "" : tickItems(true));
+
+  /* ---- Bills ---- */
+  $("nets").innerHTML = D.networks.map((n) => `<a href="./app/bills.html?tab=airtime" aria-label="Buy ${esc(n.name)} airtime"><img src="./assets/img/networks/${n.logo}" alt="${esc(n.name)}"></a>`).join("");
+  const cheapestData = Object.entries(D.dataPlans).flatMap(([net, plans]) => plans.map((p) => ({ ...p, net }))).filter((p) => p.name === "1GB" && p.validity === "30 days").sort((a, b) => a.price - b.price)[0];
+  $("billsLine").textContent = `1GB data from ${fmt.naira(cheapestData.price)} · ${D.discos.length} DisCos · DStv, GOtv & StarTimes`;
+
+  /* ---- Trending ---- */
+  $("trending").innerHTML = [...D.products].sort((a, b) => b.reviews - a.reviews).slice(0, 12).map((p) => card(p)).join("");
+
+  /* ---- Cart ---- */
+  document.querySelector("main").addEventListener("click", (e) => { const b = e.target.closest("[data-add]"); if (b) AB.cart.add(b.dataset.add, 1); });
+
+  /* ---- Members ---- */
+  if (AB.auth.isAuthed()) {
+    const u = AB.store.get("user");
+    $("joinTitle").textContent = `Welcome back, ${u.firstName}`;
+    $("joinText").textContent = "Your orders, trips, eSIMs and cards are waiting in your account.";
+    $("joinBtns").innerHTML = `<a href="./app/dashboard.html" class="btn btn-primary fw-bold">Go to my account</a><a href="./app/orders.html" class="btn btn-light-subtle fw-bold">My orders</a>`;
+  }
+});
+</script>
+</body>
+</html>

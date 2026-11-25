@@ -24,7 +24,23 @@
     { id: "rose", name: "Rose", primary: "#d6336c", panel: "#1f1018" },
     { id: "graphite", name: "Graphite", primary: "#495057", panel: "#121416" }
   ];
-  const DEFAULT = { primary: PRESETS[0].primary, panel: PRESETS[0].panel, preset: PRESETS[0].id };
+  // Homepage designs the admin can choose from. index.html is the entry point and
+  // forwards visitors to the chosen design (see "Homepage routing" below).
+  const HOMES = [
+    { file: "index.html", name: "Classic", desc: "Shop-first homepage with quick-service widget" },
+    { file: "index1.html", name: "Marketplace megastore", desc: "Category menu, promo carousel, flash sale" },
+    { file: "index2.html", name: "Super-app launcher", desc: "Big search and live service tiles" },
+    { file: "index3.html", name: "Editorial magazine", desc: "Oversized type, chapter per service" },
+    { file: "index4.html", name: "Travel-led", desc: "Booking widget hero, destinations" },
+    { file: "index5.html", name: "Dark premium", desc: "Glass cards, glowing USD card" },
+    { file: "index6.html", name: "Bento grid", desc: "Hero of interactive mini-widgets" },
+    { file: "index7.html", name: "Split-screen fintech", desc: "Phone mockup and scroll story" },
+    { file: "index8.html", name: "Black Friday campaign", desc: "Countdown, coupons, deal shelves" },
+    { file: "index9.html", name: "Search-first", desc: "One smart command bar" },
+    { file: "index10.html", name: "Local & community", desc: "Delivery by state, local products" }
+  ];
+  const isHome = (f) => HOMES.some((h) => h.file === f);
+  const DEFAULT = { primary: PRESETS[0].primary, panel: PRESETS[0].panel, preset: PRESETS[0].id, home: "index.html" };
 
   /* ---- colour maths ---- */
   const isHex = (h) => /^#([0-9a-f]{6})$/i.test(h || "");
@@ -75,7 +91,7 @@
   function get() {
     try {
       const b = JSON.parse(localStorage.getItem(KEY));
-      if (b && isHex(b.primary) && isHex(b.panel)) return b;
+      if (b && isHex(b.primary) && isHex(b.panel)) return { ...b, home: isHome(b.home) ? b.home : "index.html" };
     } catch (e) { /* ignore */ }
     return { ...DEFAULT };
   }
@@ -107,16 +123,29 @@
   }).observe(document.documentElement, { childList: true, subtree: true });
 
   function save(b) {
-    const clean = { primary: b.primary.toLowerCase(), panel: b.panel.toLowerCase(), preset: b.preset || null, updatedAt: Date.now() };
+    const clean = { primary: b.primary.toLowerCase(), panel: b.panel.toLowerCase(), preset: b.preset || null, home: isHome(b.home) ? b.home : "index.html", updatedAt: Date.now() };
     localStorage.setItem(KEY, JSON.stringify(clean));
     apply(clean);
     return clean;
   }
   function reset() { localStorage.removeItem(KEY); apply(DEFAULT); return { ...DEFAULT }; }
 
+  /* ---- Homepage routing ----
+     The site root (index.html) forwards to the admin-chosen design. Add ?classic=1
+     to view the classic page regardless (used by previews). Server-side, the same
+     setting would simply pick which template to render at "/". */
+  const ROOT = (document.currentScript && document.currentScript.src.replace(/assets\/js\/brand\.js.*$/, "")) || "";
+  (function routeHome() {
+    const here = location.href.split(/[?#]/)[0];
+    const atRoot = here === ROOT || here === ROOT + "index.html";
+    if (!atRoot || /[?&]classic=1/.test(location.search)) return;
+    const home = get().home;
+    if (home && home !== "index.html") location.replace(ROOT + home + location.search + location.hash);
+  })();
+
   apply();
   // Keep other open tabs in sync when the admin saves
   window.addEventListener("storage", (e) => { if (e.key === KEY) apply(); });
 
-  window.ABBrand = { PRESETS, DEFAULT, get, apply, save, reset, derive, contrast, isHex, logoUri };
+  window.ABBrand = { PRESETS, HOMES, DEFAULT, ROOT, get, apply, save, reset, derive, contrast, isHex, logoUri };
 })();

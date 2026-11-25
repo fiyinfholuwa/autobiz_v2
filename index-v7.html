@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AutoBiz · One Naira wallet for shopping, travel &amp; bills</title>
+  <meta name="description" content="Shop from verified sellers, buy travel eSIMs, book flights, get a USD virtual card, sell gift cards and pay for airtime, data and bills — all from one Naira wallet on AutoBiz.">
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="./assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="./assets/css/app.css" rel="stylesheet">
+  <script src="./assets/js/brand.js"></script>
+  <style>
+    body { background: var(--ab-bg); overflow-x: hidden; }
+    .v7-wrap { width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 1.5rem; }
+    @media (max-width: 575.98px) { .v7-wrap { padding: 0 1rem; } }
+    :focus-visible { outline: 3px solid rgba(var(--ab-primary-rgb), .55); outline-offset: 2px; }
+    .v7-eyebrow { display: inline-flex; align-items: center; gap: .5rem; font-size: .78rem; font-weight: 700; letter-spacing: .02em; color: var(--ab-primary); background: var(--ab-primary-soft); border: 1px solid rgba(var(--ab-primary-rgb), .18); padding: .35rem .8rem .35rem .4rem; border-radius: 999px; }
+    .v7-eyebrow b { background: var(--ab-primary); color: var(--ab-on-primary); border-radius: 999px; padding: .1rem .55rem; font-size: .7rem; }
+    .v7-kicker { font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ab-primary); }
+    .v7-h2 { font-size: clamp(1.6rem, 3vw, 2.35rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.15; }
+    .v7-lead { color: var(--ab-muted); font-size: 1.02rem; line-height: 1.65; }
+    section { scroll-margin-top: 84px; }
+
+    /* ---------- Header ---------- */
+    .v7-header { position: sticky; top: 0; z-index: 1030; background: color-mix(in srgb, var(--ab-surface) 86%, transparent); backdrop-filter: saturate(1.4) blur(14px); -webkit-backdrop-filter: saturate(1.4) blur(14px); border-bottom: 1px solid transparent; transition: border-color .2s, box-shadow .2s; }
+    .v7-header.scrolled { border-bottom-color: var(--ab-border); box-shadow: 0 8px 24px -20px rgba(0,0,0,.3); }
+    .v7-header .bar { height: 68px; display: flex; align-items: center; gap: 1rem; }
+    .v7-brand { display: inline-flex; align-items: center; gap: .55rem; font-weight: 800; font-size: 1.15rem; color: var(--ab-text); letter-spacing: -.02em; }
+    .v7-brand img { width: 32px; height: 32px; }
+    .v7-nav { display: flex; gap: .15rem; margin-left: 1rem; }
+    .v7-nav a { color: var(--ab-text); opacity: .78; font-weight: 600; font-size: .875rem; padding: .45rem .7rem; border-radius: 10px; }
+    .v7-nav a:hover { opacity: 1; background: var(--ab-surface-2); color: var(--ab-primary); }
+    .v7-iconbtn { width: 40px; height: 40px; border-radius: 12px; display: inline-grid; place-items: center; border: 1px solid var(--ab-border); background: var(--ab-surface); color: var(--ab-text); position: relative; font-size: 1.05rem; }
+    .v7-iconbtn:hover { color: var(--ab-primary); border-color: rgba(var(--ab-primary-rgb), .4); }
+    .v7-iconbtn .ab-dot-badge { position: absolute; top: -6px; right: -6px; }
+    .v7-offcanvas { background: var(--ab-surface); color: var(--ab-text); }
+    .v7-offcanvas .mlink { display: flex; align-items: center; gap: .8rem; padding: .7rem .5rem; border-radius: 12px; color: var(--ab-text); font-weight: 600; }
+    .v7-offcanvas .mlink:hover { background: var(--ab-surface-2); }
+
+    /* ---------- Hero ---------- */
+    .v7-hero { position: relative; padding: 4.5rem 0 5rem; overflow: hidden; }
+    .v7-hero::before { content: ""; position: absolute; inset: 0; background:
+        radial-gradient(600px 380px at 82% 30%, rgba(var(--ab-primary-rgb), .16), transparent 70%),
+        linear-gradient(var(--ab-border) 1px, transparent 1px) 0 0 / 100% 56px; opacity: .9; pointer-events: none;
+      -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 85%); mask-image: linear-gradient(180deg, #000 0%, transparent 85%); }
+    .v7-hero > * { position: relative; }
+    .v7-hero h1 { font-size: clamp(2.2rem, 5vw, 3.65rem); font-weight: 800; letter-spacing: -.04em; line-height: 1.04; margin: 1.1rem 0 1.1rem; }
+    .v7-hero h1 em { font-style: normal; color: var(--ab-primary); }
+    .v7-hero .v7-lead { max-width: 520px; font-size: 1.08rem; }
+    .v7-proof { list-style: none; padding: 0; margin: 2.25rem 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; max-width: 560px; }
+    .v7-proof li { border-top: 2px solid var(--ab-border); padding-top: .85rem; }
+    .v7-proof li:first-child { border-top-color: var(--ab-primary); }
+    .v7-proof i { color: var(--ab-primary); font-size: 1.15rem; }
+    .v7-proof b { display: block; font-size: .9rem; margin-top: .35rem; }
+    .v7-proof span { font-size: .78rem; color: var(--ab-muted); line-height: 1.45; display: block; }
+    @media (max-width: 575.98px) { .v7-proof { grid-template-columns: 1fr; gap: .25rem; } .v7-proof li { display: grid; grid-template-columns: 28px 1fr; column-gap: .5rem; align-items: start; border-top-width: 1px; } .v7-proof li i { grid-row: span 2; margin-top: .3rem; } .v7-proof b { margin-top: 0; } }
+
+    /* Device stage */
+    .v7-stage { position: relative; height: 620px; display: grid; place-items: center; }
+    .v7-stage::before { content: ""; position: absolute; width: 440px; height: 440px; border-radius: 50%; background: conic-gradient(from 210deg, rgba(var(--ab-primary-rgb), .0), rgba(var(--ab-primary-rgb), .35), rgba(var(--ab-primary-rgb), .0)); filter: blur(40px); }
+    .v7-phone { position: relative; width: 300px; height: 612px; border-radius: 48px; padding: 11px; background: linear-gradient(160deg, #2b2d33, #0d0e11 60%); box-shadow: 0 50px 80px -30px rgba(0,0,0,.45), inset 0 0 0 1.5px rgba(255,255,255,.12); z-index: 2; }
+    .v7-phone .screen { position: relative; height: 100%; border-radius: 38px; overflow: hidden; background: var(--ab-bg); display: flex; flex-direction: column; }
+    .v7-phone .island { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 92px; height: 26px; border-radius: 20px; background: #000; z-index: 3; }
+    .v7-phone .status { display: flex; justify-content: space-between; padding: 14px 24px 0; font-size: .7rem; font-weight: 700; color: var(--ab-text); }
+    .scr-pad { padding: 18px 16px 0; }
+    .scr-greet { display: flex; align-items: center; justify-content: space-between; }
+    .scr-greet small { display: block; font-size: .64rem; color: var(--ab-muted); }
+    .scr-greet b { font-size: .86rem; }
+    .scr-avatar { width: 32px; height: 32px; border-radius: 10px; background: var(--ab-primary); color: var(--ab-on-primary); display: grid; place-items: center; font-size: .72rem; font-weight: 800; }
+    .scr-balance { margin-top: 14px; border-radius: 20px; padding: 16px; color: #fff; background: linear-gradient(135deg, var(--ab-sidebar) 0%, var(--ab-primary-700) 70%, var(--ab-primary) 140%); position: relative; overflow: hidden; }
+    .scr-balance::after { content: ""; position: absolute; width: 150px; height: 150px; border-radius: 50%; right: -50px; top: -70px; border: 22px solid rgba(255,255,255,.08); }
+    .scr-balance small { font-size: .62rem; opacity: .75; }
+    .scr-balance .amt { font-size: 1.45rem; font-weight: 800; letter-spacing: -.03em; }
+    .scr-balance .row-b { display: flex; gap: 6px; margin-top: 12px; }
+    .scr-balance .row-b span { flex: 1; text-align: center; font-size: .6rem; font-weight: 700; padding: 7px 0; border-radius: 10px; background: rgba(255,255,255,.14); }
+    .scr-balance .row-b span:first-child { background: #fff; color: var(--ab-primary-700); }
+    .scr-quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
+    .scr-quick div { text-align: center; font-size: .58rem; font-weight: 600; color: var(--ab-text); }
+    .scr-quick .ab-icon { width: 40px; height: 40px; border-radius: 13px; font-size: 1rem; margin: 0 auto 4px; }
+    .scr-sec { display: flex; justify-content: space-between; align-items: center; margin: 14px 0 8px; font-size: .7rem; font-weight: 700; }
+    .scr-sec span { color: var(--ab-primary); font-weight: 600; font-size: .62rem; }
+    .scr-order { background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 16px; padding: 10px; display: flex; gap: 10px; align-items: center; }
+    .scr-order .ab-product-art { width: 46px; height: 46px; font-size: 1.3rem; border-radius: 12px; flex-shrink: 0; }
+    .scr-order .t { font-size: .68rem; font-weight: 700; line-height: 1.25; }
+    .scr-order .m { font-size: .58rem; color: var(--ab-muted); }
+    .scr-track { display: flex; gap: 3px; margin-top: 6px; }
+    .scr-track i { flex: 1; height: 4px; border-radius: 3px; background: var(--ab-border); font-style: normal; }
+    .scr-track i.on { background: var(--ab-primary); }
+    .scr-tx { display: flex; align-items: center; gap: 8px; padding: 8px 2px; border-bottom: 1px dashed var(--ab-border); font-size: .62rem; }
+    .scr-tx img { width: 28px; height: 28px; border-radius: 9px; object-fit: cover; }
+    .scr-tx b { display: block; font-size: .66rem; }
+    .scr-tx .r { margin-left: auto; font-weight: 700; }
+    .scr-tab { margin-top: auto; display: flex; justify-content: space-around; padding: 10px 6px 18px; background: var(--ab-surface); border-top: 1px solid var(--ab-border); font-size: 1rem; color: var(--ab-muted); }
+    .scr-tab .on { color: var(--ab-primary); }
+
+    .v7-usdcard { position: absolute; z-index: 3; left: calc(50% - 270px); bottom: 70px; width: 250px; aspect-ratio: 1.586; border-radius: 18px; padding: 16px 18px; color: #fff; transform: rotate(-9deg);
+      background: radial-gradient(120% 140% at 100% 0%, rgba(var(--ab-primary-rgb), .9), transparent 55%), linear-gradient(135deg, var(--ab-sidebar), #0a0a0c);
+      box-shadow: 0 30px 50px -18px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.12); display: flex; flex-direction: column; justify-content: space-between; }
+    .v7-usdcard .chip { width: 34px; height: 25px; border-radius: 6px; background: linear-gradient(135deg, #e9d79a, #b99a4a); }
+    .v7-usdcard .num { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .12em; font-size: .9rem; }
+    .v7-usdcard small { font-size: .6rem; opacity: .7; text-transform: uppercase; letter-spacing: .1em; }
+    .v7-float { position: absolute; z-index: 4; background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 16px; padding: 10px 14px; box-shadow: var(--ab-shadow-lg); display: flex; align-items: center; gap: 10px; font-size: .78rem; }
+    .v7-float b { display: block; font-size: .82rem; }
+    .v7-float span { color: var(--ab-muted); font-size: .7rem; }
+    .v7-float img { width: 34px; height: 34px; border-radius: 10px; object-fit: cover; }
+    .v7-float.f1 { right: calc(50% - 300px); top: 96px; }
+    .v7-float.f2 { right: calc(50% - 280px); bottom: 120px; }
+    .v7-float.f2 img { border-radius: 50%; width: 30px; height: 30px; }
+    @media (prefers-reduced-motion: no-preference) {
+      .v7-float.f1 { animation: v7bob 6s ease-in-out infinite; }
+      .v7-float.f2 { animation: v7bob 7s ease-in-out -2s infinite; }
+      .v7-usdcard { animation: v7tilt 8s ease-in-out infinite; }
+    }
+    @keyframes v7bob { 50% { transform: translateY(-8px); } }
+    @keyframes v7tilt { 50% { transform: rotate(-7deg) translateY(-6px); } }
+    @media (max-width: 991.98px) { .v7-hero { padding: 2.5rem 0 3rem; } .v7-stage { margin-top: 2.5rem; } }
+    @media (max-width: 575.98px) {
+      .v7-stage { height: 520px; }
+      .v7-phone { transform: scale(.82); transform-origin: center; }
+      .v7-usdcard { width: 170px; left: 0; bottom: 24px; padding: 10px 12px; border-radius: 13px; }
+      .v7-usdcard .num { font-size: .66rem; } .v7-usdcard .chip { width: 24px; height: 18px; }
+      .v7-float.f1 { right: 0; top: 40px; } .v7-float.f2 { right: 0; bottom: 70px; }
+      .v7-float { padding: 8px 10px; }
+    }
+
+    /* ---------- Service band ---------- */
+    .v7-band { border-block: 1px solid var(--ab-border); background: var(--ab-surface); }
+    .v7-band .items { display: grid; grid-template-columns: repeat(6, 1fr); }
+    .v7-band a { display: flex; align-items: center; gap: .7rem; padding: 1.1rem 1rem; color: var(--ab-text); font-weight: 600; font-size: .86rem; border-right: 1px solid var(--ab-border); transition: background .2s; }
+    .v7-band a:last-child { border-right: 0; }
+    .v7-band a:hover { background: var(--ab-surface-2); color: var(--ab-primary); }
+    .v7-band small { display: block; font-weight: 500; color: var(--ab-muted); font-size: .72rem; }
+    @media (max-width: 991.98px) { .v7-band .items { grid-template-columns: repeat(3, 1fr); } .v7-band a:nth-child(3n) { border-right: 0; } .v7-band a:nth-child(-n+3) { border-bottom: 1px solid var(--ab-border); } }
+    @media (max-width: 575.98px) { .v7-band .items { grid-template-columns: repeat(2, 1fr); } .v7-band a { border-right: 1px solid var(--ab-border) !important; border-bottom: 1px solid var(--ab-border); padding: .9rem .75rem; } .v7-band a:nth-child(2n) { border-right: 0 !important; } .v7-band a:nth-last-child(-n+2) { border-bottom: 0; } }
+
+    /* ---------- Sticky scroll ---------- */
+    .v7-scrolly { padding: 6rem 0 4rem; }
+    .v7-sticky { position: sticky; top: 108px; }
+    .v7-steps { list-style: none; padding: 0; margin: 2rem 0 0; border-left: 2px solid var(--ab-border); }
+    .v7-steps button { all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; gap: .8rem; width: 100%; padding: .7rem 1rem; margin-left: -2px; border-left: 2px solid transparent; color: var(--ab-muted); font-weight: 600; transition: color .25s, border-color .25s; }
+    .v7-steps button:focus-visible { outline: 3px solid rgba(var(--ab-primary-rgb), .55); border-radius: 6px; }
+    .v7-steps button .n { font-size: .7rem; font-variant-numeric: tabular-nums; opacity: .7; width: 18px; }
+    .v7-steps button.active { color: var(--ab-text); border-left-color: var(--ab-primary); }
+    .v7-steps button.active .ab-icon { transform: scale(1.06); }
+    .v7-steps .ab-icon { transition: transform .25s; }
+    .v7-active { margin-top: 1.75rem; min-height: 150px; }
+    .v7-active p { color: var(--ab-muted); line-height: 1.6; }
+    .v7-active .fx { transition: opacity .3s ease, transform .3s ease; }
+    .v7-active.swap .fx { opacity: 0; transform: translateY(6px); }
+    .v7-panel { background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 24px; padding: 1.75rem; margin-bottom: 1.5rem; min-height: 360px; display: flex; flex-direction: column; justify-content: center; box-shadow: var(--ab-shadow-sm); transition: border-color .3s, box-shadow .3s; }
+    .v7-panel.is-active { border-color: rgba(var(--ab-primary-rgb), .35); box-shadow: var(--ab-shadow); }
+    .v7-panel .ph { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+    .v7-panel .ph h3 { font-size: 1.05rem; margin: 0; }
+    .v7-panel .ph .fs-8 { color: var(--ab-muted); }
+    .v7-mhead { display: none; }
+    @media (max-width: 991.98px) {
+      .v7-scrolly { padding: 3.5rem 0 2rem; }
+      .v7-sticky { position: static; }
+      .v7-steps, .v7-active { display: none; }
+      .v7-mhead { display: block; margin-bottom: 1rem; }
+      .v7-mhead p { color: var(--ab-muted); font-size: .9rem; margin: .25rem 0 0; }
+      .v7-panel { min-height: 0; padding: 1.25rem; border-radius: 20px; }
+    }
+    .p-mini { display: grid; grid-template-columns: repeat(2, 1fr); gap: .85rem; }
+    .p-mini a.it { display: block; background: var(--ab-surface-2); border-radius: 16px; padding: .75rem; color: var(--ab-text); transition: transform .2s; }
+    .p-mini a.it:hover { transform: translateY(-2px); }
+    .p-mini .ab-product-art { aspect-ratio: 16/10; font-size: 2.4rem; }
+    .p-mini .nm { font-size: .82rem; font-weight: 600; margin-top: .55rem; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+    .p-mini .pr { font-weight: 800; font-size: .92rem; }
+    .p-mini .old { font-size: .72rem; color: var(--ab-muted); text-decoration: line-through; margin-left: .35rem; }
+    .v7-list { display: grid; gap: .5rem; }
+    .v7-li { display: flex; align-items: center; gap: .85rem; padding: .7rem .85rem; border-radius: 14px; border: 1px solid var(--ab-border); color: var(--ab-text); transition: border-color .2s, background .2s; }
+    .v7-li:hover { border-color: rgba(var(--ab-primary-rgb), .4); background: var(--ab-surface-2); }
+    .v7-li img.flag { width: 34px; height: 24px; border-radius: 5px; object-fit: cover; box-shadow: 0 0 0 1px var(--ab-border); }
+    .v7-li .t { font-weight: 600; font-size: .88rem; }
+    .v7-li .s { font-size: .74rem; color: var(--ab-muted); }
+    .v7-li .r { margin-left: auto; text-align: right; font-weight: 700; font-size: .86rem; white-space: nowrap; }
+    .v7-li .r small { display: block; font-weight: 500; color: var(--ab-muted); font-size: .7rem; }
+    .v7-route { display: flex; align-items: center; gap: .6rem; font-weight: 800; letter-spacing: .02em; }
+    .v7-route .ln { flex: 1; height: 1px; border-top: 1.5px dashed var(--ab-border); position: relative; min-width: 24px; }
+    .v7-route .ln i { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -55%) rotate(90deg); color: var(--ab-primary); font-size: .8rem; background: var(--ab-surface); padding: 0 2px; }
+    .v7-ccard { aspect-ratio: 1.586; max-width: 340px; border-radius: 20px; padding: 1.3rem; color: #fff; display: flex; flex-direction: column; justify-content: space-between;
+      background: radial-gradient(120% 140% at 100% 0%, rgba(var(--ab-primary-rgb), .85), transparent 55%), linear-gradient(135deg, var(--ab-sidebar), #0a0a0c); box-shadow: var(--ab-shadow); }
+    .v7-ccard .num { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .14em; }
+    .v7-facts { list-style: none; padding: 0; margin: 0; display: grid; gap: .65rem; }
+    .v7-facts li { display: flex; gap: .65rem; font-size: .88rem; }
+    .v7-facts i { color: var(--ab-primary); }
+    .v7-rate { display: grid; grid-template-columns: 1fr auto auto; gap: .5rem 1rem; align-items: center; font-size: .86rem; }
+    .v7-rate .hd { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--ab-muted); font-weight: 700; }
+    .v7-rate .ic { width: 30px; height: 30px; border-radius: 9px; display: inline-grid; place-items: center; color: #fff; margin-right: .6rem; font-size: .85rem; }
+    .v7-rate .row-line { display: contents; }
+    .v7-rate a { color: var(--ab-text); display: flex; align-items: center; font-weight: 600; }
+    .v7-rate a:hover { color: var(--ab-primary); }
+    .v7-net { display: flex; gap: .6rem; flex-wrap: wrap; }
+    .v7-net a { display: flex; align-items: center; gap: .5rem; padding: .45rem .8rem .45rem .45rem; border: 1px solid var(--ab-border); border-radius: 999px; color: var(--ab-text); font-weight: 600; font-size: .82rem; }
+    .v7-net a:hover { border-color: var(--ab-primary); }
+    .v7-net img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+    .v7-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
+    .v7-tiles a { border-radius: 14px; background: var(--ab-surface-2); padding: .8rem; color: var(--ab-text); }
+    .v7-tiles a:hover { outline: 1.5px solid rgba(var(--ab-primary-rgb), .4); }
+    .v7-tiles b { display: block; font-size: 1.05rem; letter-spacing: -.02em; }
+    .v7-tiles span { font-size: .72rem; color: var(--ab-muted); }
+    @media (max-width: 575.98px) { .v7-tiles { grid-template-columns: 1fr 1fr; } .v7-rate { font-size: .8rem; gap: .45rem .6rem; } }
+
+    /* ---------- Compare ---------- */
+    .v7-compare { padding: 4rem 0; }
+    .v7-table { border: 1px solid var(--ab-border); border-radius: 24px; overflow: hidden; background: var(--ab-surface); }
+    .v7-row { display: grid; grid-template-columns: 1.1fr 1.3fr 1.6fr; border-top: 1px solid var(--ab-border); }
+    .v7-row:first-child { border-top: 0; }
+    .v7-row > div { padding: 1.1rem 1.4rem; font-size: .9rem; }
+    .v7-row .need { font-weight: 700; display: flex; align-items: center; gap: .75rem; }
+    .v7-row .usual { color: var(--ab-muted); display: flex; gap: .55rem; }
+    .v7-row .usual i { color: var(--ab-muted); opacity: .7; }
+    .v7-row .ours { background: rgba(var(--ab-primary-rgb), .045); display: flex; gap: .55rem; }
+    .v7-row .ours i { color: var(--ab-primary); }
+    .v7-row.hd > div { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; color: var(--ab-muted); padding-block: .85rem; background: var(--ab-surface-2); }
+    .v7-row.hd .ours { color: var(--ab-primary); background: rgba(var(--ab-primary-rgb), .09); }
+    @media (max-width: 767.98px) {
+      .v7-row.hd { display: none; }
+      .v7-row { grid-template-columns: 1fr; }
+      .v7-row > div { padding: .55rem 1.1rem; }
+      .v7-row .need { padding-top: 1.1rem; }
+      .v7-row .usual::before { content: "Usually"; font-size: .66rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; min-width: 72px; padding-top: .15rem; }
+      .v7-row .ours { margin: 0 .75rem .9rem; border-radius: 12px; padding: .7rem .85rem; }
+      .v7-row .usual i { display: none; }
+    }
+
+    /* ---------- Product strip ---------- */
+    .v7-strip { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; padding: .25rem .25rem 1rem; scrollbar-width: thin; }
+    .v7-strip > * { scroll-snap-align: start; }
+    .v7-pc { background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 20px; padding: .8rem; display: flex; flex-direction: column; transition: transform .2s, box-shadow .2s; }
+    .v7-pc:hover { transform: translateY(-3px); box-shadow: var(--ab-shadow); }
+    .v7-pc .art { position: relative; display: block; }
+    .v7-pc .off { position: absolute; top: 8px; left: 8px; z-index: 2; background: var(--ab-surface); color: var(--ab-danger); font-size: .68rem; font-weight: 800; padding: .15rem .45rem; border-radius: 7px; }
+    .v7-pc .nm { color: var(--ab-text); font-weight: 600; font-size: .86rem; margin-top: .65rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.5em; }
+    .v7-pc .nm:hover { color: var(--ab-primary); }
+    .v7-pc .pr { font-weight: 800; }
+    .v7-pc .old { font-size: .72rem; color: var(--ab-muted); text-decoration: line-through; }
+    .v7-sbtn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--ab-border); background: var(--ab-surface); color: var(--ab-text); display: inline-grid; place-items: center; }
+    .v7-sbtn:hover { border-color: var(--ab-primary); color: var(--ab-primary); }
+
+    /* ---------- FAQ ---------- */
+    .v7-faq .accordion { --bs-accordion-bg: var(--ab-surface); --bs-accordion-border-color: var(--ab-border); --bs-accordion-btn-focus-box-shadow: 0 0 0 4px rgba(var(--ab-primary-rgb), .15); --bs-accordion-active-bg: var(--ab-surface); --bs-accordion-active-color: var(--ab-text); --bs-accordion-color: var(--ab-text); --bs-accordion-btn-color: var(--ab-text); --bs-accordion-border-radius: 18px; --bs-accordion-inner-border-radius: 17px; }
+    .v7-faq .accordion-button { font-weight: 700; padding: 1.1rem 1.3rem; }
+    .v7-faq .accordion-body { color: var(--ab-muted); padding-top: 0; line-height: 1.65; }
+    .v7-faq .accordion-item { margin-bottom: .6rem; border-radius: 18px !important; border: 1px solid var(--ab-border); overflow: hidden; }
+    .v7-faq .accordion-item:not(:first-of-type) { border-top: 1px solid var(--ab-border); }
+
+    /* ---------- CTA + footer ---------- */
+    .v7-cta { border-radius: 28px; padding: 3rem; color: #fff; position: relative; overflow: hidden; background: linear-gradient(120deg, var(--ab-sidebar) 0%, var(--ab-primary-700) 60%, var(--ab-primary) 120%); }
+    .v7-cta::after { content: ""; position: absolute; right: -80px; bottom: -160px; width: 420px; height: 420px; border-radius: 50%; border: 60px solid rgba(255,255,255,.06); }
+    .v7-cta > * { position: relative; z-index: 1; }
+    .v7-cta h2 { color: #fff; font-weight: 800; letter-spacing: -.03em; font-size: clamp(1.6rem, 3vw, 2.3rem); }
+    .v7-cta .btn-white { background: #fff; color: var(--ab-primary-700); font-weight: 700; }
+    .v7-cta .btn-white:hover { background: var(--ab-primary-soft); }
+    .v7-cta .btn-ghost { color: #fff; border: 1px solid rgba(255,255,255,.4); }
+    .v7-cta .btn-ghost:hover { background: rgba(255,255,255,.12); color: #fff; }
+    @media (max-width: 575.98px) { .v7-cta { padding: 2rem 1.4rem; border-radius: 22px; } }
+    .v7-footer { border-top: 1px solid var(--ab-border); background: var(--ab-surface); margin-top: 4.5rem; padding: 3rem 0 1.5rem; font-size: .875rem; }
+    .v7-footer h6 { font-size: .74rem; text-transform: uppercase; letter-spacing: .1em; color: var(--ab-muted); margin-bottom: .9rem; }
+    .v7-footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: .5rem; }
+    .v7-footer ul a { color: var(--ab-text); opacity: .85; }
+    .v7-footer ul a:hover { color: var(--ab-primary); opacity: 1; }
+    .v7-footer .legal { border-top: 1px solid var(--ab-border); margin-top: 2rem; padding-top: 1.25rem; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; color: var(--ab-muted); font-size: .8rem; }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="visually-hidden-focusable position-absolute top-0 start-0 m-2 btn btn-primary" style="z-index:2000">Skip to content</a>
+
+<header class="v7-header" id="v7Header">
+  <div class="v7-wrap bar">
+    <a href="./index-v7.html" class="v7-brand" aria-label="AutoBiz home"><img src="./assets/img/logo.svg" alt="">AutoBiz</a>
+    <nav class="v7-nav d-none d-xl-flex" aria-label="Main">
+      <a href="./app/marketplace.html">Shop</a>
+      <a href="./app/esim.html">eSIM</a>
+      <a href="./app/flights.html">Flights</a>
+      <a href="./app/giftcards.html">Gift cards</a>
+      <a href="./app/virtual-cards.html">USD cards</a>
+      <a href="./app/bills.html">Bills</a>
+    </nav>
+    <div class="ms-auto d-flex align-items-center gap-2">
+      <button class="v7-iconbtn d-none d-sm-inline-grid" data-theme-toggle aria-label="Toggle dark mode"><i class="bi bi-moon-stars"></i></button>
+      <a href="./app/cart.html" class="v7-iconbtn" aria-label="Cart"><i class="bi bi-bag"></i><span class="ab-dot-badge" data-cart-count hidden></span></a>
+      <div class="d-none d-md-flex align-items-center gap-2" id="hdAuth">
+        <a href="./login.html" class="btn btn-light-subtle">Log in</a>
+        <a href="./register.html" class="btn btn-primary">Sign up</a>
+      </div>
+      <button class="v7-iconbtn d-xl-none" data-bs-toggle="offcanvas" data-bs-target="#v7Menu" aria-controls="v7Menu" aria-label="Open menu"><i class="bi bi-list"></i></button>
+    </div>
+  </div>
+</header>
+
+<div class="offcanvas offcanvas-end v7-offcanvas" tabindex="-1" id="v7Menu" aria-labelledby="v7MenuLabel" style="max-width:320px">
+  <div class="offcanvas-header">
+    <span class="v7-brand" id="v7MenuLabel"><img src="./assets/img/logo.svg" alt="">AutoBiz</span>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close menu"></button>
+  </div>
+  <div class="offcanvas-body d-flex flex-column">
+    <nav aria-label="Mobile">
+      <a class="mlink" href="./app/marketplace.html"><span class="ab-icon ab-icon-sm tone-primary"><i class="bi bi-shop"></i></span>Shop</a>
+      <a class="mlink" href="./app/esim.html"><span class="ab-icon ab-icon-sm tone-violet"><i class="bi bi-sim"></i></span>Travel eSIM</a>
+      <a class="mlink" href="./app/flights.html"><span class="ab-icon ab-icon-sm tone-cyan"><i class="bi bi-airplane"></i></span>Flights</a>
+      <a class="mlink" href="./app/giftcards.html"><span class="ab-icon ab-icon-sm tone-pink"><i class="bi bi-gift"></i></span>Gift cards</a>
+      <a class="mlink" href="./app/virtual-cards.html"><span class="ab-icon ab-icon-sm tone-success"><i class="bi bi-credit-card-2-front"></i></span>USD cards</a>
+      <a class="mlink" href="./app/bills.html"><span class="ab-icon ab-icon-sm tone-warning"><i class="bi bi-lightning-charge"></i></span>Airtime &amp; bills</a>
+      <a class="mlink" href="./app/cart.html"><span class="ab-icon ab-icon-sm tone-orange"><i class="bi bi-bag"></i></span>Cart <span class="badge bg-primary ms-auto" data-cart-count hidden></span></a>
+      <button class="mlink border-0 bg-transparent w-100 text-start" data-theme-toggle><span class="ab-icon ab-icon-sm tone-primary"><i class="bi bi-moon-stars"></i></span>Toggle theme</button>
+    </nav>
+    <div class="mt-auto d-grid gap-2 pt-3" id="mAuth">
+      <a href="./register.html" class="btn btn-primary btn-lg">Create free account</a>
+      <a href="./login.html" class="btn btn-light-subtle btn-lg">Log in</a>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+
+  <!-- ============ Hero ============ -->
+  <section class="v7-hero" aria-labelledby="heroTitle">
+    <div class="v7-wrap">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-6">
+          <span class="v7-eyebrow"><b>New</b>Shop, travel &amp; pay from one wallet</span>
+          <h1 id="heroTitle">Shop, travel and pay. <em>All in Naira.</em></h1>
+          <p class="v7-lead">Buy from verified sellers, get travel eSIMs and flights, spend in dollars with a USD virtual card, trade gift cards and top up airtime, data and bills — without juggling apps.</p>
+          <div class="d-flex flex-wrap gap-2 mt-4" id="heroCtas">
+            <a href="./app/marketplace.html" class="btn btn-primary btn-lg px-4">Start shopping <i class="bi bi-arrow-right ms-1"></i></a>
+            <a href="./register.html" class="btn btn-light-subtle btn-lg px-4">Create free account</a>
+          </div>
+          <div class="fs-8 text-muted mt-2"><i class="bi bi-unlock me-1"></i>Browse everything without an account — we only ask you to log in when you pay.</div>
+          <ul class="v7-proof">
+            <li><i class="bi bi-lightning-charge-fill"></i><b>Instant airtime</b><span>MTN, Airtel, Glo &amp; 9mobile top-ups and data in seconds.</span></li>
+            <li><i class="bi bi-cash-coin"></i><b>Pay in Naira</b><span>eSIMs, flights and USD cards paid from your ₦ wallet.</span></li>
+            <li><i class="bi bi-shield-check"></i><b>Buyer protection</b><span>Refund if your marketplace order doesn't arrive.</span></li>
+          </ul>
+        </div>
+        <div class="col-lg-6">
+          <div class="v7-stage" aria-label="Preview of the AutoBiz app" role="img">
+            <div class="v7-phone" aria-hidden="true">
+              <div class="screen">
+                <div class="island"></div>
+                <div class="status"><span id="phTime">9:41</span><span><i class="bi bi-reception-4"></i> <i class="bi bi-wifi"></i> <i class="bi bi-battery-full"></i></span></div>
+                <div class="scr-pad">
+                  <div class="scr-greet"><div><small>Good day,</small><b id="phName">Welcome to AutoBiz</b></div><span class="scr-avatar" id="phInit">AB</span></div>
+                  <div class="scr-balance">
+                    <small>Naira wallet</small>
+                    <div class="amt tabular" id="phBal">₦0.00</div>
+                    <small id="phUsd">USD card · $0.00</small>
+                    <div class="row-b"><span>+ Add money</span><span>Send</span><span>Pay bills</span></div>
+                  </div>
+                  <div class="scr-quick" id="phQuick"></div>
+                  <div class="scr-sec">Recent order <span>See all</span></div>
+                  <div class="scr-order" id="phOrder"></div>
+                  <div class="scr-sec">Activity <span>View</span></div>
+                  <div id="phTx"></div>
+                </div>
+                <div class="scr-tab"><i class="bi bi-house-door-fill on"></i><i class="bi bi-shop"></i><i class="bi bi-grid"></i><i class="bi bi-wallet2"></i><i class="bi bi-person"></i></div>
+              </div>
+            </div>
+            <div class="v7-usdcard" aria-hidden="true">
+              <div class="d-flex justify-content-between align-items-start"><div><small>AutoBiz</small><div class="fw-bold" style="font-size:.85rem">USD Virtual</div></div><i class="bi bi-wifi" style="transform:rotate(90deg);opacity:.7"></i></div>
+              <div class="chip"></div>
+              <div class="d-flex justify-content-between align-items-end"><span class="num">•••• 4081</span><span class="fw-800" style="font-style:italic;letter-spacing:-.02em">VISA</span></div>
+            </div>
+            <div class="v7-float f1" aria-hidden="true"><img src="./assets/img/networks/mtn.png" alt=""><div><b>Airtime sent</b><span>MTN · ₦1,000</span></div><i class="bi bi-check-circle-fill text-success ms-1"></i></div>
+            <div class="v7-float f2" aria-hidden="true" id="phEsim"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Service band ============ -->
+  <nav class="v7-band" aria-label="Services">
+    <div class="v7-wrap px-0 px-sm-4"><div class="items" id="band"></div></div>
+  </nav>
+
+  <!-- ============ Sticky scroll ============ -->
+  <section class="v7-scrolly" id="everything" aria-labelledby="evTitle">
+    <div class="v7-wrap">
+      <div class="row g-4 g-lg-5">
+        <div class="col-lg-5">
+          <div class="v7-sticky">
+            <div class="v7-kicker">One wallet, everything</div>
+            <h2 class="v7-h2 mt-2" id="evTitle">Six services. One balance. No app-hopping.</h2>
+            <ol class="v7-steps" id="steps"></ol>
+            <div class="v7-active" id="active" aria-live="polite">
+              <div class="fx">
+                <h3 class="h5 fw-800" id="actTitle"></h3>
+                <p class="mb-3" id="actText"></p>
+                <a href="#" class="btn btn-soft" id="actLink"></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-7" id="panels"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Compare ============ -->
+  <section class="v7-compare" id="why" aria-labelledby="whyTitle">
+    <div class="v7-wrap">
+      <div class="row align-items-end g-3 mb-4">
+        <div class="col-lg-7"><div class="v7-kicker">Why pay with AutoBiz</div><h2 class="v7-h2 mt-2 mb-0" id="whyTitle">The same errands, fewer steps.</h2></div>
+        <div class="col-lg-5"><p class="v7-lead mb-0">No sweeping promises — just what each service does today, with the numbers straight from our catalogue.</p></div>
+      </div>
+      <div class="v7-table" id="compare" role="table" aria-label="Comparison of the usual way and AutoBiz"></div>
+    </div>
+  </section>
+
+  <!-- ============ Products ============ -->
+  <section class="pb-4" aria-labelledby="prodTitle">
+    <div class="v7-wrap">
+      <div class="d-flex align-items-end justify-content-between gap-3 mb-3">
+        <div><div class="v7-kicker">Marketplace</div><h2 class="v7-h2 mt-2 mb-0" id="prodTitle">Popular right now</h2></div>
+        <div class="d-flex gap-2 align-items-center">
+          <a href="./app/marketplace.html" class="fw-semibold fs-7 me-2 d-none d-sm-inline">View all</a>
+          <button class="v7-sbtn" data-scroll="-1" aria-label="Scroll products left"><i class="bi bi-chevron-left"></i></button>
+          <button class="v7-sbtn" data-scroll="1" aria-label="Scroll products right"><i class="bi bi-chevron-right"></i></button>
+        </div>
+      </div>
+      <div class="v7-strip" id="strip" tabindex="0" aria-label="Popular products"></div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="v7-faq py-5" id="faq" aria-labelledby="faqTitle">
+    <div class="v7-wrap">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <div class="v7-kicker">FAQ</div>
+          <h2 class="v7-h2 mt-2" id="faqTitle">Questions, answered.</h2>
+          <p class="v7-lead">Still stuck? Support is available by chat, call or email from your account.</p>
+        </div>
+        <div class="col-lg-8"><div class="accordion" id="faqAcc"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="v7-wrap mt-3" aria-labelledby="ctaTitle">
+    <div class="v7-cta">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <h2 id="ctaTitle" class="mb-2">Open your AutoBiz wallet in a minute.</h2>
+          <p class="mb-0 opacity-75" id="ctaText">Free to create. Fund it by bank transfer or card, then shop, travel and pay from one balance.</p>
+        </div>
+        <div class="col-lg-5 d-flex flex-wrap gap-2 justify-content-lg-end" id="ctaBtns">
+          <a href="./register.html" class="btn btn-white btn-lg px-4">Create free account</a>
+          <a href="./app/marketplace.html" class="btn btn-ghost btn-lg px-4">Browse first</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="v7-footer">
+  <div class="v7-wrap">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <a href="./index-v7.html" class="v7-brand mb-2"><img src="./assets/img/logo.svg" alt="">AutoBiz</a>
+        <p class="text-muted fs-7 mt-2" style="max-width:320px">Shop, travel and pay from one Naira wallet — marketplace, travel eSIMs, flights, USD cards, gift card exchange, airtime, data and bills.</p>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2"><h6>Shop</h6><ul id="ftCats"></ul></div>
+      <div class="col-6 col-md-4 col-lg-3"><h6>Services</h6><ul>
+        <li><a href="./app/esim.html">Travel eSIM</a></li><li><a href="./app/flights.html">Flight booking</a></li><li><a href="./app/virtual-cards.html">USD virtual cards</a></li><li><a href="./app/giftcards.html">Gift card exchange</a></li><li><a href="./app/bills.html">Airtime, data &amp; bills</a></li></ul></div>
+      <div class="col-md-4 col-lg-3"><h6>Account</h6><ul id="ftAcc">
+        <li><a href="./login.html">Log in</a></li><li><a href="./register.html">Create account</a></li><li><a href="./app/cart.html">Cart</a></li><li><a href="#faq">FAQs</a></li></ul></div>
+    </div>
+    <div class="legal"><span>© <span id="yr"></span> AutoBiz. All rights reserved.</span><span><i class="bi bi-lock me-1"></i>PIN-protected wallet · Secure payments</span></div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/js/data.js"></script>
+<script src="./assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const D = AB_DATA, { fmt, esc } = AB;
+  const $ = (id) => document.getElementById(id);
+  const authed = AB.auth.isAuthed();
+  const u = AB.store.get("user");
+  const disc = (p) => Math.round((1 - p.price / p.oldPrice) * 100);
+  const best = (g) => Math.max(...Object.values(g.types));
+  const ap = (c) => D.airports.find((a) => a.code === c);
+  const esimNaira = (c) => fmt.naira(Math.round(c.from * D.usdRate));
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---- Header ---- */
+  const hdr = $("v7Header");
+  const onScroll = () => hdr.classList.toggle("scrolled", scrollY > 8);
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  document.querySelectorAll("[data-theme-toggle]").forEach((b) => b.addEventListener("click", () => {
+    AB.toggleTheme();
+    const dark = document.documentElement.getAttribute("data-bs-theme") === "dark";
+    document.querySelectorAll("[data-theme-toggle] i").forEach((i) => (i.className = "bi " + (dark ? "bi-sun" : "bi-moon-stars")));
+  }));
+  if (authed) {
+    $("hdAuth").innerHTML = `<a href="./app/dashboard.html" class="btn btn-primary"><i class="bi bi-person-circle me-1"></i>My account</a>`;
+    $("mAuth").innerHTML = `<a href="./app/dashboard.html" class="btn btn-primary btn-lg">Go to my account</a>`;
+    $("heroCtas").lastElementChild.outerHTML = `<a href="./app/dashboard.html" class="btn btn-light-subtle btn-lg px-4">Go to my account</a>`;
+    $("ftAcc").innerHTML = `<li><a href="./app/dashboard.html">My account</a></li><li><a href="./app/orders.html">My orders</a></li><li><a href="./app/wallet.html">Wallet</a></li><li><a href="#faq">FAQs</a></li>`;
+    $("ctaTitle").textContent = `Welcome back, ${u.firstName}.`;
+    $("ctaText").textContent = "Your wallet, orders, trips, eSIMs and cards are waiting in your account.";
+    $("ctaBtns").innerHTML = `<a href="./app/dashboard.html" class="btn btn-white btn-lg px-4">Go to my account</a><a href="./app/wallet.html" class="btn btn-ghost btn-lg px-4">Fund wallet</a>`;
+  }
+
+  /* ---- Phone mockup ---- */
+  const now = new Date();
+  $("phTime").textContent = `${now.getHours()}:${String(now.getMinutes()).padStart(2, "0")}`;
+  if (authed) {
+    $("phName").textContent = u.firstName; $("phInit").textContent = (u.firstName[0] + u.lastName[0]).toUpperCase();
+    $("phBal").textContent = fmt.naira(AB.wallet.balance(), 2); $("phUsd").textContent = `USD card · ${fmt.usd(AB.store.get("wallet").usd)}`;
+  } else {
+    $("phName").textContent = "Your wallet"; $("phBal").textContent = fmt.naira(50000, 2); $("phUsd").textContent = "Example balance";
+  }
+  $("phQuick").innerHTML = [["bi-phone", "Airtime", "warning"], ["bi-wifi", "Data", "cyan"], ["bi-sim", "eSIM", "violet"], ["bi-airplane", "Flights", "primary"]]
+    .map(([i, t, tone]) => `<div><span class="ab-icon tone-${tone}"><i class="bi ${i}"></i></span>${t}</div>`).join("");
+  const op = D.products.find((p) => p.id === "p6");
+  $("phOrder").innerHTML = `${AB.productArt(op)}<div class="min-w-0 flex-grow-1"><div class="t text-truncate">${esc(op.name)}</div><div class="m">${fmt.naira(op.price)} · Out for delivery</div><div class="scr-track"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div></div>`;
+  const mtn = D.dataPlans.mtn.find((x) => x.id === "m2");
+  $("phTx").innerHTML = `
+    <div class="scr-tx"><img src="./assets/img/networks/mtn.png" alt=""><div><b>MTN data ${mtn.name}</b>${mtn.validity}</div><span class="r">−${fmt.naira(mtn.price)}</span></div>
+    <div class="scr-tx"><span class="ab-icon ab-icon-sm tone-success" style="width:28px;height:28px;border-radius:9px;font-size:.8rem"><i class="bi bi-arrow-down-left"></i></span><div><b>Wallet funded</b>Bank transfer</div><span class="r text-success">+${fmt.naira(20000)}</span></div>`;
+  const gb = D.esimCountries.find((c) => c.code === "gb");
+  $("phEsim").innerHTML = `<img src="${AB.flag("gb")}" alt=""><div><b>UK eSIM ready</b><span>${gb.speed} · from ${fmt.usd(gb.from)}</span></div>`;
+
+  /* ---- Service band ---- */
+  const minEsim = Math.min(...D.esimCountries.map((c) => c.from));
+  const cheapestData = Math.min(...Object.values(D.dataPlans).flat().map((p) => p.price));
+  const topGift = Math.max(...D.giftcards.map(best));
+  $("band").innerHTML = [
+    ["./app/marketplace.html", "bi-shop", "primary", "Shop", `${D.products.length}+ deals live`],
+    ["./app/esim.html", "bi-sim", "violet", "Travel eSIM", `From ${fmt.usd(minEsim)}`],
+    ["./app/flights.html", "bi-airplane", "cyan", "Flights", `${D.airlines.length} airlines`],
+    ["./app/giftcards.html", "bi-gift", "pink", "Gift cards", `Up to ${fmt.naira(topGift)}/$`],
+    ["./app/virtual-cards.html", "bi-credit-card-2-front", "success", "USD cards", `₦${fmt.num(D.usdRate)}/$`],
+    ["./app/bills.html", "bi-lightning-charge", "warning", "Bills", `Data from ${fmt.naira(cheapestData)}`]
+  ].map(([h, i, t, n, s]) => `<a href="${h}"><span class="ab-icon ab-icon-sm tone-${t}"><i class="bi ${i}"></i></span><span>${n}<small>${s}</small></span></a>`).join("");
+
+  /* ---- Sticky scroll services ---- */
+  const topDeals = [...D.products].sort((a, b) => disc(b) - disc(a)).slice(0, 4);
+  const esimPicks = ["gb", "us", "ae", "gh", "tr", "eu"].map((c) => D.esimCountries.find((x) => x.code === c));
+  const routes = [["LOS", "ABV"], ["LOS", "DXB"], ["ABV", "LHR"], ["LOS", "ACC"]];
+  const rates = [...D.giftcards].sort((a, b) => best(b) - best(a)).slice(0, 5);
+  const services = [
+    { id: "shop", icon: "bi-shop", tone: "primary", name: "Marketplace", title: "Shop verified sellers, pay once.",
+      text: `${D.categories.length} categories from phones to groceries. Browse without an account and add to cart; buyer protection refunds you if an order doesn't arrive.`, href: "./app/marketplace.html", cta: "Browse the marketplace",
+      body: () => `<div class="ph"><h3>Biggest markdowns today</h3><a href="./app/marketplace.html" class="fs-7 fw-semibold">All deals</a></div>
+        <div class="p-mini">${topDeals.map((p) => `<a class="it" href="./app/product.html?id=${p.id}">${AB.productArt(p)}<div class="nm">${esc(p.name)}</div><div><span class="pr tabular">${fmt.naira(p.price)}</span><span class="old tabular">${fmt.naira(p.oldPrice)}</span> <span class="badge text-bg-danger ms-1">-${disc(p)}%</span></div></a>`).join("")}</div>` },
+    { id: "esim", icon: "bi-sim", tone: "violet", name: "Travel eSIM", title: "Land connected in 120+ countries.",
+      text: `Data plans for ${D.esimCountries.filter((c) => !c.regional).length} countries plus regional and global bundles, from ${fmt.usd(minEsim)}. Paid in Naira, installed by QR before you fly.`, href: "./app/esim.html", cta: "Find a destination",
+      body: () => `<div class="ph"><h3>Popular destinations</h3><span class="fs-8">Priced at ₦${fmt.num(D.usdRate)}/$</span></div>
+        <div class="v7-list">${esimPicks.map((c) => `<a class="v7-li" href="./app/esim.html?country=${c.code}">${c.regional ? `<span class="ab-icon ab-icon-sm tone-violet"><i class="bi ${c.icon}"></i></span>` : `<img class="flag" src="${AB.flag(c.code)}" alt="" loading="lazy">`}<div class="min-w-0"><div class="t text-truncate">${esc(c.name)}</div><div class="s text-truncate">${c.speed} · ${esc(c.networks)}</div></div><div class="r tabular">${fmt.usd(c.from)}<small>${esimNaira(c)}</small></div></a>`).join("")}</div>` },
+    { id: "flights", icon: "bi-airplane", tone: "cyan", name: "Flights", title: "Domestic hops and long-hauls.",
+      text: `Search ${D.airlines.length} airlines across ${D.airports.length} airports — from Air Peace and Ibom Air to Emirates and British Airways — and pay in Naira.`, href: "./app/flights.html", cta: "Search flights",
+      body: () => `<div class="ph"><h3>Routes people search</h3><a href="./app/flights.html" class="fs-7 fw-semibold">New search</a></div>
+        <div class="v7-list">${routes.map(([f, t]) => { const a = ap(f), b = ap(t), dom = a.country === "Nigeria" && b.country === "Nigeria"; return `
+          <a class="v7-li" href="./app/flights.html?from=${f}&to=${t}"><div class="flex-grow-1 min-w-0"><div class="v7-route"><span>${f}</span><span class="ln"><i class="bi bi-airplane-fill"></i></span><span>${t}</span></div><div class="s mt-1 text-truncate">${esc(a.city)} to ${esc(b.city)} · ${dom ? "Domestic" : "International"}</div></div><span class="btn btn-sm btn-soft ms-2">Check fares</span></a>`; }).join("")}</div>
+        <div class="d-flex flex-wrap gap-2 mt-3">${D.airlines.slice(0, 6).map((a) => `<span class="ab-chip" style="cursor:default"><span style="width:8px;height:8px;border-radius:50%;background:${a.color}"></span>${esc(a.name)}</span>`).join("")}</div>` },
+    { id: "cards", icon: "bi-credit-card-2-front", tone: "success", name: "USD cards", title: "Pay in dollars, fund in Naira.",
+      text: `A virtual dollar card for subscriptions and online shops. Top it up from your Naira wallet at ₦${fmt.num(D.usdRate)}/$ and freeze it any time.`, href: "./app/virtual-cards.html", cta: "Get a USD card",
+      body: () => `<div class="ph"><h3>Your dollar card</h3><span class="fs-8">Virtual · instant</span></div>
+        <div class="row g-4 align-items-center"><div class="col-sm-6"><div class="v7-ccard"><div class="d-flex justify-content-between"><span class="fw-bold">AutoBiz USD</span><i class="bi bi-wifi" style="transform:rotate(90deg)"></i></div><div class="num">5319 •••• •••• 4081</div><div class="d-flex justify-content-between align-items-end"><span class="fs-8 opacity-75">Netflix &amp; Spotify</span><span class="fw-800 fst-italic">VISA</span></div></div></div>
+        <div class="col-sm-6"><ul class="v7-facts">
+          <li><i class="bi bi-check-circle-fill"></i>Only $2 to create</li>
+          <li><i class="bi bi-check-circle-fill"></i>1% funding fee</li>
+          <li><i class="bi bi-check-circle-fill"></i>Funded from your wallet at ₦${fmt.num(D.usdRate)}/$</li>
+          <li><i class="bi bi-check-circle-fill"></i>Freeze, unfreeze or reveal details in-app</li></ul></div></div>` },
+    { id: "gift", icon: "bi-gift", tone: "pink", name: "Gift cards", title: "Know the rate before you trade.",
+      text: `${D.giftcards.length} gift card brands with rates shown per card type — physical, e-code or receipt — and payouts straight to your Naira wallet.`, href: "./app/giftcards.html", cta: "See all rates",
+      body: () => `<div class="ph"><h3>Today's best rates</h3><span class="fs-8">₦ per $1</span></div>
+        <div class="v7-rate"><span class="hd">Card</span><span class="hd text-end">Range</span><span class="hd text-end">Best rate</span>
+        ${rates.map((g) => `<a href="./app/giftcards.html?card=${g.id}"><span class="ic" style="background:${g.color}"><i class="bi ${g.icon}"></i></span>${esc(g.name)}</a><span class="text-end text-muted tabular">$${g.range[0]}–$${g.range[1]}</span><span class="text-end fw-800 text-success tabular">${fmt.naira(best(g))}</span>`).join("")}</div>` },
+    { id: "bills", icon: "bi-lightning-charge", tone: "warning", name: "Airtime & bills", title: "Top-ups and bills in seconds.",
+      text: `Airtime and data on all four networks, electricity tokens for ${D.discos.length} discos, and DStv, GOtv and StarTimes renewals.`, href: "./app/bills.html", cta: "Pay a bill",
+      body: () => `<div class="ph"><h3>All four networks</h3><a href="./app/bills.html?tab=airtime" class="fs-7 fw-semibold">Buy airtime</a></div>
+        <div class="v7-net mb-4">${D.networks.map((n) => `<a href="./app/bills.html?tab=airtime"><img src="./assets/img/networks/${n.logo}" alt="">${esc(n.name)}</a>`).join("")}</div>
+        <div class="v7-tiles">${[
+          [D.dataPlans.mtn.find((p) => p.id === "m2"), "MTN"], [D.dataPlans.airtel.find((p) => p.id === "a2"), "Airtel"], [D.dataPlans.glo.find((p) => p.id === "g1"), "Glo"]
+        ].map(([p, n]) => `<a href="./app/bills.html?tab=data"><span>${n} ${p.name} · ${p.validity}</span><b class="tabular">${fmt.naira(p.price)}</b></a>`).join("")}
+          <a href="./app/bills.html?tab=cable"><span>GOtv ${D.cableProviders.gotv.plans[0].name}</span><b class="tabular">${fmt.naira(D.cableProviders.gotv.plans[0].price)}</b></a>
+          <a href="./app/bills.html?tab=cable"><span>DStv ${D.cableProviders.dstv.plans[3].name}</span><b class="tabular">${fmt.naira(D.cableProviders.dstv.plans[3].price)}</b></a>
+          <a href="./app/bills.html?tab=electricity"><span>Electricity</span><b>${D.discos.length} discos</b></a></div>` }
+  ];
+  $("steps").innerHTML = services.map((s, i) => `<li><button type="button" data-go="${s.id}" aria-controls="pn-${s.id}"><span class="n">0${i + 1}</span><span class="ab-icon ab-icon-sm tone-${s.tone}"><i class="bi ${s.icon}"></i></span>${s.name}</button></li>`).join("");
+  $("panels").innerHTML = services.map((s) => `
+    <article class="v7-panel" id="pn-${s.id}" data-id="${s.id}" aria-labelledby="pnh-${s.id}">
+      <div class="v7-mhead"><span class="ab-icon ab-icon-sm tone-${s.tone} mb-2"><i class="bi ${s.icon}"></i></span><h3 class="h5 fw-800 mb-0" id="pnh-${s.id}">${s.title}</h3><p>${s.text}</p></div>
+      ${s.body()}
+      <a href="${s.href}" class="btn btn-soft mt-3 d-lg-none align-self-start">${s.cta} <i class="bi bi-arrow-right ms-1"></i></a>
+    </article>`).join("");
+  let cur = null;
+  const setActive = (id) => {
+    if (id === cur) return; cur = id;
+    const s = services.find((x) => x.id === id), box = $("active");
+    document.querySelectorAll("[data-go]").forEach((b) => { const on = b.dataset.go === id; b.classList.toggle("active", on); b.setAttribute("aria-current", on ? "step" : "false"); });
+    document.querySelectorAll(".v7-panel").forEach((p) => p.classList.toggle("is-active", p.dataset.id === id));
+    const fill = () => { $("actTitle").textContent = s.title; $("actText").textContent = s.text; $("actLink").href = s.href; $("actLink").innerHTML = `${s.cta} <i class="bi bi-arrow-right ms-1"></i>`; box.classList.remove("swap"); };
+    if (reduce) return fill();
+    box.classList.add("swap"); setTimeout(fill, 180);
+  };
+  setActive(services[0].id);
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => e.isIntersecting && setActive(e.target.dataset.id)), { rootMargin: "-45% 0px -50% 0px" });
+    document.querySelectorAll(".v7-panel").forEach((p) => io.observe(p));
+  }
+  document.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => {
+    $("pn-" + b.dataset.go).scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+    setActive(b.dataset.go);
+  }));
+
+  /* ---- Compare ---- */
+  const rows = [
+    ["bi-sim", "violet", "Mobile data abroad", "Roaming bundles or hunting for a local SIM on arrival", `Travel eSIM for ${D.esimCountries.filter((c) => !c.regional).length} countries + regional plans, from ${fmt.usd(minEsim)} — set up before you fly`],
+    ["bi-credit-card-2-front", "success", "Paying in dollars online", "Asking someone abroad or using a domiciliary account", `USD virtual card: $2 to create, 1% funding fee, funded in Naira at ₦${fmt.num(D.usdRate)}/$`],
+    ["bi-gift", "pink", "Selling a gift card", "Negotiating a rate in chats", `Rates listed per card type upfront — e.g. Steam physical ${fmt.naira(D.giftcards.find((g) => g.id === "steam").types.Physical)}/$`],
+    ["bi-airplane", "cyan", "Booking a flight", "Checking airline sites one by one", `${D.airlines.length} airlines across ${D.airports.length} airports in one search`],
+    ["bi-lightning-charge", "warning", "Airtime, data & bills", "A different app or USSD code per provider", `${D.networks.length} networks, ${D.discos.length} discos and ${Object.keys(D.cableProviders).length} TV providers in one place`],
+    ["bi-shop", "primary", "Buying online", "Paying upfront and hoping it arrives", "Buyer protection: refund if your order doesn't arrive"]
+  ];
+  $("compare").innerHTML = `<div class="v7-row hd" role="row"><div role="columnheader">What you need</div><div class="usual" role="columnheader">The usual way</div><div class="ours" role="columnheader">On AutoBiz</div></div>` +
+    rows.map(([i, t, need, usual, ours]) => `<div class="v7-row" role="row"><div class="need" role="cell"><span class="ab-icon ab-icon-sm tone-${t}"><i class="bi ${i}"></i></span>${need}</div><div class="usual" role="cell"><i class="bi bi-dash-circle"></i><span>${usual}</span></div><div class="ours" role="cell"><i class="bi bi-check-circle-fill"></i><span>${ours}</span></div></div>`).join("");
+
+  /* ---- Product strip ---- */
+  $("strip").innerHTML = [...D.products].sort((a, b) => b.reviews - a.reviews).slice(0, 10).map((p) => `
+    <div class="v7-pc">
+      <a href="./app/product.html?id=${p.id}" class="art" aria-label="${esc(p.name)}">${p.oldPrice > p.price ? `<span class="off">-${disc(p)}%</span>` : ""}${AB.productArt(p)}</a>
+      <a href="./app/product.html?id=${p.id}" class="nm">${esc(p.name)}</a>
+      <span class="fs-8 text-muted"><i class="bi bi-star-fill text-warning"></i> ${p.rating} (${fmt.num(p.reviews)})</span>
+      <div class="d-flex align-items-end justify-content-between mt-auto pt-2 gap-1">
+        <div class="min-w-0"><div class="pr tabular text-truncate">${fmt.naira(p.price)}</div><div class="old tabular">${fmt.naira(p.oldPrice)}</div></div>
+        <button class="btn btn-soft btn-icon btn-sm flex-shrink-0" data-add="${p.id}" aria-label="Add ${esc(p.name)} to cart"><i class="bi bi-cart-plus"></i></button>
+      </div>
+    </div>`).join("");
+  document.querySelectorAll("[data-scroll]").forEach((b) => b.addEventListener("click", () => $("strip").scrollBy({ left: Number(b.dataset.scroll) * $("strip").clientWidth * .8, behavior: reduce ? "auto" : "smooth" })));
+  document.querySelector("main").addEventListener("click", (e) => { const b = e.target.closest("[data-add]"); if (b) AB.cart.add(b.dataset.add, 1); });
+
+  /* ---- FAQ ---- */
+  const faqs = [
+    ["Do I need an account to look around?", "No. You can browse the marketplace, eSIM plans, flights, gift card rates and bill prices as a guest, and add items to your cart. We only ask you to log in or sign up when you pay."],
+    ["What can I pay for with my AutoBiz wallet?", "Marketplace orders, travel eSIMs, flights, USD virtual card top-ups, airtime, data, electricity tokens, cable TV and more. Gift card payouts are credited back to the same wallet."],
+    ["How do I add money?", "Fund your wallet by bank transfer to your dedicated account number, by debit card, or with a voucher PIN — all from the Wallet page."],
+    ["How does a travel eSIM work?", "Pick a destination and plan, pay in Naira, then scan the QR code to install it on an eSIM-compatible phone. You can check whether your phone model supports eSIM on the eSIM page before you buy."],
+    ["How are gift card rates decided?", `Each card shows a rate per type — for example physical, e-code or receipt — in Naira per dollar, plus the accepted value range. Today the best listed rate is ${fmt.naira(topGift)}/$.`],
+    ["What if my marketplace order doesn't arrive?", "Marketplace purchases are covered by buyer protection — if your order doesn't arrive, you get a refund. You can track every order from My orders."]
+  ];
+  $("faqAcc").innerHTML = faqs.map(([q, a], i) => `
+    <div class="accordion-item">
+      <h3 class="accordion-header"><button class="accordion-button ${i ? "collapsed" : ""}" type="button" data-bs-toggle="collapse" data-bs-target="#fq${i}" aria-expanded="${!i}" aria-controls="fq${i}">${q}</button></h3>
+      <div id="fq${i}" class="accordion-collapse collapse ${i ? "" : "show"}" data-bs-parent="#faqAcc"><div class="accordion-body">${a}</div></div>
+    </div>`).join("");
+
+  /* ---- Footer ---- */
+  $("ftCats").innerHTML = D.categories.slice(0, 5).map((c) => `<li><a href="./app/marketplace.html?cat=${c.id}">${esc(c.name)}</a></li>`).join("");
+  $("yr").textContent = new Date().getFullYear();
+
+  AB.refreshShell();
+});
+</script>
+</body>
+</html>

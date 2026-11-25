@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AutoBiz · One app for shopping, travel &amp; payments</title>
+  <meta name="description" content="Search the marketplace, grab a travel eSIM, book flights, get a USD virtual card, sell gift cards and top up airtime, data and bills — all from one AutoBiz account.">
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="./assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="./assets/css/app.css" rel="stylesheet">
+  <script src="./assets/js/brand.js"></script>
+  <style>
+    /* ===== Super-app launcher ===== */
+    html:has(body.sa) { overflow-x: clip; }
+    body.sa { background: var(--ab-bg); overflow-x: clip; }
+    .sa-wrap { max-width: 1180px; margin: 0 auto; padding: 0 1.25rem; }
+    .sa a:focus-visible, .sa button:focus-visible, .sa input:focus-visible { outline: 3px solid rgba(var(--ab-primary-rgb), .5); outline-offset: 2px; }
+    .sa-glow { position: absolute; inset: 0 0 auto 0; height: 620px; pointer-events: none; z-index: 0;
+      background: radial-gradient(60% 70% at 50% 0%, rgba(var(--ab-primary-rgb), .16), transparent 70%), radial-gradient(30% 40% at 85% 20%, rgba(var(--ab-primary-rgb), .08), transparent 70%); }
+
+    /* --- Top bar --- */
+    .sa-top { position: sticky; top: 0; z-index: 1030; background: color-mix(in srgb, var(--ab-bg) 78%, transparent); backdrop-filter: saturate(1.6) blur(14px); -webkit-backdrop-filter: saturate(1.6) blur(14px); border-bottom: 1px solid transparent; transition: border-color .2s; }
+    .sa-top.scrolled { border-bottom-color: var(--ab-border); }
+    .sa-top .bar { height: 68px; display: flex; align-items: center; gap: 1rem; }
+    .sa-logo { display: flex; align-items: center; gap: .55rem; font-weight: 800; font-size: 1.15rem; color: var(--ab-text); letter-spacing: -.02em; }
+    .sa-logo:hover { color: var(--ab-text); }
+    .sa-logo img { width: 34px; height: 34px; }
+    .sa-nav { display: flex; gap: .15rem; margin: 0 auto; padding: .3rem; border-radius: 999px; background: var(--ab-surface); border: 1px solid var(--ab-border); }
+    .sa-nav a { padding: .42rem .85rem; border-radius: 999px; font-size: .82rem; font-weight: 600; color: var(--ab-muted); white-space: nowrap; transition: all .15s; }
+    .sa-nav a:hover { color: var(--ab-text); background: var(--ab-surface-2); }
+    .sa-actions { display: flex; align-items: center; gap: .4rem; margin-left: auto; }
+    .sa-ib { width: 42px; height: 42px; border-radius: 50%; display: inline-grid; place-items: center; background: var(--ab-surface); border: 1px solid var(--ab-border); color: var(--ab-text); font-size: 1.05rem; position: relative; transition: all .15s; }
+    .sa-ib:hover { border-color: rgba(var(--ab-primary-rgb), .45); color: var(--ab-primary); }
+    .sa-ib .ab-dot-badge { position: absolute; top: -3px; right: -3px; }
+    .sa-pill { border-radius: 999px; font-weight: 700; padding: .55rem 1.1rem; font-size: .86rem; }
+    @media (min-width: 992px) { .sa-nav ~ .sa-actions { margin-left: 0; } }
+
+    .sa-oc .offcanvas-body a.row-l { display: flex; align-items: center; gap: .8rem; padding: .7rem .5rem; border-radius: 14px; color: var(--ab-text); font-weight: 600; }
+    .sa-oc .offcanvas-body a.row-l:hover { background: var(--ab-surface-2); }
+    .sa-oc { background: var(--ab-surface); color: var(--ab-text); }
+
+    /* --- Hero --- */
+    .sa-hero { position: relative; z-index: 1; text-align: center; padding: 3.5rem 0 2.25rem; }
+    .sa-hello { display: inline-flex; align-items: center; gap: .45rem; font-weight: 700; font-size: .85rem; color: var(--ab-primary); background: var(--ab-primary-soft); padding: .4rem .9rem; border-radius: 999px; margin-bottom: 1rem; }
+    .sa-hero h1 { font-size: clamp(1.9rem, 4.6vw, 3.25rem); font-weight: 800; letter-spacing: -.045em; line-height: 1.05; margin: 0 auto .7rem; max-width: 720px; }
+    .sa-hero h1 span { color: var(--ab-primary); }
+    .sa-hero .lead { color: var(--ab-muted); font-size: 1.02rem; max-width: 540px; margin: 0 auto 1.75rem; }
+    .sa-search { max-width: 660px; margin: 0 auto; display: flex; align-items: center; gap: .5rem; padding: .45rem .45rem .45rem 1.3rem; border-radius: 999px; background: var(--ab-surface); border: 1px solid var(--ab-border); box-shadow: 0 24px 50px -24px rgba(var(--ab-primary-rgb), .45), 0 2px 6px rgba(0,0,0,.04); transition: border-color .15s, box-shadow .15s; }
+    .sa-search:focus-within { border-color: var(--ab-primary); box-shadow: 0 0 0 5px rgba(var(--ab-primary-rgb), .14), 0 24px 50px -24px rgba(var(--ab-primary-rgb), .5); }
+    .sa-search > i { color: var(--ab-muted); font-size: 1.15rem; }
+    .sa-search input { flex: 1; min-width: 0; border: 0; background: transparent; outline: none !important; font-size: 1.02rem; color: var(--ab-text); padding: .7rem 0; }
+    .sa-search input::placeholder { color: var(--ab-muted); }
+    .sa-search button { border-radius: 999px; padding: .8rem 1.5rem; font-weight: 700; flex-shrink: 0; }
+    .sa-intents { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; max-width: 760px; margin: 1.2rem auto 0; }
+    .sa-intents a { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem .9rem; border-radius: 999px; font-size: .82rem; font-weight: 600; background: var(--ab-surface); border: 1px solid var(--ab-border); color: var(--ab-text); transition: all .15s; white-space: nowrap; }
+    .sa-intents a i { color: var(--ab-primary); }
+    .sa-intents a:hover { border-color: var(--ab-primary); background: var(--ab-primary-soft); color: var(--ab-primary); }
+
+    /* --- Launcher tiles --- */
+    .sa-sec { position: relative; z-index: 1; margin-bottom: 2.75rem; }
+    .sa-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+    .sa-tile { position: relative; overflow: hidden; display: flex; flex-direction: column; min-height: 196px; padding: 1.25rem; border-radius: 28px; color: var(--ab-text); background: var(--ab-surface); border: 1px solid var(--ab-border); transition: transform .2s, box-shadow .2s, border-color .2s; isolation: isolate; }
+    .sa-tile::before { content: ""; position: absolute; width: 180px; height: 180px; border-radius: 50%; right: -60px; top: -70px; background: currentColor; opacity: .07; z-index: -1; transition: transform .35s; }
+    .sa-tile:hover { color: var(--ab-text); transform: translateY(-4px); box-shadow: var(--ab-shadow); border-color: transparent; }
+    .sa-tile:hover::before { transform: scale(1.25); }
+    .sa-tile .ic { width: 52px; height: 52px; border-radius: 18px; display: grid; place-items: center; font-size: 1.45rem; margin-bottom: auto; }
+    .sa-tile h3 { font-size: 1.02rem; font-weight: 800; margin: 1rem 0 .2rem; letter-spacing: -.01em; color: var(--ab-text); }
+    .sa-tile .live { font-size: .8rem; color: var(--ab-muted); line-height: 1.35; min-height: 2.7em; }
+    .sa-tile .live b { color: var(--ab-text); font-weight: 800; }
+    .sa-tile .go { position: absolute; right: 1.1rem; top: 1.3rem; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--ab-surface-2); color: var(--ab-muted); font-size: .9rem; transition: all .2s; }
+    .sa-tile:hover .go { background: var(--ab-primary); color: var(--ab-on-primary); transform: rotate(-45deg); }
+    .sa-tile .flags { display: flex; margin-top: .45rem; }
+    .sa-tile .flags img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; border: 2px solid var(--ab-surface); margin-right: -6px; }
+    .sa-tile .nets { display: flex; gap: .3rem; margin-top: .45rem; }
+    .sa-tile .nets img { width: 24px; height: 24px; border-radius: 7px; object-fit: cover; }
+    .t-primary { color: var(--ab-primary); } .t-violet { color: var(--ab-violet); } .t-cyan { color: var(--ab-cyan); } .t-success { color: var(--ab-accent); }
+    .t-pink { color: var(--ab-pink); } .t-warning { color: var(--ab-warning); } .t-orange { color: var(--ab-orange); } .t-danger { color: var(--ab-danger); }
+    .sa-tile.feature { background: linear-gradient(150deg, var(--ab-primary), var(--ab-primary-700)); border-color: transparent; color: var(--ab-on-primary); }
+    .sa-tile.feature:hover { color: var(--ab-on-primary); }
+    .sa-tile.feature h3, .sa-tile.feature .live b { color: var(--ab-on-primary); }
+    .sa-tile.feature .live { color: var(--ab-on-primary); opacity: .82; }
+    .sa-tile.feature .ic { background: rgba(255,255,255,.18); color: var(--ab-on-primary); }
+    .sa-tile.feature .go { background: rgba(255,255,255,.18); color: var(--ab-on-primary); }
+    .sa-tile.feature:hover .go { background: var(--ab-surface); color: var(--ab-primary); }
+    .sa-tile.feature::before { opacity: .12; }
+
+    /* --- Rows --- */
+    .sa-rowhead { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+    .sa-rowhead h2 { font-size: 1.3rem; font-weight: 800; letter-spacing: -.03em; margin: 0; }
+    .sa-rowhead p { margin: .15rem 0 0; color: var(--ab-muted); font-size: .85rem; }
+    .sa-rowhead .ctrl { display: flex; gap: .4rem; align-items: center; }
+    .sa-rowhead .ctrl a { font-weight: 700; font-size: .84rem; margin-right: .35rem; white-space: nowrap; }
+    .sa-rowhead .ctrl button { width: 36px; height: 36px; padding: 0; }
+    .sa-scroll { display: flex; gap: .9rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: .25rem .1rem 1rem; margin: 0 -.1rem; scroll-behavior: smooth; }
+    .sa-scroll::-webkit-scrollbar { display: none; }
+    .sa-scroll > * { scroll-snap-align: start; flex-shrink: 0; }
+
+    .sa-deal { width: 218px; background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 24px; padding: .7rem; display: flex; flex-direction: column; transition: box-shadow .2s, transform .2s; }
+    .sa-deal:hover { box-shadow: var(--ab-shadow); transform: translateY(-3px); }
+    .sa-deal .art { position: relative; display: block; }
+    .sa-deal .ab-product-art { border-radius: 18px; font-size: 3rem; aspect-ratio: 4 / 3.3; }
+    .sa-deal .off { position: absolute; left: 10px; top: 10px; z-index: 2; background: var(--ab-surface); color: var(--ab-danger); font-weight: 800; font-size: .72rem; padding: .2rem .55rem; border-radius: 999px; box-shadow: var(--ab-shadow-sm); }
+    .sa-deal .nm { color: var(--ab-text); font-weight: 700; font-size: .86rem; margin: .7rem .2rem .25rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.5em; line-height: 1.25; }
+    .sa-deal .nm:hover { color: var(--ab-primary); }
+    .sa-deal .bot { display: flex; align-items: center; justify-content: space-between; gap: .4rem; margin: auto .2rem 0; padding-top: .3rem; }
+    .sa-deal .pr { font-weight: 800; }
+    .sa-deal .old { font-size: .72rem; color: var(--ab-muted); text-decoration: line-through; }
+    .sa-deal .add { width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; }
+
+    .sa-dest { width: 250px; border-radius: 24px; background: var(--ab-surface); border: 1px solid var(--ab-border); padding: 1.1rem; display: flex; flex-direction: column; gap: .8rem; }
+    .sa-dest .top { display: flex; align-items: center; gap: .75rem; }
+    .sa-dest .top img { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 3px var(--ab-surface), 0 0 0 4px var(--ab-border); }
+    .sa-dest .top b { display: block; font-size: .95rem; }
+    .sa-dest .top small { color: var(--ab-muted); font-size: .74rem; }
+    .sa-dest .acts { display: grid; grid-template-columns: 1fr 1fr; gap: .45rem; }
+    .sa-dest .acts a { display: flex; flex-direction: column; gap: .1rem; border-radius: 16px; padding: .6rem .7rem; font-size: .7rem; font-weight: 600; color: var(--ab-muted); background: var(--ab-surface-2); transition: all .15s; }
+    .sa-dest .acts a b { color: var(--ab-text); font-size: .86rem; font-weight: 800; }
+    .sa-dest .acts a i { color: var(--ab-primary); }
+    .sa-dest .acts a:hover { background: var(--ab-primary-soft); color: var(--ab-primary); }
+
+    .sa-rate { width: 186px; border-radius: 24px; padding: 1rem; color: var(--ab-text); background: var(--ab-surface); border: 1px solid var(--ab-border); display: flex; flex-direction: column; gap: .7rem; transition: transform .2s, box-shadow .2s; }
+    .sa-rate:hover { color: var(--ab-text); transform: translateY(-3px); box-shadow: var(--ab-shadow); }
+    .sa-rate .lg { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; color: #fff; font-size: 1.2rem; }
+    .sa-rate .v { font-size: 1.2rem; font-weight: 800; letter-spacing: -.02em; color: var(--ab-accent); }
+    .sa-rate .v small { font-size: .72rem; color: var(--ab-muted); font-weight: 600; }
+
+    /* --- Account band --- */
+    .sa-band { border-radius: 32px; padding: 2.25rem; background: var(--ab-primary-soft); border: 1px solid rgba(var(--ab-primary-rgb), .18); display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; align-items: center; overflow: hidden; position: relative; }
+    .sa-band h2 { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800; letter-spacing: -.035em; }
+    .sa-steps { display: grid; gap: .6rem; }
+    .sa-steps div { display: flex; gap: .8rem; align-items: center; background: var(--ab-surface); border-radius: 20px; padding: .8rem 1rem; font-size: .86rem; font-weight: 600; }
+    .sa-steps span { width: 30px; height: 30px; border-radius: 50%; background: var(--ab-primary); color: var(--ab-on-primary); display: grid; place-items: center; font-weight: 800; font-size: .8rem; flex-shrink: 0; }
+
+    /* --- Footer --- */
+    .sa-foot { position: relative; z-index: 1; margin-top: 3.5rem; background: var(--ab-sidebar); color: rgba(255,255,255,.7); border-radius: 36px 36px 0 0; padding: 3rem 0 1.5rem; }
+    .sa-foot h3 { color: #fff; font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 800; margin-bottom: .9rem; }
+    .sa-foot ul { list-style: none; padding: 0; margin: 0; }
+    .sa-foot li { margin-bottom: .5rem; }
+    .sa-foot a { color: rgba(255,255,255,.72); font-size: .86rem; }
+    .sa-foot a:hover { color: #fff; }
+    .sa-foot .brand { display: flex; align-items: center; gap: .55rem; color: #fff; font-weight: 800; font-size: 1.2rem; margin-bottom: .8rem; }
+    .sa-app { border-radius: 26px; padding: 1.4rem; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); }
+    .sa-app h3 { text-transform: none; letter-spacing: -.01em; font-size: 1.1rem; margin-bottom: .3rem; }
+    .sa-store { display: flex; align-items: center; gap: .6rem; padding: .55rem .9rem; border-radius: 14px; border: 1px dashed rgba(255,255,255,.28); color: rgba(255,255,255,.75); cursor: default; user-select: none; }
+    .sa-store i { font-size: 1.4rem; color: rgba(255,255,255,.55); }
+    .sa-store small { display: block; font-size: .64rem; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,.55); line-height: 1; }
+    .sa-store b { font-size: .88rem; color: #fff; }
+    .sa-store .soon { margin-left: auto; font-size: .62rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; padding: .2rem .5rem; border-radius: 999px; background: rgba(var(--ab-primary-rgb), .3); color: #fff; white-space: nowrap; }
+    .sa-foot .legal { border-top: 1px solid rgba(255,255,255,.1); margin-top: 2.25rem; padding-top: 1.25rem; font-size: .78rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+
+    /* --- Responsive --- */
+    @media (max-width: 991.98px) {
+      .sa-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .sa-band { grid-template-columns: minmax(0, 1fr); padding: 1.6rem; gap: 1.25rem; }
+    }
+    @media (max-width: 575.98px) {
+      .sa-wrap { padding: 0 1rem; }
+      .sa-top .bar { height: 60px; }
+      .sa-hero { padding: 2rem 0 1.5rem; }
+      .sa-hero .lead { font-size: .92rem; margin-bottom: 1.25rem; }
+      .sa-search { padding-left: 1rem; }
+      .sa-search button { padding: .7rem 1rem; }
+      .sa-search button .t { display: none; }
+      .sa-intents { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; margin-left: -1rem; margin-right: -1rem; padding: 0 1rem .25rem; }
+      .sa-intents::-webkit-scrollbar { display: none; }
+      .sa-tiles { gap: .65rem; }
+      .sa-tile { min-height: 172px; padding: 1rem; border-radius: 24px; }
+      .sa-tile .ic { width: 44px; height: 44px; border-radius: 15px; font-size: 1.2rem; }
+      .sa-tile h3 { font-size: .92rem; margin-top: .75rem; }
+      .sa-tile .live { font-size: .72rem; }
+      .sa-tile .go { width: 28px; height: 28px; right: .8rem; top: 1rem; font-size: .8rem; }
+      .sa-deal { width: 172px; }
+      .sa-dest { width: 236px; }
+      .sa-rate { width: 158px; }
+      .sa-rowhead .ctrl button { display: none; }
+      .sa-sec { margin-bottom: 2.1rem; }
+      .sa-foot { border-radius: 28px 28px 0 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .sa-tile, .sa-tile::before, .sa-deal, .sa-rate, .sa-tile .go { transition: none; }
+      .sa-tile:hover, .sa-deal:hover, .sa-rate:hover { transform: none; }
+      .sa-tile:hover::before, .sa-tile:hover .go { transform: none; }
+      .sa-scroll { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body class="sa">
+<a class="visually-hidden-focusable position-absolute top-0 start-0 m-2 btn btn-primary" style="z-index:2000" href="#main">Skip to content</a>
+<div class="sa-glow" aria-hidden="true"></div>
+
+<!-- ===== Top bar ===== -->
+<header class="sa-top" id="top">
+  <div class="sa-wrap bar">
+    <a href="./index-v2.html" class="sa-logo" aria-label="AutoBiz home"><img src="./assets/img/logo.svg" alt="">AutoBiz</a>
+    <nav class="sa-nav d-none d-lg-flex" aria-label="Services">
+      <a href="./app/marketplace.html">Shop</a>
+      <a href="./app/esim.html">eSIM</a>
+      <a href="./app/flights.html">Flights</a>
+      <a href="./app/giftcards.html">Gift cards</a>
+      <a href="./app/virtual-cards.html">USD cards</a>
+      <a href="./app/bills.html">Bills</a>
+    </nav>
+    <div class="sa-actions">
+      <button type="button" class="sa-ib d-none d-sm-inline-grid" data-theme-toggle aria-label="Toggle dark mode"><i class="bi bi-moon-stars"></i></button>
+      <a href="./app/cart.html" class="sa-ib" aria-label="Cart"><i class="bi bi-bag"></i><span class="ab-dot-badge" data-cart-count hidden></span></a>
+      <span class="d-none d-md-flex gap-2" id="authDesk">
+        <a href="./login.html" class="btn btn-light-subtle sa-pill">Log in</a>
+        <a href="./register.html" class="btn btn-primary sa-pill">Sign up</a>
+      </span>
+      <button type="button" class="sa-ib d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#saMenu" aria-controls="saMenu" aria-label="Open menu"><i class="bi bi-list"></i></button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile menu -->
+<div class="offcanvas offcanvas-end sa-oc" tabindex="-1" id="saMenu" aria-labelledby="saMenuTitle" style="--bs-offcanvas-width: 320px">
+  <div class="offcanvas-header">
+    <a href="./index-v2.html" class="sa-logo" id="saMenuTitle"><img src="./assets/img/logo.svg" alt="">AutoBiz</a>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close menu"></button>
+  </div>
+  <div class="offcanvas-body d-flex flex-column">
+    <nav aria-label="Services (mobile)">
+      <a class="row-l" href="./app/marketplace.html"><span class="ab-icon ab-icon-sm tone-primary"><i class="bi bi-shop"></i></span>Shop</a>
+      <a class="row-l" href="./app/esim.html"><span class="ab-icon ab-icon-sm tone-violet"><i class="bi bi-sim"></i></span>Travel eSIM</a>
+      <a class="row-l" href="./app/flights.html"><span class="ab-icon ab-icon-sm tone-cyan"><i class="bi bi-airplane"></i></span>Flights</a>
+      <a class="row-l" href="./app/giftcards.html"><span class="ab-icon ab-icon-sm tone-pink"><i class="bi bi-gift"></i></span>Gift cards</a>
+      <a class="row-l" href="./app/virtual-cards.html"><span class="ab-icon ab-icon-sm tone-success"><i class="bi bi-credit-card-2-front"></i></span>USD cards</a>
+      <a class="row-l" href="./app/bills.html"><span class="ab-icon ab-icon-sm tone-warning"><i class="bi bi-lightning-charge"></i></span>Airtime &amp; bills</a>
+      <a class="row-l" href="./app/cart.html"><span class="ab-icon ab-icon-sm tone-orange"><i class="bi bi-bag"></i></span>Cart <span class="badge bg-primary ms-auto" data-cart-count hidden></span></a>
+      <button type="button" class="row-l w-100 text-start border-0 bg-transparent d-flex align-items-center fw-semibold" style="gap:.8rem;padding:.7rem .5rem;border-radius:14px;color:var(--ab-text)" data-theme-toggle><span class="ab-icon ab-icon-sm tone-cyan"><i class="bi bi-moon-stars"></i></span>Toggle dark mode</button>
+    </nav>
+    <div class="mt-auto pt-3 d-grid gap-2" id="authMob">
+      <a href="./register.html" class="btn btn-primary btn-lg sa-pill">Create free account</a>
+      <a href="./login.html" class="btn btn-light-subtle btn-lg sa-pill">Log in</a>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+  <!-- ===== Greeting + search ===== -->
+  <section class="sa-hero sa-wrap" aria-labelledby="heroTitle">
+    <span class="sa-hello" id="hello"><i class="bi bi-brightness-high"></i><span>Good day</span></span>
+    <h1 id="heroTitle">What can we <span>get done</span> today?</h1>
+    <p class="lead">Shop, travel and pay from one place. Browse freely — you only sign in when you pay.</p>
+    <form class="sa-search" role="search" action="./app/marketplace.html" method="get" id="searchForm">
+      <i class="bi bi-search" aria-hidden="true"></i>
+      <label for="q" class="visually-hidden">Search products</label>
+      <input id="q" name="q" type="search" placeholder="Search phones, air fryers, perfumes…" autocomplete="off">
+      <button class="btn btn-primary" type="submit" aria-label="Search"><i class="bi bi-arrow-right d-sm-none"></i><span class="t">Search</span></button>
+    </form>
+    <nav class="sa-intents" aria-label="Quick actions" id="intents"></nav>
+  </section>
+
+  <!-- ===== Launcher ===== -->
+  <section class="sa-sec sa-wrap" aria-labelledby="svcTitle">
+    <h2 id="svcTitle" class="visually-hidden">Services</h2>
+    <div class="sa-tiles">
+      <a class="sa-tile feature" href="./app/marketplace.html">
+        <span class="ic"><i class="bi bi-shop"></i></span><span class="go"><i class="bi bi-arrow-right"></i></span>
+        <h3>Shop</h3><div class="live" id="tShop"></div>
+      </a>
+      <a class="sa-tile t-violet" href="./app/esim.html">
+        <span class="ic tone-violet"><i class="bi bi-sim"></i></span><span class="go"><i class="bi bi-arrow-right"></i></span>
+        <h3>Travel eSIM</h3><div class="live" id="tEsim"></div>
+      </a>
+      <a class="sa-tile t-cyan" href="./app/flights.html">
+        <span class="ic tone-cyan"><i class="bi bi-airplane"></i></span><span class="go"><i class="bi bi-arrow-right"></i></span>
+        <h3>Flights</h3><div class="live" id="tFlight"></div>
+      </a>
+      <a class="sa-tile t-success" href="./app/virtual-cards.html">
+        <span class="ic tone-success"><i class="bi bi-credit-card-2-front"></i></span><span class="go"><i class="bi bi-arrow-right"></i></span>
+        <h3>USD virtual card</h3><div class="live"><b>$2</b> to create · fund from <b>$5</b><br>Netflix, Amazon, AliExpress</div>
+      </a>
+      <a class="sa-tile t-pink" href="./app/giftcards.html">
+        <span class="ic tone-pink"><i class="bi bi-gift"></i></span><span class="go"><i class="bi bi-arrow-right"></i></span>
+        <h3>Sell gift cards</h3><div class="live" id="tGift"></div>
+      </a>
+      <a class="sa-tile t-warning" href="./app/bills.html?tab=airtime">
+        <span class="ic tone-warning"><i class="bi bi-phone"></i></span><span class="go"><i class="bi bi-arrow-right"></i></span>
+        <h3>Airtime</h3><div class="live">All networks, instantly<div class="nets" id="tNets"></div></div>
+      </a>
+      <a class="sa-tile t-primary" href="./app/bills.html?tab=data">
+        <span class="ic tone-primary"><i class="bi bi-wifi"></i></span><span class="go"><i class="bi bi-arrow-right"></i></span>
+        <h3>Data bundles</h3><div class="live" id="tData"></div>
+      </a>
+      <a class="sa-tile t-orange" href="./app/bills.html?tab=electricity">
+        <span class="ic tone-orange"><i class="bi bi-lightning-charge"></i></span><span class="go"><i class="bi bi-arrow-right"></i></span>
+        <h3>Electricity &amp; TV</h3><div class="live" id="tBills"></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== Deals row ===== -->
+  <section class="sa-sec sa-wrap" aria-labelledby="dealsTitle">
+    <div class="sa-rowhead">
+      <div><h2 id="dealsTitle">Today's deals</h2><p>Biggest markdowns across the marketplace</p></div>
+      <div class="ctrl"><a href="./app/marketplace.html">See all</a><button type="button" class="btn btn-light-subtle rounded-circle" data-scroll="deals" data-dir="-1" aria-label="Scroll deals left"><i class="bi bi-chevron-left"></i></button><button type="button" class="btn btn-light-subtle rounded-circle" data-scroll="deals" data-dir="1" aria-label="Scroll deals right"><i class="bi bi-chevron-right"></i></button></div>
+    </div>
+    <div class="sa-scroll" id="deals"></div>
+  </section>
+
+  <!-- ===== Destinations row ===== -->
+  <section class="sa-sec sa-wrap" aria-labelledby="destTitle">
+    <div class="sa-rowhead">
+      <div><h2 id="destTitle">Where to next?</h2><p>Grab an eSIM and check flights in one tap</p></div>
+      <div class="ctrl"><a href="./app/esim.html">All countries</a><button type="button" class="btn btn-light-subtle rounded-circle" data-scroll="dests" data-dir="-1" aria-label="Scroll destinations left"><i class="bi bi-chevron-left"></i></button><button type="button" class="btn btn-light-subtle rounded-circle" data-scroll="dests" data-dir="1" aria-label="Scroll destinations right"><i class="bi bi-chevron-right"></i></button></div>
+    </div>
+    <div class="sa-scroll" id="dests"></div>
+  </section>
+
+  <!-- ===== Gift card rates row ===== -->
+  <section class="sa-sec sa-wrap" aria-labelledby="ratesTitle">
+    <div class="sa-rowhead">
+      <div><h2 id="ratesTitle">Gift card rates today</h2><p>Best rate per $1, paid to your wallet in minutes</p></div>
+      <div class="ctrl"><a href="./app/giftcards.html?tab=rates">All rates</a><button type="button" class="btn btn-light-subtle rounded-circle" data-scroll="rates" data-dir="-1" aria-label="Scroll rates left"><i class="bi bi-chevron-left"></i></button><button type="button" class="btn btn-light-subtle rounded-circle" data-scroll="rates" data-dir="1" aria-label="Scroll rates right"><i class="bi bi-chevron-right"></i></button></div>
+    </div>
+    <div class="sa-scroll" id="rates"></div>
+  </section>
+
+  <!-- ===== Account band ===== -->
+  <section class="sa-sec sa-wrap" aria-labelledby="bandTitle">
+    <div class="sa-band">
+      <div>
+        <span class="ab-icon ab-icon-lg tone-primary mb-3" style="background:var(--ab-surface)"><i class="bi bi-wallet2"></i></span>
+        <h2 id="bandTitle">One account. One wallet. Everything.</h2>
+        <p class="text-muted mb-4" id="bandText">Fund your Naira wallet once and use it for orders, eSIMs, flights, USD cards and bills — confirmed with your 4-digit PIN.</p>
+        <div class="d-flex flex-wrap gap-2" id="bandBtns">
+          <a href="./register.html" class="btn btn-primary btn-lg sa-pill px-4">Create free account</a>
+          <a href="./login.html" class="btn btn-light-subtle btn-lg sa-pill px-4">Log in</a>
+        </div>
+      </div>
+      <div class="sa-steps" aria-label="How it works">
+        <div><span>1</span>Browse products, plans and rates — no sign-up</div>
+        <div><span>2</span>Create an account when you're ready to pay</div>
+        <div><span>3</span>Confirm with your PIN — delivery is instant</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ===== Footer ===== -->
+<footer class="sa-foot">
+  <div class="sa-wrap">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="brand"><img src="./assets/img/logo.svg" alt="" width="34" height="34">AutoBiz</div>
+        <p class="fs-7 mb-0" style="max-width:320px">Shopping, travel eSIMs, flights, USD virtual cards, gift card exchange and bill payments — from one Naira wallet.</p>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <h3>Services</h3>
+        <ul><li><a href="./app/marketplace.html">Marketplace</a></li><li><a href="./app/esim.html">Travel eSIM</a></li><li><a href="./app/flights.html">Flights</a></li><li><a href="./app/virtual-cards.html">USD cards</a></li><li><a href="./app/giftcards.html">Gift cards</a></li><li><a href="./app/bills.html">Airtime &amp; bills</a></li></ul>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <h3>Account</h3>
+        <ul id="footAcct"><li><a href="./login.html">Log in</a></li><li><a href="./register.html">Create account</a></li><li><a href="./app/cart.html">Cart</a></li><li><a href="./forgot-password.html">Reset password</a></li></ul>
+      </div>
+      <div class="col-md-4 col-lg-4">
+        <div class="sa-app">
+          <h3>AutoBiz on your phone</h3>
+          <p class="fs-8 mb-3">Native apps are on the way. Until then, the website works great on mobile.</p>
+          <div class="d-grid gap-2">
+            <div class="sa-store" role="note" aria-label="App Store app coming soon"><i class="bi bi-apple" aria-hidden="true"></i><span><small>iPhone app</small><b>App Store</b></span><span class="soon">Coming soon</span></div>
+            <div class="sa-store" role="note" aria-label="Google Play app coming soon"><i class="bi bi-google-play" aria-hidden="true"></i><span><small>Android app</small><b>Google Play</b></span><span class="soon">Coming soon</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="legal"><span>© <span id="yr"></span> AutoBiz. All rights reserved.</span><span><i class="bi bi-shield-lock me-1"></i>PIN-protected payments · Prices in Naira (₦)</span></div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/js/data.js"></script>
+<script src="./assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const D = AB_DATA, { fmt, esc } = AB;
+  const $ = (id) => document.getElementById(id);
+  const disc = (p) => Math.round((1 - p.price / p.oldPrice) * 100);
+  const best = (g) => Math.max(...Object.values(g.types));
+  const authed = AB.auth.isAuthed(), user = authed ? AB.store.get("user") : null;
+
+  /* ---- Greeting ---- */
+  const h = new Date().getHours();
+  const [greet, icon] = h < 12 ? ["Good morning", "bi-sunrise"] : h < 17 ? ["Good afternoon", "bi-brightness-high"] : ["Good evening", "bi-moon-stars"];
+  $("hello").innerHTML = `<i class="bi ${icon}"></i><span>${greet}${user ? ", " + esc(user.firstName) : ""}</span>`;
+
+  /* ---- Quick intents ---- */
+  const intents = [
+    ["bi-phone", "Buy airtime", "./app/bills.html?tab=airtime"],
+    ["bi-wifi", "Buy data", "./app/bills.html?tab=data"],
+    ["bi-sim", "eSIM for UK", "./app/esim.html?country=gb"],
+    ["bi-airplane", "Flights to Dubai", "./app/flights.html?from=LOS&to=DXB"],
+    ["bi-steam", "Sell Steam card", "./app/giftcards.html?card=steam"],
+    ["bi-lightning-charge", "Pay electricity", "./app/bills.html?tab=electricity"],
+    ["bi-credit-card-2-front", "Get a USD card", "./app/virtual-cards.html"],
+    ["bi-phone-vibrate", "Shop phones", "./app/marketplace.html?cat=phones"]
+  ];
+  $("intents").innerHTML = intents.map(([i, t, u]) => `<a href="${u}"><i class="bi ${i}"></i>${t}</a>`).join("");
+  $("searchForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const q = $("q").value.trim();
+    location.href = q ? `./app/marketplace.html?q=${encodeURIComponent(q)}` : "./app/marketplace.html";
+  });
+
+  /* ---- Live tile details ---- */
+  const topDeal = [...D.products].sort((a, b) => disc(b) - disc(a))[0];
+  $("tShop").innerHTML = `<b>${D.products.length}</b> hot picks in ${D.categories.length} categories<br>Up to <b>${disc(topDeal)}% off</b> today`;
+  const esims = D.esimCountries.filter((c) => !c.regional);
+  const minE = esims.reduce((a, b) => (a.from < b.from ? a : b));
+  $("tEsim").innerHTML = `From <b>${fmt.usd(minE.from)}</b> · ${esims.length}+ countries<div class="flags">${["gb", "us", "ae", "tr", "gh"].map((c) => `<img src="${AB.flag(c)}" alt="" loading="lazy">`).join("")}</div>`;
+  const intl = D.airports.filter((a) => a.country !== "Nigeria").length;
+  $("tFlight").innerHTML = `<b>${D.airports.length - intl}</b> local · <b>${intl}</b> international airports<br>${D.airlines.length} airlines, pay in Naira`;
+  const topCard = [...D.giftcards].sort((a, b) => best(b) - best(a))[0];
+  $("tGift").innerHTML = `Best today: <b>${esc(topCard.name)}</b><br>up to <b>${fmt.naira(best(topCard))}/$</b>`;
+  $("tNets").innerHTML = D.networks.map((n) => `<img src="./assets/img/networks/${n.logo}" alt="${esc(n.name)}">`).join("");
+  const plans = Object.entries(D.dataPlans).flatMap(([net, ps]) => ps.map((p) => ({ ...p, net })));
+  const cheap1 = plans.filter((p) => p.name === "1GB" && p.validity === "30 days").sort((a, b) => a.price - b.price)[0];
+  const netName = (id) => D.networks.find((n) => n.id === id).name;
+  $("tData").innerHTML = `1GB (30 days) from <b>${fmt.naira(cheap1.price)}</b><br>on ${esc(netName(cheap1.net))} · ${plans.length} plans`;
+  const tvMin = Math.min(...Object.values(D.cableProviders).flatMap((c) => c.plans.map((p) => p.price)));
+  $("tBills").innerHTML = `<b>${D.discos.length}</b> DisCos · prepaid tokens<br>TV plans from <b>${fmt.naira(tvMin)}</b>`;
+
+  /* ---- Deals row ---- */
+  $("deals").innerHTML = [...D.products].sort((a, b) => disc(b) - disc(a)).slice(0, 12).map((p) => `
+    <article class="sa-deal">
+      <a class="art" href="./app/product.html?id=${p.id}" tabindex="-1" aria-hidden="true"><span class="off">-${disc(p)}%</span>${AB.productArt(p)}</a>
+      <a class="nm" href="./app/product.html?id=${p.id}">${esc(p.name)}</a>
+      <div class="fs-8 text-muted px-1"><i class="bi bi-star-fill text-warning"></i> ${p.rating} · ${fmt.num(p.reviews)} reviews</div>
+      <div class="bot"><div class="min-w-0"><div class="pr tabular text-truncate">${fmt.naira(p.price)}</div><div class="old tabular">${fmt.naira(p.oldPrice)}</div></div>
+        <button type="button" class="btn btn-soft btn-icon add" data-add="${p.id}" aria-label="Add ${esc(p.name)} to cart"><i class="bi bi-plus-lg"></i></button></div>
+    </article>`).join("");
+
+  /* ---- Destinations row (eSIM + matching airport) ---- */
+  const airportFor = { gb: "LHR", us: "JFK", ae: "DXB", ca: "YYZ", gh: "ACC", ke: "NBO", za: "JNB", fr: "CDG", tr: "IST" };
+  $("dests").innerHTML = Object.keys(airportFor).map((code) => {
+    const c = D.esimCountries.find((x) => x.code === code), ap = D.airports.find((a) => a.code === airportFor[code]);
+    return `<div class="sa-dest">
+      <div class="top"><img src="${AB.flag(code)}" alt="" loading="lazy"><div class="min-w-0"><b class="text-truncate">${esc(c.name)}</b><small>${c.speed} · ${esc(c.networks)}</small></div></div>
+      <div class="acts">
+        <a href="./app/esim.html?country=${code}" aria-label="eSIM for ${esc(c.name)} from ${fmt.usd(c.from)}"><span><i class="bi bi-sim"></i> eSIM</span><b>${fmt.usd(c.from)}</b></a>
+        <a href="./app/flights.html?from=LOS&to=${ap.code}" aria-label="Flights from Lagos to ${esc(ap.city)}"><span><i class="bi bi-airplane"></i> Flights</span><b>LOS → ${ap.code}</b></a>
+      </div></div>`;
+  }).join("");
+
+  /* ---- Gift card rates row ---- */
+  $("rates").innerHTML = [...D.giftcards].sort((a, b) => best(b) - best(a)).map((g) => `
+    <a class="sa-rate" href="./app/giftcards.html?card=${g.id}">
+      <div class="d-flex justify-content-between align-items-start"><span class="lg" style="background:${g.color}"><i class="bi ${g.icon}"></i></span>${g.hot ? '<span class="badge rounded-pill tone-orange">Popular</span>' : ""}</div>
+      <div><div class="fw-bold fs-7 text-truncate">${esc(g.name)}</div><div class="v tabular">${fmt.naira(best(g))}<small>/$</small></div><div class="fs-8 text-muted">$${g.range[0]}–$${g.range[1]} · ${Object.keys(g.types).length} types</div></div>
+    </a>`).join("");
+
+  /* ---- Row scroll buttons ---- */
+  document.querySelectorAll("[data-scroll]").forEach((b) => b.addEventListener("click", () => {
+    const el = $(b.dataset.scroll); el.scrollBy({ left: Number(b.dataset.dir) * el.clientWidth * 0.8 });
+  }));
+
+  /* ---- Cart + theme ---- */
+  document.querySelector("main").addEventListener("click", (e) => { const b = e.target.closest("[data-add]"); if (b) AB.cart.add(b.dataset.add, 1); });
+  document.querySelectorAll("[data-theme-toggle]").forEach((b) => b.addEventListener("click", () => AB.toggleTheme()));
+  const top = $("top"), onScroll = () => top.classList.toggle("scrolled", window.scrollY > 8);
+  window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  $("yr").textContent = new Date().getFullYear();
+
+  /* ---- Members ---- */
+  if (authed) {
+    const initials = esc(user.firstName[0] + user.lastName[0]);
+    $("authDesk").innerHTML = `<a href="./app/dashboard.html" class="btn btn-primary sa-pill d-inline-flex align-items-center gap-2"><span class="ab-avatar sm">${initials}</span>My account</a>`;
+    $("authMob").innerHTML = `<a href="./app/dashboard.html" class="btn btn-primary btn-lg sa-pill">Go to my account</a>`;
+    $("bandTitle").textContent = `Welcome back, ${user.firstName}`;
+    $("bandText").textContent = "Your wallet, orders, trips, eSIMs and cards are all waiting in your account.";
+    $("bandBtns").innerHTML = `<a href="./app/dashboard.html" class="btn btn-primary btn-lg sa-pill px-4">Go to my account</a><a href="./app/wallet.html" class="btn btn-light-subtle btn-lg sa-pill px-4">Fund wallet</a>`;
+    $("footAcct").innerHTML = `<li><a href="./app/dashboard.html">My account</a></li><li><a href="./app/orders.html">Orders</a></li><li><a href="./app/wallet.html">Wallet</a></li><li><a href="./app/cart.html">Cart</a></li>`;
+  }
+  AB.refreshShell();
+});
+</script>
+</body>
+</html>
