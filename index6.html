@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AutoBiz · Shop, travel &amp; pay — all from one Naira wallet</title>
+  <meta name="description" content="Shop deals from verified sellers, pick a travel eSIM, search flights, price your gift cards, top up airtime and get a USD virtual card — right from the AutoBiz homepage.">
+  <meta name="theme-color" content="#2348ff">
+  <link rel="icon" href="./assets/img/logo.svg" type="image/svg+xml">
+  <script>try{document.documentElement.setAttribute("data-bs-theme",(JSON.parse(localStorage.getItem("autobiz_v2"))||{}).settings?.theme||"light")}catch(e){}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="./assets/css/app.css" rel="stylesheet">
+  <script src="./assets/js/brand.js"></script>
+  <style>
+    /* ===== Bento grid homepage ===== */
+    .bn-sec { margin-bottom: 2.25rem; }
+    .bn-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+    .bn-head h2 { font-size: clamp(1.2rem, 2.2vw, 1.5rem); font-weight: 800; letter-spacing: -.03em; margin: 0; }
+    .bn-head p { color: var(--ab-muted); font-size: .85rem; margin: .2rem 0 0; }
+    .bn-more { font-weight: 700; font-size: .8125rem; white-space: nowrap; color: var(--ab-primary); }
+    a:focus-visible, button:focus-visible, .bn-tile:focus-visible { outline: 3px solid rgba(var(--ab-primary-rgb), .55); outline-offset: 2px; }
+
+    /* --- Tiles --- */
+    .bn-grid { display: grid; gap: 1rem; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(200px, auto);
+      grid-template-areas: "promo promo flight flight" "promo promo esim air" "gift deal card card" "gift deal cats cats"; }
+    .bn-tile { --tint: var(--ab-surface-2); --ink: var(--ab-primary); position: relative; overflow: hidden; min-width: 0; border-radius: 24px; padding: 1.25rem 1.3rem;
+      border: 1px solid var(--ab-border); color: var(--ab-text);
+      background: linear-gradient(165deg, var(--tint) 0%, var(--ab-surface) 62%);
+      display: flex; flex-direction: column; gap: .75rem;
+      transition: transform .25s cubic-bezier(.2,.7,.3,1), box-shadow .25s, border-color .25s; }
+    .bn-tile:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -24px rgba(0,0,0,.35); border-color: color-mix(in srgb, var(--ink) 30%, var(--ab-border)); }
+    .bn-tile:focus-within { border-color: color-mix(in srgb, var(--ink) 45%, var(--ab-border)); }
+    .bn-label { display: inline-flex; align-items: center; gap: .45rem; font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); }
+    .bn-label i { font-size: .9rem; }
+    .bn-title { font-size: 1.08rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.25; margin: 0; }
+    .bn-sub { font-size: .78rem; color: var(--ab-muted); margin: 0; }
+    .bn-tile .form-label { font-size: .7rem; font-weight: 700; color: var(--ab-muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: .3rem; }
+    .bn-tile .form-control, .bn-tile .form-select { background-color: var(--ab-surface); border-radius: 12px; font-size: .9rem; padding-top: .55rem; padding-bottom: .55rem; }
+    .bn-tile .form-control.is-invalid, .bn-tile .form-select.is-invalid { border-color: var(--ab-danger); box-shadow: 0 0 0 4px var(--ab-danger-soft); }
+    .bn-err { font-size: .74rem; font-weight: 600; color: var(--ab-danger); min-height: 1.1em; margin: 0; }
+    .bn-go { margin-top: auto; display: inline-flex; align-items: center; justify-content: center; gap: .4rem; font-weight: 700; border-radius: 12px; padding: .6rem 1rem; background: var(--ink); color: #fff; border: 0; transition: filter .2s, transform .2s; text-decoration: none; }
+    .bn-go:hover { color: #fff; filter: brightness(1.08); }
+    .bn-go:active { transform: scale(.98); }
+    .t-esim { --tint: var(--ab-violet-soft); --ink: var(--ab-violet); }
+    .t-flight { --tint: var(--ab-cyan-soft); --ink: var(--ab-cyan); }
+    .t-gift { --tint: var(--ab-pink-soft); --ink: var(--ab-pink); }
+    .t-air { --tint: var(--ab-warning-soft); --ink: #c77700; }
+    [data-bs-theme="dark"] .t-air { --ink: var(--ab-warning); }
+    .t-air .bn-go { color: #1f1400; }
+    .t-deal { --tint: var(--ab-orange-soft); --ink: var(--ab-orange); }
+    .t-card { --tint: var(--ab-accent-soft); --ink: var(--ab-accent); }
+    .t-cats { --tint: var(--ab-primary-soft); --ink: var(--ab-primary); }
+
+    /* Promo */
+    .t-promo { grid-area: promo; color: #fff; border: 0; padding: 2rem 2.1rem; justify-content: space-between;
+      background: radial-gradient(90% 80% at 100% 100%, rgba(var(--ab-primary-rgb), .75), transparent 65%), linear-gradient(140deg, var(--ab-sidebar) 0%, var(--ab-primary-700) 120%); }
+    .t-promo::after { content: ""; position: absolute; width: 380px; height: 380px; border-radius: 50%; right: -120px; top: -150px; border: 48px solid rgba(255,255,255,.05); pointer-events: none; }
+    .t-promo > * { position: relative; z-index: 1; }
+    .t-promo .bn-label { color: #fff; background: rgba(255,255,255,.12); padding: .35rem .7rem; border-radius: 999px; align-self: flex-start; backdrop-filter: blur(6px); }
+    .t-promo h1 { color: #fff; font-size: clamp(1.8rem, 3.6vw, 2.9rem); font-weight: 800; letter-spacing: -.045em; line-height: 1.02; margin: .9rem 0 .7rem; max-width: 460px; }
+    .t-promo h1 em { font-style: normal; color: var(--ab-primary-300); }
+    .t-promo p.lead-t { opacity: .8; max-width: 380px; font-size: .95rem; margin: 0; }
+    .bn-promo-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.25rem; flex-wrap: wrap; }
+    .bn-btn-w { background: #fff; color: #111; font-weight: 800; border-radius: 14px; padding: .75rem 1.3rem; }
+    .bn-btn-w:hover { background: rgba(255,255,255,.88); color: #111; }
+    .bn-show { position: relative; width: 260px; height: 222px; flex-shrink: 0; }
+    .bn-show a { position: absolute; display: block; border-radius: 22px; box-shadow: 0 24px 40px -18px rgba(0,0,0,.55); transition: transform .3s; }
+    .bn-show a:hover { transform: translateY(-4px) rotate(0deg) !important; z-index: 4; }
+    .bn-show .ab-product-art { border-radius: 20px; aspect-ratio: 1; }
+    .bn-show .s0 { width: 150px; right: 54px; top: 0; z-index: 3; transform: rotate(-4deg); }
+    .bn-show .s0 .ab-product-art { font-size: 4.2rem; }
+    .bn-show .s1 { width: 96px; right: 0; top: 0; z-index: 2; transform: rotate(8deg); }
+    .bn-show .s2 { width: 96px; left: 0; bottom: 34px; z-index: 2; transform: rotate(-10deg); }
+    .bn-show .s1 .ab-product-art, .bn-show .s2 .ab-product-art { font-size: 2.4rem; border-radius: 16px; }
+    .bn-show .ab-product-art { background-color: var(--ab-surface); }
+    .bn-off { position: absolute; z-index: 5; left: 34px; top: 0; background: #ffd43b; color: #1a1300; font-weight: 800; border-radius: 12px; padding: .4rem .65rem; line-height: 1.05; text-align: center; transform: rotate(-8deg); box-shadow: 0 12px 24px -10px rgba(0,0,0,.5); }
+    .bn-off small { display: block; font-size: .58rem; text-transform: uppercase; letter-spacing: .06em; opacity: .75; }
+    .bn-show .cap { position: absolute; right: 54px; bottom: 0; z-index: 5; width: 150px; background: rgba(255,255,255,.12); backdrop-filter: blur(10px); border-radius: 12px; padding: .4rem .6rem; font-size: .7rem; line-height: 1.3; }
+    .bn-show .cap b { display: block; font-size: .82rem; }
+    .bn-show .cap s { opacity: .6; }
+
+    /* Flight */
+    .t-flight { grid-area: flight; }
+    .bn-route { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: end; gap: .6rem; }
+    .bn-swap { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--ab-border); background: var(--ab-surface); color: var(--ink); display: grid; place-items: center; transition: transform .3s; margin-bottom: 1px; }
+    .bn-swap:hover { transform: rotate(180deg); border-color: var(--ink); }
+    .bn-fl-meta { display: flex; align-items: center; gap: .5rem; font-size: .78rem; color: var(--ab-muted); min-height: 1.3em; }
+    .bn-fl-meta .pill { font-size: .68rem; font-weight: 800; padding: .15rem .5rem; border-radius: 999px; background: var(--tint); color: var(--ink); }
+    .bn-fl-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: .75rem; flex-wrap: wrap; }
+    .bn-fl-foot .bn-go { margin-top: 0; }
+    .bn-plane { position: absolute; right: -18px; top: -14px; font-size: 6.5rem; color: var(--ink); opacity: .08; transform: rotate(18deg); pointer-events: none; }
+
+    /* eSIM */
+    .t-esim { grid-area: esim; }
+    .bn-esim-row { display: flex; align-items: center; gap: .7rem; }
+    .bn-flag { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; flex-shrink: 0; box-shadow: 0 0 0 3px var(--ab-surface), 0 0 0 4px var(--ab-border); background: var(--ab-surface-2); display: grid; place-items: center; color: var(--ink); font-size: 1.4rem; }
+    .bn-price { font-size: 1.35rem; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
+    .bn-price small { font-size: .72rem; font-weight: 600; color: var(--ab-muted); letter-spacing: 0; }
+
+    /* Airtime */
+    .t-air { grid-area: air; }
+    .bn-phone { position: relative; }
+    .bn-phone .form-control { padding-left: 3rem; font-weight: 700; letter-spacing: .04em; font-variant-numeric: tabular-nums; }
+    .bn-phone .net { position: absolute; left: .45rem; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 9px; overflow: hidden; display: grid; place-items: center; background: var(--ab-surface-2); color: var(--ab-muted); transition: transform .25s; }
+    .bn-phone .net img { width: 100%; height: 100%; object-fit: cover; }
+    .bn-phone .net.pop { animation: bnPop .35s ease; }
+    @keyframes bnPop { 50% { transform: translateY(-50%) scale(1.15); } }
+    .bn-nets { display: flex; gap: .35rem; }
+    .bn-nets img { width: 24px; height: 24px; border-radius: 7px; object-fit: cover; opacity: .35; filter: grayscale(1); transition: all .2s; }
+    .bn-nets img.on { opacity: 1; filter: none; box-shadow: 0 0 0 2px var(--ab-surface), 0 0 0 3.5px var(--ink); }
+    .bn-detect { font-size: .74rem; font-weight: 700; color: var(--ab-muted); }
+    .bn-detect.ok { color: var(--ab-accent); }
+
+    /* Gift */
+    .t-gift { grid-area: gift; }
+    .bn-payout { border-radius: 16px; background: var(--ab-surface); border: 1px dashed color-mix(in srgb, var(--ink) 40%, var(--ab-border)); padding: .8rem .9rem; }
+    .bn-payout .amt { font-size: 1.6rem; font-weight: 800; letter-spacing: -.03em; color: var(--ab-text); line-height: 1.1; font-variant-numeric: tabular-nums; word-break: break-word; }
+    .bn-payout .rate { font-size: .74rem; color: var(--ab-muted); }
+    .bn-gc-ic { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; color: #fff; font-size: 1.05rem; flex-shrink: 0; transition: background .25s; }
+    .bn-usd { position: relative; }
+    .bn-usd span { position: absolute; left: .85rem; top: 50%; transform: translateY(-50%); font-weight: 800; color: var(--ab-muted); }
+    .bn-usd .form-control { padding-left: 1.75rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+    /* Deal */
+    .t-deal { grid-area: deal; }
+    .t-deal .art { position: relative; display: block; }
+    .t-deal .ab-product-art { aspect-ratio: 1; font-size: 4.2rem; border-radius: 18px; }
+    .t-deal .off { position: absolute; top: 10px; left: 10px; z-index: 2; background: var(--ab-danger); color: #fff; font-size: .72rem; font-weight: 800; padding: .2rem .5rem; border-radius: 8px; }
+    .t-deal .nm { color: var(--ab-text); font-weight: 700; font-size: .9rem; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .t-deal .nm:hover { color: var(--ab-primary); }
+    .t-deal .pr { font-size: 1.15rem; font-weight: 800; letter-spacing: -.02em; }
+    .t-deal .old { font-size: .74rem; color: var(--ab-muted); text-decoration: line-through; }
+    .t-deal .meta { font-size: .72rem; color: var(--ab-muted); }
+    .t-deal .meta .bi-star-fill { color: #f59f00; }
+
+    /* USD card */
+    .t-card { grid-area: card; flex-direction: row; align-items: center; gap: 1.25rem; }
+    .t-card .txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: .6rem; align-self: stretch; }
+    .bn-vcard { flex-shrink: 0; width: 230px; aspect-ratio: 1.586; border-radius: 18px; padding: 14px 16px; color: #fff; display: flex; flex-direction: column; justify-content: space-between; transform: rotate(-5deg); transition: transform .35s;
+      background: radial-gradient(120% 140% at 100% 0%, rgba(var(--ab-primary-rgb), .9), transparent 58%), linear-gradient(135deg, var(--ab-sidebar), #0a0a0c); box-shadow: 0 26px 40px -20px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.12); font-size: .72rem; }
+    .t-card:hover .bn-vcard { transform: rotate(0) translateY(-4px); }
+    .bn-vcard .chip { width: 32px; height: 23px; border-radius: 6px; background: linear-gradient(135deg, #f1dc9c, #b99a4a); }
+    .bn-vcard .num { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .12em; font-size: .82rem; }
+    .bn-fee { display: inline-flex; align-items: center; gap: .4rem; align-self: flex-start; font-size: .8rem; font-weight: 800; padding: .3rem .7rem; border-radius: 999px; background: var(--ab-surface); border: 1px solid var(--ab-border); }
+
+    /* Categories (hero) */
+    .t-cats { grid-area: cats; }
+    .bn-cat-ic { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; flex: 1; align-content: center; }
+    .bn-cat-ic a { display: flex; flex-direction: column; align-items: center; gap: .35rem; padding: .5rem .25rem; border-radius: 14px; color: var(--ab-text); font-size: .72rem; font-weight: 700; text-align: center; line-height: 1.2; transition: background .2s; }
+    .bn-cat-ic a:hover { background: var(--ab-surface); }
+    .bn-cat-ic a:hover .ab-icon { transform: translateY(-2px) scale(1.05); }
+    .bn-cat-ic .ab-icon { transition: transform .2s; }
+
+    /* --- Shop by category (second bento) --- */
+    .bn-cbento { display: grid; gap: .85rem; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(132px, auto); }
+    .bn-c { position: relative; overflow: hidden; border-radius: 22px; padding: 1rem 1.1rem; border: 1px solid var(--ab-border); color: var(--ab-text); display: flex; flex-direction: column; justify-content: space-between; gap: .5rem; background: var(--ab-surface); transition: transform .25s, box-shadow .25s, border-color .25s; }
+    .bn-c:hover { transform: translateY(-3px); box-shadow: 0 16px 34px -22px rgba(0,0,0,.35); color: var(--ab-text); }
+    .bn-c .bg { position: absolute; inset: 0; opacity: 1; pointer-events: none; }
+    .bn-c > :not(.bg):not(.big-ic) { position: relative; z-index: 1; }
+    .bn-c .big-ic { position: absolute; right: -10px; bottom: -18px; font-size: 5.5rem; opacity: .14; transform: rotate(-12deg); transition: transform .35s; }
+    .bn-c:hover .big-ic { transform: rotate(-4deg) scale(1.06); }
+    .bn-c h3 { font-size: .98rem; font-weight: 800; letter-spacing: -.02em; margin: 0; }
+    .bn-c .s { font-size: .74rem; color: var(--ab-muted); }
+    .bn-c .from { font-size: .78rem; font-weight: 700; }
+    .bn-c.wide { grid-column: span 2; }
+    .bn-c.big { grid-column: span 2; grid-row: span 2; padding: 1.4rem; }
+    .bn-c.big h3 { font-size: 1.35rem; }
+    .bn-c .minis { display: flex; gap: .6rem; }
+    .bn-c .minis .ab-product-art { width: 76px; height: 76px; font-size: 2rem; border-radius: 16px; background-color: var(--ab-surface); box-shadow: var(--ab-shadow-sm); }
+    .bn-c .arrow { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--ab-surface); border: 1px solid var(--ab-border); transition: transform .2s; }
+    .bn-c:hover .arrow { transform: translateX(3px); }
+
+    /* --- Product grid --- */
+    .bn-seg { display: inline-flex; padding: 3px; border-radius: 12px; background: var(--ab-surface-2); border: 1px solid var(--ab-border); }
+    .bn-seg button { border: 0; background: none; font-size: .78rem; font-weight: 700; color: var(--ab-muted); padding: .38rem .75rem; border-radius: 9px; }
+    .bn-seg button[aria-pressed="true"] { background: var(--ab-surface); color: var(--ab-text); box-shadow: var(--ab-shadow-sm); }
+    .bn-pgrid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .85rem; }
+    .bn-p { background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 20px; padding: .7rem; display: flex; flex-direction: column; transition: transform .25s, box-shadow .25s, border-color .25s; }
+    .bn-p:hover { transform: translateY(-3px); box-shadow: 0 16px 34px -22px rgba(0,0,0,.35); border-color: rgba(var(--ab-primary-rgb), .3); }
+    .bn-p .art { position: relative; display: block; }
+    .bn-p .ab-product-art { font-size: 2.8rem; border-radius: 14px; }
+    .bn-p .off { position: absolute; top: 8px; left: 8px; z-index: 2; background: var(--ab-surface); color: var(--ab-danger); font-size: .68rem; font-weight: 800; padding: .12rem .45rem; border-radius: 7px; }
+    .bn-p .nm { color: var(--ab-text); font-weight: 600; font-size: .84rem; line-height: 1.3; margin: .6rem 0 .25rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.6em; }
+    .bn-p .nm:hover { color: var(--ab-primary); }
+    .bn-p .meta { font-size: .7rem; color: var(--ab-muted); }
+    .bn-p .meta .bi-star-fill { color: #f59f00; }
+    .bn-p .pr { font-weight: 800; font-size: .95rem; }
+    .bn-p .old { font-size: .72rem; color: var(--ab-muted); text-decoration: line-through; }
+    .bn-p .add { width: 34px; height: 34px; border-radius: 11px; flex-shrink: 0; }
+    .bn-pgrid.swap > * { animation: bnIn .3s ease both; }
+    @keyframes bnIn { from { opacity: 0; transform: translateY(6px); } }
+
+    /* --- Bills strip --- */
+    .bn-bills { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .75rem; }
+    .bn-b { display: flex; flex-direction: column; gap: .7rem; padding: 1rem; border-radius: 20px; border: 1px solid var(--ab-border); background: var(--ab-surface); color: var(--ab-text); transition: transform .25s, box-shadow .25s, border-color .25s; min-width: 0; }
+    .bn-b:hover { transform: translateY(-3px); box-shadow: 0 16px 34px -22px rgba(0,0,0,.35); border-color: rgba(var(--ab-primary-rgb), .3); color: var(--ab-text); }
+    .bn-b b { display: block; font-size: .88rem; }
+    .bn-b small { display: block; font-size: .72rem; color: var(--ab-muted); line-height: 1.35; }
+
+    /* --- Closing CTA --- */
+    .bn-cta { position: relative; overflow: hidden; border-radius: 28px; padding: 2.5rem; color: #fff; background: radial-gradient(70% 120% at 100% 0%, rgba(var(--ab-primary-rgb), .7), transparent 60%), linear-gradient(130deg, var(--ab-sidebar), var(--ab-primary-700) 140%); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.5rem; align-items: center; }
+    .bn-cta h2 { color: #fff; font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; letter-spacing: -.035em; margin: 0 0 .4rem; }
+    .bn-cta p { opacity: .8; margin: 0; max-width: 520px; }
+    .bn-cta .btn-ghost { color: #fff; border: 1px solid rgba(255,255,255,.4); border-radius: 14px; padding: .75rem 1.3rem; font-weight: 700; }
+    .bn-cta .btn-ghost:hover { background: rgba(255,255,255,.12); color: #fff; }
+    .bn-cta .dots { position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.12) 1px, transparent 1.5px); background-size: 18px 18px; -webkit-mask-image: linear-gradient(270deg, #000, transparent 60%); mask-image: linear-gradient(270deg, #000, transparent 60%); pointer-events: none; }
+    .bn-cta > :not(.dots) { position: relative; }
+
+    /* --- Responsive --- */
+    @media (max-width: 1199.98px) {
+      .bn-pgrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .bn-pgrid > :nth-child(n+9) { display: none; }
+      .bn-bills { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .bn-show { width: 220px; }
+      .bn-show .s0 { width: 128px; } .bn-show .cap { width: 128px; }
+    }
+    @media (max-width: 991.98px) {
+      .bn-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: auto;
+        grid-template-areas: "promo promo" "flight flight" "esim air" "gift deal" "card card" "cats cats"; }
+      .t-promo { min-height: 360px; }
+      .bn-cbento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .bn-pgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .bn-pgrid > :nth-child(n+7) { display: none; }
+      .bn-cta { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 575.98px) {
+      .bn-grid { gap: .7rem; grid-template-areas: "promo promo" "flight flight" "esim esim" "air air" "gift gift" "deal card" "cats cats"; }
+      .bn-tile { border-radius: 20px; padding: 1rem; }
+      .t-promo { padding: 1.4rem 1.25rem; min-height: 0; }
+      .bn-promo-row { flex-direction: column-reverse; align-items: stretch; }
+      .bn-show { width: 100%; max-width: 280px; margin: .5rem auto 0; height: 210px; }
+      .bn-show .s0 { right: 64px; }
+      .bn-show .cap { right: 64px; }
+      .bn-promo-row .bn-btn-w { width: 100%; }
+      .bn-route { grid-template-columns: minmax(0, 1fr); }
+      .bn-swap { justify-self: center; transform: rotate(90deg); margin: -.2rem 0; width: 36px; height: 36px; }
+      .bn-swap:hover { transform: rotate(270deg); }
+      .bn-fl-foot .bn-go { width: 100%; }
+      .t-card { flex-direction: column; align-items: stretch; gap: .8rem; }
+      .t-card .bn-vcard { width: 100%; transform: none; padding: 10px 11px; border-radius: 13px; font-size: .6rem; }
+      .t-card .bn-vcard .num { font-size: .62rem; letter-spacing: .06em; }
+      .t-card .bn-vcard .chip { width: 22px; height: 16px; }
+      .t-card .bn-title { font-size: .98rem; }
+      .bn-fee { font-size: .7rem; padding: .25rem .55rem; }
+      .t-deal .ab-product-art { font-size: 3rem; }
+      .t-deal .pr { font-size: 1rem; }
+      .bn-cat-ic { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .25rem; }
+      .bn-cat-ic a { font-size: .66rem; padding: .4rem .1rem; }
+      .bn-cat-ic .ab-icon { width: 40px; height: 40px; }
+      .bn-cbento { gap: .6rem; grid-auto-rows: minmax(118px, auto); }
+      .bn-c { border-radius: 18px; padding: .85rem; }
+      .bn-c .minis .ab-product-art { width: 56px; height: 56px; font-size: 1.5rem; }
+      .bn-c.big h3 { font-size: 1.1rem; }
+      .bn-pgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; }
+      .bn-pgrid > :nth-child(n+7) { display: flex; }
+      .bn-pgrid > :nth-child(n+9) { display: none; }
+      .bn-bills { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; }
+      .bn-cta { padding: 1.75rem 1.35rem; border-radius: 22px; }
+      .bn-cta .btns > * { flex: 1 1 100%; }
+      .bn-head { align-items: flex-start; flex-direction: column; gap: .6rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .bn-tile, .bn-c, .bn-p, .bn-b, .bn-vcard, .bn-swap, .bn-show a { transition: none !important; }
+      .bn-tile:hover, .bn-c:hover, .bn-p:hover, .bn-b:hover { transform: none; }
+      .bn-pgrid.swap > *, .bn-phone .net.pop { animation: none; }
+    }
+  </style>
+</head>
+<body data-page="home" data-title="Home" data-public="true" data-shell="store">
+<main class="ab-content">
+
+  <!-- ===== Hero bento ===== -->
+  <section class="bn-sec bn-grid" aria-label="Shop, travel and pay">
+
+    <!-- Promo (2×2) -->
+    <article class="bn-tile t-promo">
+      <div>
+        <span class="bn-label"><i class="bi bi-lightning-charge-fill"></i><span id="promoKick">Today's deals</span></span>
+        <h1>Shop, travel &amp; pay. <em>One Naira wallet.</em></h1>
+        <p class="lead-t">Verified sellers, travel eSIMs, flights, USD cards, gift cards and bills — try any of them right here.</p>
+      </div>
+      <div class="bn-promo-row">
+        <div class="d-flex flex-column gap-2">
+          <a href="./app/marketplace.html" class="btn bn-btn-w">Shop the marketplace <i class="bi bi-arrow-right ms-1"></i></a>
+          <span class="fs-8 opacity-75" id="promoCount"></span>
+        </div>
+        <div class="bn-show" id="showcase"></div>
+      </div>
+    </article>
+
+    <!-- Flights (2×1) -->
+    <form class="bn-tile t-flight" id="flForm" novalidate aria-labelledby="flTitle">
+      <i class="bi bi-airplane-fill bn-plane" aria-hidden="true"></i>
+      <div><span class="bn-label"><i class="bi bi-airplane"></i>Flights</span><h2 class="bn-title mt-1" id="flTitle">Where are you flying?</h2></div>
+      <div class="bn-route">
+        <div><label class="form-label" for="flFrom">From</label><select class="form-select" id="flFrom" aria-describedby="flErr"></select></div>
+        <button type="button" class="bn-swap" id="flSwap" aria-label="Swap origin and destination"><i class="bi bi-arrow-left-right"></i></button>
+        <div><label class="form-label" for="flTo">To</label><select class="form-select" id="flTo" aria-describedby="flErr"></select></div>
+      </div>
+      <div class="bn-fl-foot">
+        <div>
+          <div class="bn-fl-meta" id="flMeta"></div>
+          <p class="bn-err" id="flErr" role="alert"></p>
+        </div>
+        <button class="bn-go" type="submit">Search flights <i class="bi bi-search"></i></button>
+      </div>
+    </form>
+
+    <!-- eSIM (1×1) -->
+    <form class="bn-tile t-esim" id="esForm" aria-labelledby="esTitle">
+      <div><span class="bn-label"><i class="bi bi-sim"></i>Travel eSIM</span><h2 class="bn-title mt-1" id="esTitle">Data abroad, no SIM swap</h2></div>
+      <div class="bn-esim-row">
+        <span id="esFlag" class="bn-flag" aria-hidden="true"></span>
+        <div class="min-w-0 flex-grow-1"><label class="visually-hidden" for="esSel">Destination</label><select class="form-select" id="esSel"></select></div>
+      </div>
+      <div class="d-flex align-items-end justify-content-between gap-2">
+        <div class="bn-price" aria-live="polite"><small class="d-block">from</small><span id="esUsd"></span> <small id="esNgn"></small></div>
+      </div>
+      <p class="bn-sub text-truncate" id="esNet"></p>
+      <button class="bn-go" type="submit">See plans <i class="bi bi-arrow-right"></i></button>
+    </form>
+
+    <!-- Airtime (1×1) -->
+    <form class="bn-tile t-air" id="airForm" novalidate aria-labelledby="airTitle">
+      <div><span class="bn-label"><i class="bi bi-phone"></i>Airtime &amp; data</span><h2 class="bn-title mt-1" id="airTitle">Top up any number</h2></div>
+      <div>
+        <label class="visually-hidden" for="airPhone">Phone number</label>
+        <div class="bn-phone">
+          <span class="net" id="airNet" aria-hidden="true"><i class="bi bi-sim"></i></span>
+          <input type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="11" class="form-control" id="airPhone" placeholder="0803 123 4567" aria-describedby="airDetect airErr">
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-between gap-2">
+        <span class="bn-detect" id="airDetect" aria-live="polite">Network auto-detects</span>
+        <div class="bn-nets" id="airNets"></div>
+      </div>
+      <p class="bn-err" id="airErr" role="alert"></p>
+      <button class="bn-go" type="submit">Continue <i class="bi bi-arrow-right"></i></button>
+    </form>
+
+    <!-- Gift card calculator (1×2) -->
+    <form class="bn-tile t-gift" id="gcForm" novalidate aria-labelledby="gcTitle">
+      <div class="d-flex align-items-center gap-2">
+        <span class="bn-gc-ic" id="gcIc" aria-hidden="true"></span>
+        <div><span class="bn-label"><i class="bi bi-gift"></i>Gift cards</span><h2 class="bn-title" id="gcTitle">What's my card worth?</h2></div>
+      </div>
+      <div><label class="form-label" for="gcBrand">Card</label><select class="form-select" id="gcBrand"></select></div>
+      <div><label class="form-label" for="gcType">Type</label><select class="form-select" id="gcType"></select></div>
+      <div>
+        <label class="form-label" for="gcAmt">Card value (USD)</label>
+        <div class="bn-usd"><span aria-hidden="true">$</span><input type="number" inputmode="decimal" class="form-control" id="gcAmt" value="100" aria-describedby="gcRange gcErr"></div>
+        <div class="d-flex justify-content-between mt-1"><span class="fs-8 text-muted" id="gcRange"></span></div>
+        <p class="bn-err" id="gcErr" role="alert"></p>
+      </div>
+      <div class="bn-payout" aria-live="polite">
+        <div class="fs-8 text-muted fw-semibold">You receive</div>
+        <div class="amt" id="gcOut">₦0</div>
+        <div class="rate" id="gcRate"></div>
+      </div>
+      <button class="bn-go" type="submit">Sell this card <i class="bi bi-arrow-right"></i></button>
+    </form>
+
+    <!-- Top deal (1×2) -->
+    <article class="bn-tile t-deal" id="deal" aria-labelledby="dealName"></article>
+
+    <!-- USD card (2×1) -->
+    <a class="bn-tile t-card" href="./app/virtual-cards.html" aria-labelledby="cardTitle">
+      <div class="txt">
+        <span class="bn-label"><i class="bi bi-credit-card-2-front"></i>USD virtual card</span>
+        <h2 class="bn-title" id="cardTitle">Pay Netflix, Amazon &amp; AliExpress in dollars</h2>
+        <span class="bn-fee"><i class="bi bi-tag"></i>$2 to create · fund from $5</span>
+        <span class="mt-auto fw-bold fs-7" style="color:var(--ink)">Get a card <i class="bi bi-arrow-right"></i></span>
+      </div>
+      <div class="bn-vcard" aria-hidden="true">
+        <div class="d-flex justify-content-between align-items-start"><div><div style="opacity:.7;letter-spacing:.1em;font-size:.85em">AUTOBIZ</div><b>USD Virtual</b></div><i class="bi bi-wifi" style="transform:rotate(90deg);opacity:.7"></i></div>
+        <span class="chip"></span>
+        <div class="d-flex justify-content-between align-items-end"><span class="num">•••• 4081</span><span class="fw-800 fst-italic" style="font-size:1.15em">VISA</span></div>
+      </div>
+    </a>
+
+    <!-- Categories (2×1) -->
+    <nav class="bn-tile t-cats" aria-labelledby="catsTitle">
+      <div class="d-flex align-items-center justify-content-between gap-2">
+        <span class="bn-label" id="catsTitle"><i class="bi bi-grid"></i>Browse categories</span>
+        <a class="bn-more" href="./app/marketplace.html">All <i class="bi bi-chevron-right"></i></a>
+      </div>
+      <div class="bn-cat-ic" id="catIcons"></div>
+    </nav>
+  </section>
+
+  <!-- ===== Shop by category ===== -->
+  <section class="bn-sec" aria-labelledby="cbTitle">
+    <div class="bn-head"><div><h2 id="cbTitle">Shop by category</h2><p>Live counts and starting prices from the catalogue.</p></div><a class="bn-more" href="./app/marketplace.html">Open marketplace <i class="bi bi-chevron-right"></i></a></div>
+    <div class="bn-cbento" id="cbento"></div>
+  </section>
+
+  <!-- ===== Products ===== -->
+  <section class="bn-sec" aria-labelledby="pTitle">
+    <div class="bn-head">
+      <div><h2 id="pTitle">Deals worth adding</h2><p id="pSub">Biggest markdowns from verified sellers right now.</p></div>
+      <div class="bn-seg" role="group" aria-label="Sort products">
+        <button type="button" data-sort="disc" aria-pressed="true">Biggest discount</button>
+        <button type="button" data-sort="pop" aria-pressed="false">Most popular</button>
+      </div>
+    </div>
+    <div class="bn-pgrid" id="pgrid"></div>
+  </section>
+
+  <!-- ===== Bills strip ===== -->
+  <section class="bn-sec" aria-labelledby="billsTitle">
+    <div class="bn-head"><div><h2 id="billsTitle">Pay your bills</h2><p>Straight to the right tab — tokens, renewals and PINs delivered instantly.</p></div><a class="bn-more" href="./app/bills.html">All bills <i class="bi bi-chevron-right"></i></a></div>
+    <nav class="bn-bills" id="bills" aria-label="Bill payments"></nav>
+  </section>
+
+  <!-- ===== Closing CTA ===== -->
+  <section class="bn-cta" aria-labelledby="ctaTitle">
+    <span class="dots" aria-hidden="true"></span>
+    <div>
+      <h2 id="ctaTitle">Browse freely. Sign up when you pay.</h2>
+      <p id="ctaText">One free account and one Naira wallet for shopping, travel, cards and bills. Fund it by transfer or card.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2 btns" id="ctaBtns">
+      <a href="./register.html" class="btn bn-btn-w">Create free account</a>
+      <a href="./login.html" class="btn btn-ghost">Log in</a>
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/js/data.js"></script>
+<script src="./assets/js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const D = AB_DATA, { fmt, esc } = AB;
+  const $ = (id) => document.getElementById(id);
+  const disc = (p) => Math.round((1 - p.price / p.oldPrice) * 100);
+  const ngn = (usd) => fmt.naira(Math.round(usd * D.usdRate));
+  const setErr = (field, errEl, msg) => { errEl.textContent = msg; field.classList.toggle("is-invalid", !!msg); field.setAttribute("aria-invalid", msg ? "true" : "false"); };
+
+  /* ---- Promo: deepest real discounts ---- */
+  const byDisc = D.products.filter((p) => p.oldPrice > p.price).sort((a, b) => disc(b) - disc(a) || b.reviews - a.reviews);
+  const show = byDisc.slice(0, 3), top = show[0];
+  $("promoKick").textContent = `Up to ${disc(top)}% off today`;
+  $("promoCount").textContent = `${D.products.length} products · ${D.categories.length} categories · verified sellers`;
+  $("showcase").innerHTML = `
+    <span class="bn-off"><small>Save</small>-${disc(top)}%</span>
+    ${show.map((p, i) => `<a href="./app/product.html?id=${p.id}" class="s${i}" aria-label="${esc(p.name)}, ${fmt.naira(p.price)}">${AB.productArt(p)}</a>`).join("")}
+    <div class="cap"><span class="d-block text-truncate">${esc(top.name)}</span><b>${fmt.naira(top.price)}</b><s>${fmt.naira(top.oldPrice)}</s></div>`;
+
+  /* ---- Flights ---- */
+  const ap = (c) => D.airports.find((a) => a.code === c);
+  const opts = (sel) => ["Nigeria", "International"].map((grp) => `<optgroup label="${grp}">${D.airports.filter((a) => (a.country === "Nigeria") === (grp === "Nigeria")).map((a) => `<option value="${a.code}" ${a.code === sel ? "selected" : ""}>${esc(a.city)} (${a.code})</option>`).join("")}</optgroup>`).join("");
+  const flFrom = $("flFrom"), flTo = $("flTo");
+  flFrom.innerHTML = opts("LOS"); flTo.innerHTML = opts("ABV");
+  const checkFl = () => {
+    const f = ap(flFrom.value), t = ap(flTo.value), same = f.code === t.code;
+    setErr(flTo, $("flErr"), same ? "Origin and destination can't be the same." : "");
+    flFrom.classList.toggle("is-invalid", same);
+    $("flMeta").innerHTML = same ? "" : `<span class="pill">${f.country === "Nigeria" && t.country === "Nigeria" ? "Domestic" : "International"}</span><span class="text-truncate">${esc(f.city)} → ${esc(t.city)} · pay in ₦</span>`;
+    return !same;
+  };
+  [flFrom, flTo].forEach((s) => s.addEventListener("change", checkFl));
+  $("flSwap").addEventListener("click", () => { [flFrom.value, flTo.value] = [flTo.value, flFrom.value]; checkFl(); });
+  $("flForm").addEventListener("submit", (e) => { e.preventDefault(); if (checkFl()) location.href = `./app/flights.html?from=${flFrom.value}&to=${flTo.value}`; else flTo.focus(); });
+  checkFl();
+
+  /* ---- eSIM ---- */
+  const esSel = $("esSel");
+  const countries = D.esimCountries.filter((c) => !c.regional).sort((a, b) => a.name.localeCompare(b.name));
+  const regions = D.esimCountries.filter((c) => c.regional);
+  const esOpt = (c) => `<option value="${c.code}" ${c.code === "gb" ? "selected" : ""}>${esc(c.name)}</option>`;
+  esSel.innerHTML = `<optgroup label="Countries">${countries.map(esOpt).join("")}</optgroup><optgroup label="Regional &amp; global">${regions.map(esOpt).join("")}</optgroup>`;
+  const updEsim = () => {
+    const c = D.esimCountries.find((x) => x.code === esSel.value);
+    $("esFlag").innerHTML = c.regional ? `<i class="bi ${c.icon || "bi-globe2"}"></i>` : `<img src="${AB.flag(c.code)}" alt="" class="bn-flag">`;
+    $("esUsd").textContent = fmt.usd(c.from);
+    $("esNgn").textContent = `≈ ${ngn(c.from)}`;
+    $("esNet").textContent = `${c.speed} · ${c.networks}`;
+  };
+  esSel.addEventListener("change", updEsim); updEsim();
+  $("esForm").addEventListener("submit", (e) => { e.preventDefault(); location.href = `./app/esim.html?country=${esSel.value}`; });
+
+  /* ---- Airtime: prefix auto-detect (same table as bills page) ---- */
+  const PREFIX = {
+    mtn: ["0803","0806","0703","0706","0813","0816","0810","0814","0903","0906","0913","0916"],
+    airtel: ["0802","0808","0708","0812","0701","0902","0901","0904","0907","0912"],
+    glo: ["0805","0807","0705","0815","0811","0905","0915"],
+    "9mobile": ["0809","0817","0818","0909","0908"]
+  };
+  const detect = (p) => Object.keys(PREFIX).find((k) => PREFIX[k].includes(p.slice(0, 4))) || null;
+  const phone = $("airPhone"), netEl = $("airNet");
+  $("airNets").innerHTML = D.networks.map((n) => `<img src="./assets/img/networks/${n.logo}" alt="${esc(n.name)}" title="${esc(n.name)}" data-net="${n.id}">`).join("");
+  let lastNet = null;
+  const updAir = () => {
+    phone.value = phone.value.replace(/\D/g, "").slice(0, 11);
+    const v = phone.value, id = v.length >= 4 ? detect(v) : null, n = D.networks.find((x) => x.id === id);
+    if (id !== lastNet) {
+      netEl.innerHTML = n ? `<img src="./assets/img/networks/${n.logo}" alt="">` : `<i class="bi bi-sim"></i>`;
+      if (n) { netEl.classList.remove("pop"); void netEl.offsetWidth; netEl.classList.add("pop"); }
+      lastNet = id;
+    }
+    document.querySelectorAll("#airNets img").forEach((img) => img.classList.toggle("on", img.dataset.net === id));
+    const d = $("airDetect");
+    d.classList.toggle("ok", !!n);
+    d.innerHTML = n ? `<i class="bi bi-check-circle-fill me-1"></i>${esc(n.name)} detected` : v.length >= 4 ? "Unknown prefix — pick network next" : "Network auto-detects";
+    if ($("airErr").textContent && v.length === 11) setErr(phone, $("airErr"), "");
+  };
+  phone.addEventListener("input", updAir);
+  $("airForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!/^0\d{10}$/.test(phone.value)) { setErr(phone, $("airErr"), "Enter an 11-digit number starting with 0."); phone.focus(); return; }
+    setErr(phone, $("airErr"), "");
+    location.href = `./app/bills.html?tab=airtime&phone=${phone.value}`;
+  });
+
+  /* ---- Gift card calculator ---- */
+  const gcBrand = $("gcBrand"), gcType = $("gcType"), gcAmt = $("gcAmt");
+  gcBrand.innerHTML = D.giftcards.map((g) => `<option value="${g.id}">${esc(g.name)}</option>`).join("");
+  const gc = () => D.giftcards.find((g) => g.id === gcBrand.value);
+  const fillTypes = () => {
+    const g = gc();
+    gcType.innerHTML = Object.entries(g.types).map(([t, r]) => `<option value="${esc(t)}">${esc(t)} · ${fmt.naira(r)}/$</option>`).join("");
+    $("gcIc").style.background = g.color; $("gcIc").innerHTML = `<i class="bi ${g.icon}"></i>`;
+    $("gcRange").textContent = `Accepted: $${g.range[0]} – $${g.range[1]}`;
+    gcAmt.min = g.range[0]; gcAmt.max = g.range[1];
+  };
+  const calc = () => {
+    const g = gc(), rate = g.types[gcType.value], amt = parseFloat(gcAmt.value);
+    const bad = !isFinite(amt) ? "Enter the card's dollar value." : amt < g.range[0] || amt > g.range[1] ? `${g.name} cards must be between $${g.range[0]} and $${g.range[1]}.` : "";
+    setErr(gcAmt, $("gcErr"), bad);
+    $("gcOut").textContent = bad ? "—" : fmt.naira(Math.round(amt * rate));
+    $("gcRate").textContent = `${fmt.naira(rate)} per $1 · ${g.countries.join(", ")}`;
+    return !bad;
+  };
+  gcBrand.addEventListener("change", () => { fillTypes(); calc(); });
+  gcType.addEventListener("change", calc);
+  gcAmt.addEventListener("input", calc);
+  fillTypes(); calc();
+  $("gcForm").addEventListener("submit", (e) => { e.preventDefault(); if (calc()) location.href = `./app/giftcards.html?card=${gcBrand.value}`; else gcAmt.focus(); });
+
+  /* ---- Top deal tile: most-loved discounted item not already in the showcase ---- */
+  const deal = [...byDisc].filter((p) => !show.includes(p) && !p.digital).sort((a, b) => b.reviews - a.reviews)[0];
+  $("deal").innerHTML = `
+    <div class="d-flex align-items-center justify-content-between"><span class="bn-label"><i class="bi bi-fire"></i>Top deal</span><span class="fs-8 text-muted d-none d-sm-inline text-truncate">${esc(deal.seller)}</span></div>
+    <a href="./app/product.html?id=${deal.id}" class="art" tabindex="-1" aria-hidden="true"><span class="off">-${disc(deal)}%</span>${AB.productArt(deal)}</a>
+    <a href="./app/product.html?id=${deal.id}" class="nm" id="dealName">${esc(deal.name)}</a>
+    <div class="meta"><i class="bi bi-star-fill"></i> <b>${deal.rating}</b> · ${fmt.num(deal.reviews)} reviews</div>
+    <div class="d-flex align-items-end justify-content-between gap-2 mt-auto">
+      <div class="min-w-0"><div class="pr tabular">${fmt.naira(deal.price)}</div><div class="old tabular">${fmt.naira(deal.oldPrice)}</div></div>
+    </div>
+    <button class="bn-go w-100" type="button" data-add="${deal.id}" aria-label="Add ${esc(deal.name)} to cart"><i class="bi bi-cart-plus"></i>Add to cart</button>`;
+
+  /* ---- Category icons (hero) ---- */
+  $("catIcons").innerHTML = D.categories.map((c) => `<a href="./app/marketplace.html?cat=${c.id}"><span class="ab-icon tone-${c.tone}"><i class="bi ${c.icon}"></i></span>${esc(c.name.split(" & ")[0])}</a>`).join("");
+
+  /* ---- Shop by category bento ---- */
+  const catStats = D.categories.map((c) => {
+    const ps = D.products.filter((p) => p.category === c.id);
+    return { ...c, ps, count: ps.length, min: ps.length ? Math.min(...ps.map((p) => p.price)) : 0 };
+  }).sort((a, b) => b.count - a.count);
+  $("cbento").innerHTML = catStats.map((c, i) => {
+    const cls = i === 0 ? "big" : i === 1 ? "wide" : "";
+    const bg = `<span class="bg" style="background:linear-gradient(160deg,var(--ab-${c.tone === "success" ? "accent" : c.tone}-soft),transparent 75%)"></span>`;
+    const minis = i === 0 ? `<div class="minis" aria-hidden="true">${[...c.ps].sort((a, b) => b.reviews - a.reviews).slice(0, 3).map((p) => AB.productArt(p)).join("")}</div>` : "";
+    return `<a href="./app/marketplace.html?cat=${c.id}" class="bn-c ${cls}">${bg}
+      <div class="d-flex align-items-start justify-content-between gap-2"><span class="ab-icon ${i === 0 ? "ab-icon-lg" : "ab-icon-sm"} tone-${c.tone}"><i class="bi ${c.icon}"></i></span>${i < 2 ? `<span class="arrow"><i class="bi bi-arrow-right"></i></span>` : ""}</div>
+      ${minis}
+      <div><h3>${esc(c.name)}</h3><div class="s">${c.count} product${c.count === 1 ? "" : "s"}${c.count ? ` · <span class="from">from ${fmt.naira(c.min)}</span>` : ""}</div></div>
+      <i class="bi ${c.icon} big-ic tone-${c.tone}" style="background:none" aria-hidden="true"></i></a>`;
+  }).join("");
+
+  /* ---- Product grid ---- */
+  const pcard = (p) => `
+    <article class="bn-p">
+      <a href="./app/product.html?id=${p.id}" class="art" tabindex="-1" aria-hidden="true">${p.oldPrice > p.price ? `<span class="off">-${disc(p)}%</span>` : ""}${AB.productArt(p)}</a>
+      <a href="./app/product.html?id=${p.id}" class="nm">${esc(p.name)}</a>
+      <div class="meta"><i class="bi bi-star-fill"></i> ${p.rating} (${fmt.num(p.reviews)})${p.freeShipping ? ` · <span class="text-success fw-semibold">${p.digital ? "Instant" : "Free delivery"}</span>` : ""}</div>
+      <div class="d-flex align-items-end justify-content-between gap-1 mt-auto pt-2">
+        <div class="min-w-0"><div class="pr tabular text-truncate">${fmt.naira(p.price)}</div><div class="old tabular">${fmt.naira(p.oldPrice)}</div></div>
+        <button class="btn btn-soft btn-icon add" type="button" data-add="${p.id}" aria-label="Add ${esc(p.name)} to cart"><i class="bi bi-cart-plus"></i></button>
+      </div>
+    </article>`;
+  const renderP = (mode) => {
+    const list = mode === "pop" ? [...D.products].sort((a, b) => b.reviews - a.reviews) : byDisc;
+    const g = $("pgrid");
+    g.classList.remove("swap"); void g.offsetWidth; g.classList.add("swap"); clearTimeout(renderP.t); renderP.t = setTimeout(() => g.classList.remove("swap"), 450);
+    g.innerHTML = list.slice(0, 10).map(pcard).join("");
+    $("pSub").textContent = mode === "pop" ? "The most-reviewed products shoppers keep coming back to." : "Biggest markdowns from verified sellers right now.";
+  };
+  document.querySelector(".bn-seg").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-sort]"); if (!b) return;
+    document.querySelectorAll(".bn-seg button").forEach((x) => x.setAttribute("aria-pressed", x === b));
+    renderP(b.dataset.sort);
+  });
+  renderP("disc");
+
+  /* ---- Bills strip ---- */
+  const cableMin = Math.min(...Object.values(D.cableProviders).flatMap((c) => c.plans.map((p) => p.price)));
+  const data1 = Object.values(D.dataPlans).flat().filter((p) => p.name === "1GB" && p.validity === "30 days").sort((a, b) => a.price - b.price)[0];
+  $("bills").innerHTML = [
+    ["electricity", "bi-lightning-charge", "orange", "Electricity", `${D.discos.length} DisCos · prepaid & postpaid`],
+    ["cable", "bi-tv", "cyan", "Cable TV", `${Object.values(D.cableProviders).map((c) => c.name).join(", ")} from ${fmt.naira(cableMin)}`],
+    ["betting", "bi-trophy", "success", "Betting", "Fund wallets instantly, zero fees"],
+    ["education", "bi-mortarboard", "violet", "Exam PINs", "WAEC & more result checkers"],
+    ["data", "bi-wifi", "primary", "Data bundles", `1GB from ${fmt.naira(data1.price)}`],
+    ["airtime", "bi-phone", "warning", "Airtime", `${D.networks.map((n) => n.name).join(", ")}`]
+  ].map(([tab, ic, tone, t, s]) => `<a class="bn-b" href="./app/bills.html?tab=${tab}"><span class="ab-icon tone-${tone}"><i class="bi ${ic}"></i></span><div><b>${t}</b><small>${esc(s)}</small></div></a>`).join("");
+
+  /* ---- Cart ---- */
+  document.querySelector("main").addEventListener("click", (e) => { const b = e.target.closest("[data-add]"); if (b) AB.cart.add(b.dataset.add, 1); });
+
+  /* ---- Auth-aware CTA ---- */
+  if (AB.auth.isAuthed()) {
+    const u = AB.store.get("user");
+    $("ctaTitle").textContent = `Welcome back, ${u.firstName}.`;
+    $("ctaText").textContent = "Your wallet, orders, trips, eSIMs and cards are waiting in your account.";
+    $("ctaBtns").innerHTML = `<a href="./app/dashboard.html" class="btn bn-btn-w">Go to my account</a><a href="./app/wallet.html" class="btn btn-ghost">Fund wallet</a>`;
+  }
+});
+</script>
+</body>
+</html>
