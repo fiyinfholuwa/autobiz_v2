@@ -1,0 +1,65 @@
+name: autobiz
+description: "AutoBiz — shop, travel and pay from one Naira wallet."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.4
+
+dependencies:
+  cupertino_icons: ^2.0.0
+  flutter:
+    sdk: flutter
+  flutter_svg: ^2.5.0
+  go_router: ^18.1.4
+  image_picker: ^1.2.4
+  provider: ^6.1.5+1
+  qr_flutter: ^4.1.0
+  share_plus: ^13.3.1
+  shared_preferences: ^2.5.6
+  url_launcher: ^6.3.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/networks/
+    - assets/brand/
+  fonts:
+    - family: Jakarta
+      fonts:
+        - asset: assets/fonts/PlusJakartaSans_400Regular.ttf
+          weight: 400
+        - asset: assets/fonts/PlusJakartaSans_500Medium.ttf
+          weight: 500
+        - asset: assets/fonts/PlusJakartaSans_600SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/PlusJakartaSans_700Bold.ttf
+          weight: 700
+        - asset: assets/fonts/PlusJakartaSans_800ExtraBold.ttf
+          weight: 800
+    - family: Ionicons
+      fonts:
+        - asset: assets/fonts/Ionicons.ttf
+    - family: MaterialCommunityIcons
+      fonts:
+        - asset: assets/fonts/MaterialCommunityIcons.ttf
+    - family: FontAwesome5Brands
+      fonts:
+        - asset: assets/fonts/FontAwesome5_Brands.ttf
+
+# App icons: node tool/generate_icons.js (needs `sharp`)
+
+# Splash (already generated into android/ios). To regenerate: dart pub global activate flutter_native_splash && dart pub global run flutter_native_splash:create
+flutter_native_splash:
+  color: "#ffffff"
+  image: "assets/brand/splash-logo.png"
+  color_dark: "#121212"
+  image_dark: "assets/brand/splash-logo.png"
+  android_12:
+    image: "assets/brand/splash-android12.png"
+    color: "#ffffff"
+    color_dark: "#121212"

@@ -1,10 +1,11 @@
 import { router } from "expo-router";
 import React from "react";
-import { KeyboardAvoidingView, Platform, RefreshControl, ScrollView, View, type ScrollViewProps, type StyleProp, type ViewStyle } from "react-native";
+import { KeyboardAvoidingView, RefreshControl, ScrollView, View, type ScrollViewProps, type StyleProp, type ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "@/theme";
 import { IconButton } from "./Button";
 import { Text } from "./Text";
+import { KAV_BEHAVIOR, mergeRefs, useKeyboardAwareScroll } from "./keyboard";
 
 export function goBack(fallback: string = "/") {
   if (router.canGoBack()) router.back();
@@ -78,15 +79,16 @@ export type ScreenProps = {
 export function Screen({ children, header, scroll = true, footer, padded = true, contentStyle, refreshing, onRefresh, scrollProps, scrollRef, bottomInset = 0, bg }: ScreenProps) {
   const { c } = useTheme();
   const insets = useSafeAreaInsets();
+  const kb = useKeyboardAwareScroll();
   const pad: ViewStyle = padded ? { paddingHorizontal: 16 } : {};
   return (
     <View style={{ flex: 1, backgroundColor: bg ?? c.bg }}>
       {header}
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={KAV_BEHAVIOR}>
         {scroll ? (
           <ScrollView
-            ref={scrollRef}
-            keyboardShouldPersistTaps="handled"
+            ref={mergeRefs(kb.ref, scrollRef)}
+            {...kb.scrollProps}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={[pad, { paddingTop: 4, paddingBottom: (footer ? 16 : insets.bottom + 24) + bottomInset }, contentStyle]}
             refreshControl={onRefresh ? <RefreshControl refreshing={!!refreshing} onRefresh={onRefresh} tintColor={c.primary} /> : undefined}

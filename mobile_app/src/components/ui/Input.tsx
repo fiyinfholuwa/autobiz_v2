@@ -9,6 +9,7 @@ import { Icon } from "./Icon";
 import { Row } from "./primitives";
 import { Sheet } from "./Sheet";
 import { Text } from "./Text";
+import { notifyInputFocus } from "./keyboard";
 
 export type TextInputRef = React.ComponentRef<typeof TextInput>;
 
@@ -71,7 +72,7 @@ export const TextField = forwardRef<TextInputRef, TextFieldProps>(function TextF
           editable={editable}
           multiline={multiline}
           secureTextEntry={password && !show}
-          onFocus={(e) => { setFocus(true); rest.onFocus?.(e); }}
+          onFocus={(e) => { setFocus(true); notifyInputFocus(); rest.onFocus?.(e); }}
           onBlur={(e) => { setFocus(false); rest.onBlur?.(e); }}
           style={[
             { flex: 1, fontFamily: big ? font.bold : font.medium, fontSize: big ? 20 : 15, color: c.text, paddingVertical: multiline ? 12 : 0, minHeight: multiline ? 90 : undefined, textAlignVertical: multiline ? "top" : "center" },
@@ -239,7 +240,7 @@ export const CodeInput = forwardRef<CodeInputHandle, { length?: number; value: s
             onChange(v);
             if (v.length === length) onComplete?.(v);
           }}
-          onFocus={() => setFocused(true)}
+          onFocus={() => { setFocused(true); notifyInputFocus(); }}
           onBlur={() => setFocused(false)}
           keyboardType="number-pad"
           textContentType="oneTimeCode"

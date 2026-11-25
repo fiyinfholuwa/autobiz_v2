@@ -52,17 +52,26 @@ export default function More() {
   };
 
   return (
-    <Screen padded={false} bottomInset={TAB_BAR_SPACE}>
-      <LinearGradient colors={[c.primary600, c.primary700]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ paddingTop: insets.top + 12, paddingHorizontal: 20, paddingBottom: 64, borderBottomLeftRadius: 32, borderBottomRightRadius: 32 }}>
-        <Row justify="space-between">
-          <Logo size={30} light />
-          <Row gap={8}>
-            <IconButton icon={dark ? "bi-sun" : "bi-moon-stars"} color="#fff" bg="rgba(255,255,255,0.16)" accessibilityLabel="Toggle theme" onPress={() => app().update("settings", (s) => ({ ...s, themeMode: dark ? "light" : "dark" }))} />
-            <IconButton icon="bi-bell" color="#fff" bg="rgba(255,255,255,0.16)" badge={unread || undefined} accessibilityLabel="Notifications" onPress={() => router.push("/notifications")} />
+    <Screen
+      padded={false}
+      bottomInset={TAB_BAR_SPACE}
+      contentStyle={{ paddingTop: 0 }}
+      header={
+        // Fixed top bar — stays put while the page scrolls
+        <View style={{ backgroundColor: c.primary600, paddingTop: insets.top + 8, paddingHorizontal: 20, paddingBottom: 10, zIndex: 2 }}>
+          <Row justify="space-between">
+            <Logo size={30} light />
+            <Row gap={8}>
+              <IconButton icon={dark ? "bi-sun" : "bi-moon-stars"} color="#fff" bg="rgba(255,255,255,0.16)" accessibilityLabel="Toggle theme" onPress={() => app().update("settings", (s) => ({ ...s, themeMode: dark ? "light" : "dark" }))} />
+              <IconButton icon="bi-bell" color="#fff" bg="rgba(255,255,255,0.16)" badge={unread || undefined} accessibilityLabel="Notifications" onPress={() => router.push("/notifications")} />
+            </Row>
           </Row>
-        </Row>
+        </View>
+      }
+    >
+      <LinearGradient colors={[c.primary600, c.primary700]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={{ paddingTop: 4, paddingHorizontal: 20, paddingBottom: 64, borderBottomLeftRadius: 32, borderBottomRightRadius: 32 }}>
         {authed ? (
-          <Pressable onPress={() => router.push("/settings/profile")} style={{ marginTop: 22 }}>
+          <Pressable onPress={() => router.push("/settings/profile")} style={{ marginTop: 10 }}>
             <Row gap={14}>
               <Avatar text={initials(user.firstName, user.lastName)} size={58} bg="rgba(255,255,255,0.2)" color="#fff" />
               <View style={{ flex: 1 }}>

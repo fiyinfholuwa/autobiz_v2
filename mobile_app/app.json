@@ -19,7 +19,8 @@
         "backgroundColor": "#299d91"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "app.autobiz.mobile"
+      "package": "app.autobiz.mobile",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -46,7 +47,8 @@
           "photosPermission": "AutoBiz needs photo access to upload gift card images and documents.",
           "cameraPermission": "AutoBiz needs camera access to snap gift card images."
         }
-      ]
+      ],
+      "./plugins/withReleaseSigning"
     ],
     "scheme": "autobiz",
     "experiments": {

@@ -12,6 +12,7 @@ import { radius, useTheme } from "@/theme";
 
 export { Logo } from "@/components/Logo";
 import { Logo } from "@/components/Logo";
+import { KAV_BEHAVIOR, useKeyboardAwareScroll } from "@/components/ui/keyboard";
 
 export function ThemeToggle() {
   const { c, dark } = useTheme();
@@ -31,6 +32,7 @@ export function AuthShell({ title, subtitle, children, footer, onBack, step, ste
 }) {
   const { c } = useTheme();
   const insets = useSafeAreaInsets();
+  const kb = useKeyboardAwareScroll();
   return (
     <View style={{ flex: 1, backgroundColor: c.bg }}>
       <LinearGradient colors={[c.primarySoft, c.bg]} style={{ position: "absolute", top: 0, left: 0, right: 0, height: 260 }} />
@@ -40,8 +42,8 @@ export function AuthShell({ title, subtitle, children, footer, onBack, step, ste
           <Row gap={8}>{topRight}<ThemeToggle /></Row>
         </Row>
       </View>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-        <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: insets.bottom + 28 }}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={KAV_BEHAVIOR}>
+        <ScrollView ref={kb.ref} {...kb.scrollProps} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: insets.bottom + 28 }}>
           {steps ? (
             <View style={{ marginBottom: 18 }}>
               <Row gap={6}>

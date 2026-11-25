@@ -322,14 +322,23 @@ function GuestHome() {
   const insets = useSafeAreaInsets();
   const cartCount = useApp((s) => s.cart.reduce((a, l) => a + l.qty, 0));
   return (
-    <Screen bottomInset={TAB_BAR_SPACE} padded={false} contentStyle={{ paddingTop: 0 }}>
-      <LinearGradient colors={dark ? ["#1f5c56", "#0b2422"] : [c.primary, c.primary700]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ paddingTop: insets.top + 12, paddingHorizontal: 20, paddingBottom: 56, borderBottomLeftRadius: 32, borderBottomRightRadius: 32, overflow: "hidden" }}>
+    <Screen
+      bottomInset={TAB_BAR_SPACE}
+      padded={false}
+      contentStyle={{ paddingTop: 0 }}
+      header={
+        // Fixed top bar — stays put while the page scrolls
+        <View style={{ backgroundColor: dark ? "#1f5c56" : c.primary, paddingTop: insets.top + 8, paddingHorizontal: 20, paddingBottom: 10, zIndex: 2 }}>
+          <Row justify="space-between">
+            <Logo size={34} light />
+            <IconButton icon="bi-bag" bg="rgba(255,255,255,0.18)" color="#fff" accessibilityLabel="Cart" badge={cartCount || undefined} onPress={() => router.push("/cart")} />
+          </Row>
+        </View>
+      }
+    >
+      <LinearGradient colors={dark ? ["#1f5c56", "#0b2422"] : [c.primary, c.primary700]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={{ paddingTop: 4, paddingHorizontal: 20, paddingBottom: 56, borderBottomLeftRadius: 32, borderBottomRightRadius: 32, overflow: "hidden" }}>
         <View style={{ position: "absolute", right: -60, top: -30, width: 220, height: 220, borderRadius: 110, backgroundColor: "rgba(255,255,255,0.08)" }} />
-        <Row justify="space-between">
-          <Logo size={34} light />
-          <IconButton icon="bi-bag" bg="rgba(255,255,255,0.18)" color="#fff" accessibilityLabel="Cart" badge={cartCount || undefined} onPress={() => router.push("/cart")} />
-        </Row>
-        <Text variant="display" color="#fff" style={{ marginTop: 26 }}>Shop, travel & pay{"\n"}from one wallet.</Text>
+        <Text variant="display" color="#fff" style={{ marginTop: 12 }}>Shop, travel & pay{"\n"}from one wallet.</Text>
         <Text variant="body" color="rgba(255,255,255,0.85)" style={{ marginTop: 10 }}>Airtime, data & bills, travel eSIMs, flights, USD cards and gift card trading — all in Naira.</Text>
         <Row gap={10} style={{ marginTop: 20 }}>
           <Button title="Create free account" variant="dark" style={{ flex: 1.3 }} onPress={() => router.push("/register")} />

@@ -1,11 +1,12 @@
 /* Bottom sheet rendered through the root portal. Slide-up, drag-handle, backdrop tap, Android back. */
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, Dimensions, Easing, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
+import { Animated, Dimensions, Easing, KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { radius, useTheme } from "@/theme";
 import { IconButton } from "./Button";
 import { backHandlers, Portal } from "./Portal";
 import { Text } from "./Text";
+import { KAV_BEHAVIOR, useKeyboardAwareScroll, useKeyboardHeight } from "./keyboard";
 
 export type SheetProps = {
   visible: boolean;
@@ -61,9 +62,13 @@ function SheetView({ anim, onClose, title, subtitle, children, scroll, footer, l
   const { c } = useTheme();
   const insets = useSafeAreaInsets();
   const H = Dimensions.get("window").height;
+  const kb = useKeyboardAwareScroll();
+  const kbH = useKeyboardHeight();
+  // when the keyboard is open the sheet must fit in the space above it
+  const maxH = kbH ? Math.min(H * maxHeight, H - kbH - insets.top - 12) : H * maxHeight;
   const translateY = anim.interpolate({ inputRange: [0, 1], outputRange: [dialog ? 40 : H * 0.6, 0] });
   const body = scroll ? (
-    <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={[{ paddingHorizontal: 20, paddingBottom: 16 }, bodyStyle]} style={{ flexGrow: 0 }}>
+    <ScrollView ref={kb.ref} {...kb.scrollProps} showsVerticalScrollIndicator={false} contentContainerStyle={[{ paddingHorizontal: 20, paddingBottom: 16 }, bodyStyle]} style={{ flexGrow: 0, flexShrink: 1 }}>
       {children}
     </ScrollView>
   ) : (
@@ -74,16 +79,16 @@ function SheetView({ anim, onClose, title, subtitle, children, scroll, footer, l
       <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: c.backdrop, opacity: anim }]}>
         <Pressable style={{ flex: 1 }} onPress={() => !locked && onClose()} accessibilityLabel="Close" />
       </Animated.View>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={[{ flex: 1 }, dialog ? { justifyContent: "center", padding: 24 } : { justifyContent: "flex-end" }]} pointerEvents="box-none">
+      <KeyboardAvoidingView behavior={KAV_BEHAVIOR} style={[{ flex: 1 }, dialog ? { justifyContent: "center", padding: 24 } : { justifyContent: "flex-end" }]} pointerEvents="box-none">
         <Animated.View
           style={{
-            maxHeight: H * maxHeight,
+            maxHeight: maxH,
             backgroundColor: c.surface,
             borderTopLeftRadius: radius.xxl,
             borderTopRightRadius: radius.xxl,
             borderBottomLeftRadius: dialog ? radius.xxl : 0,
             borderBottomRightRadius: dialog ? radius.xxl : 0,
-            paddingBottom: dialog ? 8 : Math.max(insets.bottom, 12),
+            paddingBottom: dialog ? 8 : kbH ? 12 : Math.max(insets.bottom, 12),
             transform: [{ translateY }],
             opacity: dialog ? anim : 1,
           }}

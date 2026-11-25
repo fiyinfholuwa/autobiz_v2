@@ -13,6 +13,34 @@ npm run typecheck
 
 Requires Node 20+ and Expo SDK 58. `.npmrc` sets `legacy-peer-deps` (needed by one font package).
 
+## Build a release APK (for installing on real phones)
+
+```bash
+npm run build:apk        # → release/AutoBiz-v<version>.apk
+```
+
+What you need:
+- The Android SDK at `~/Library/Android/sdk`.
+- JDK 17. By default the script uses the copy that ships with Android Studio. To use another JDK 17, set `JAVA_HOME_17`.
+
+What the build is:
+- **A real release build.** The JavaScript is bundled into Hermes bytecode, so the APK doesn't need Metro or a dev server.
+- **Signed with the release key** in `credentials/`.
+- **ARM only** (`arm64-v8a`, `armeabi-v7a`). That covers every real Android phone; the APK won't install on x86 emulators.
+
+Timing: the first build takes about 15 minutes, and later ones take 1–5 minutes.
+
+To install the APK, send it to the phone, open it, and allow "Install unknown apps" when Android asks. With USB debugging on, you can instead run `adb install -r release/AutoBiz-v1.0.0.apk`.
+
+**Signing key: back it up and keep it private.**
+- `credentials/autobiz-release.jks` and `credentials/keystore.properties` are git-ignored.
+- Every update must be signed with the same key. If you lose it, users have to uninstall the app before they can install a new version.
+- The config plugin `plugins/withReleaseSigning.js` applies the signing on every prebuild, so never edit `android/` by hand.
+
+Before each new release, bump `version` and `android.versionCode` in `app.json`.
+
+For a Play Store upload, build an `.aab` instead: run `./gradlew bundleRelease` in `android/`.
+
 ## Demo rules
 
 - **Any valid email or phone with a 6+ character password** logs in. The password `wrongpass` shows the error state.
